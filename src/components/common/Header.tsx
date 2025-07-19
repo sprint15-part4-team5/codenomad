@@ -3,12 +3,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Dropdown from './Dropdown/Dropdown';
+import clsx from 'clsx';
 
 const Header = () => {
   const [user, setUser] = useState<{ nickname: string; profileImageUrl?: string } | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isHome = pathname === '/';
+  const isSearch = pathname.startsWith('/search');
 
   // 유저 정보 로드
   useEffect(() => {
@@ -43,8 +48,8 @@ const Header = () => {
   const hasNewNotification = false; // 추후 API 연동
 
   return (
-    <header className='w-full h-[48px] md:h-[80px]'>
-      <div className='max-w-screen-xl h-full mx-auto flex justify-between items-center px-6'>
+    <header className={clsx('h-[48px] w-full md:h-[80px]', (isHome || isSearch) && 'bg-[#bbddff]')}>
+      <div className='mx-auto flex h-full max-w-screen-xl items-center justify-between px-6'>
         {/* 로고 */}
         <Link href='/' className='flex items-center gap-2'>
           <Image
@@ -58,30 +63,30 @@ const Header = () => {
 
         {/* 로그인 여부에 따라 분기 */}
         {user ? (
-          <div className='flex items-center gap-4 relative'>
+          <div className='relative flex items-center gap-4'>
             {/* 알림 아이콘 */}
             <Image
               src={hasNewNotification ? '/icons/icon_bell_on.svg' : '/icons/icon_bell_off.svg'}
               alt='알림'
               width={24}
               height={24}
-              className='cursor-pointer text-gray-600 hover:opacity-80 transition-opacity duration-200'
+              className='cursor-pointer text-gray-600 transition-opacity duration-200 hover:opacity-80'
             />
             {/* 구분선 */}
-            <div className='w-px h-14 bg-gray-200' />
+            <div className='h-14 w-px bg-gray-200' />
 
             {/* 프로필 + 닉네임 + 드롭다운 */}
             <Dropdown>
               <Dropdown.Trigger>
-                <div className='flex items-center mt-8 gap-2 cursor-pointer'>
+                <div className='mt-8 flex cursor-pointer items-center gap-2'>
                   <Image
                     src={user.profileImageUrl || '/icons/default_profile30.svg'}
                     alt='프로필'
                     width={30}
                     height={30}
-                    className='rounded-full object-cover w-auto h-auto'
+                    className='h-auto w-auto rounded-full object-cover'
                   />
-                  <span className='text-14-m text-gray-950 leading-none whitespace-nowrap truncate max-w-[100px]'>
+                  <span className='text-14-m max-w-[100px] truncate leading-none whitespace-nowrap text-gray-950'>
                     {user.nickname}
                   </span>
                 </div>
@@ -91,13 +96,13 @@ const Header = () => {
                 <Dropdown.Item>
                   <Link
                     href='/profile'
-                    className='block px-4 py-2 text-sm text-gray-800 w-full text-center'
+                    className='block w-full px-4 py-2 text-center text-sm text-gray-800'
                   >
                     마이페이지
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={handleLogout}>
-                  <span className='block px-4 py-2 text-sm text-gray-800 w-full text-center'>
+                  <span className='block w-full px-4 py-2 text-center text-sm text-gray-800'>
                     로그아웃
                   </span>
                 </Dropdown.Item>
@@ -105,7 +110,7 @@ const Header = () => {
             </Dropdown>
           </div>
         ) : (
-          <nav className='flex gap-10 whitespace-nowrap text-sm text-gray-900 no-underline'>
+          <nav className='flex gap-10 text-sm whitespace-nowrap text-gray-900 no-underline'>
             <Link href='/login'>로그인</Link>
             <Link href='/signup'>회원가입</Link>
           </nav>
