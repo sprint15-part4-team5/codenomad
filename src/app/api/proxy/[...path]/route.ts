@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+/**
+ * Proxies a POST request to an external API, forwarding the authorization header and handling both JSON and multipart form data bodies.
+ *
+ * Forwards the request to the target API endpoint constructed from the provided path segments. Handles error responses by attempting to parse and return error details from the proxied API, or returns a generic error message if parsing fails.
+ *
+ * @param request - The incoming Next.js request object
+ * @param params - An object containing a promise that resolves to the path segments for the proxied API endpoint
+ * @returns A JSON response from the proxied API, or an error response with appropriate status and details
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -66,6 +75,11 @@ export async function POST(
   }
 }
 
+/**
+ * Proxies a GET request to an external API, forwarding the path, query parameters, and authorization header.
+ *
+ * Constructs the target URL from the provided path segments and query parameters, sends the GET request with the authorization header if present, and returns the proxied API's JSON response. Handles and returns error responses from the external API or internal errors with appropriate status codes.
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
