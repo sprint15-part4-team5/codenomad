@@ -2,69 +2,35 @@
 import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import useKakaoLoader from '@/hooks/useKakaoLoder';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchKakaoPlace, DEFAULT_PLACE } from '@/lib/api/activities/fetchKakaoPlace';
+import type { Place } from '@/lib/api/activities/fetchKakaoPlace';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface MapViewProps {
   address: string;
+  category: string;
 }
 
-interface Place {
-  lat: number;
-  lng: number;
-  title: string;
-  url: string;
-}
-
-const DEFAULT_ADDRESS = '서울 중구 세종대로 110'; // 서울시청
-
-const MapView = ({ address = DEFAULT_ADDRESS }: MapViewProps) => {
+const MapView = ({ address, category }: MapViewProps) => {
   useKakaoLoader();
-  const [place, setPlace] = useState<Place>({
-    lat: 0,
-    lng: 0,
-    title: '',
-    url: '',
-  });
+  const [place, setPlace] = useState<Place>(DEFAULT_PLACE);
+
+  const categoryIconMap: Record<string, string> = {
+    '문화 · 예술': '/icons/icon_art.svg',
+    식음료: '/icons/icon_food.svg',
+    스포츠: '/icons/icon_sport.svg',
+    투어: '/icons/icon_tour.svg',
+    관광: '/icons/icon_bus.svg',
+    웰빙: '/icons/icon_wellbeing.svg',
+  };
 
   useEffect(() => {
-    const fetchData = async (query: string) => {
-      const KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
-      const URL = `https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=1&query=${query}`;
-      try {
-        const response = await axios.get(URL, {
-          headers: {
-            Authorization: `KakaoAK ${KEY}`,
-          },
-        });
-
-        // 주소는 넘어오지만 인식 하지 못한 경우
-        if (Array.isArray(response.data.documents) && response.data.documents.length === 0) {
-          // Kakao API가 번지 포함 도로명 주소를 인식하지 못하는 경우가 있어 번지 제거 후 재시도
-          const partialAddress = address.replace(/\s\d+(-\d+)?$/g, '').trim();
-          console.log(partialAddress);
-          if (partialAddress !== query) {
-            fetchData(partialAddress); // 재귀로 partialAddress 검색
-          } else {
-            console.log('주소를 가져오는데 실패하였습니다.');
-            fetchData(DEFAULT_ADDRESS); // 여기서 DEFAULT_ADDRESS 직접 사용
-          }
-          return;
-        }
-
-        const found = response.data.documents[0];
-        setPlace({
-          lat: Number(found.y),
-          lng: Number(found.x),
-          title: found.place_name,
-          url: found.place_url,
-        });
-      } catch (error) {
-        console.error(error);
-      }
+    const loadPlace = async () => {
+      const placeData = await fetchKakaoPlace(address);
+      if (placeData) setPlace(placeData);
     };
-
-    fetchData(address);
+    loadPlace();
   }, [address]);
 
   return (
@@ -76,10 +42,13 @@ const MapView = ({ address = DEFAULT_ADDRESS }: MapViewProps) => {
       >
         <MapMarker position={{ lat: place.lat, lng: place.lng }} />
         <CustomOverlayMap position={{ lat: place.lat, lng: place.lng }} yAnchor={1}>
-          <div className='relative bottom-50 flex h-40 w-auto items-center rounded-2xl bg-white p-10 shadow-md'>
-            <Link className='flex' href={place.url} target='_blank'>
+          <div className='border-primary-500 relative bottom-50 flex h-40 w-auto items-center rounded-3xl border-2 bg-white p-10 shadow-md'>
+            <Link href={place.url} target='_blank'>
               <span className='text-14-m text-gray-950'>{place.title}</span>
             </Link>
+            <div className='absolute bottom-30 left-0 flex h-30 w-30 items-center justify-center rounded-full bg-white shadow-md'>
+              <Image src={categoryIconMap[category]} alt={category} width={20} height={20} />
+            </div>
           </div>
         </CustomOverlayMap>
       </Map>

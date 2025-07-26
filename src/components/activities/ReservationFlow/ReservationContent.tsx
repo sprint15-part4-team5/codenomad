@@ -6,7 +6,7 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import ModalTrigger from './ModalTrigger';
 import DesktopCard from './DesktopCard';
 import type { ActivityDetail, ReservationState } from '../Activities.types';
-import { postReservation } from '@/lib/api/activities';
+import { postReservation } from '@/lib/api/activities/index';
 import axios from 'axios';
 
 interface ReservationContentProps {

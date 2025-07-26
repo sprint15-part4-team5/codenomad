@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Pagination from '@/components/common/Pagination';
 import ReviewCard from '@/components/activities/ReviewCard';
 import type { ReviewResponse } from './Activities.types';
-import { fetchActivityReviews } from '@/lib/api/activities';
+import { fetchActivityReviews } from '@/lib/api/activities/index';
 
 interface ReviewSectionProps {
   activityId: number;
