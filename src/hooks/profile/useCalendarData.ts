@@ -37,7 +37,8 @@ export const useCalendarData = (apiReservationData: DashboardData) => {
 
     // ✨ 우선순위 1: statusBadgeData 사용 (getReservedSchedule 기반의 정확한 데이터)
     // 이 데이터는 loadStatusBadgesWithReservedSchedule에서 생성됨
-    const statusBadgeData = window.statusBadgeData;
+    // 🔒 SSR 안전성: window 객체 존재 여부 확인
+    const statusBadgeData = typeof window !== 'undefined' ? window.statusBadgeData : undefined;
 
     if (statusBadgeData) {
       // 🎯 정확한 상태 데이터를 기반으로 캘린더 뱃지 생성
