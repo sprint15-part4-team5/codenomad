@@ -26,5 +26,53 @@ export const signupSchema = z
     path: ['confirmPassword'],
   });
 
+export const userInfoSchema = z
+  .object({
+    nickname: z.string().min(1, '닉네임을 입력해주세요.').max(10, '10자 이하로 작성해주세요.'),
+    email: z.string().min(1, '이메일을 입력해주세요.').regex(emailRegex, '잘못된 이메일입니다.'),
+    password: z.string().optional(),
+    confirmPassword: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      // 비밀번호가 입력된 경우에만 검증
+      if (data.password && data.password.length > 0) {
+        return data.password.length >= 8;
+      }
+      return true;
+    },
+    {
+      message: '8자 이상 입력해주세요.',
+      path: ['password'],
+    },
+  )
+  .refine(
+    (data) => {
+      // 비밀번호가 입력된 경우에만 확인 비밀번호 검증
+      if (data.password && data.password.length > 0) {
+        return data.confirmPassword && data.confirmPassword.length > 0;
+      }
+      return true;
+    },
+    {
+      message: '비밀번호 확인을 입력해주세요.',
+      path: ['confirmPassword'],
+    },
+  )
+  .refine(
+    (data) => {
+      // 비밀번호가 입력된 경우에만 일치 여부 검증
+      if (data.password && data.password.length > 0) {
+        return data.password === data.confirmPassword;
+      }
+      return true;
+    },
+    {
+      message: '비밀번호가 일치하지 않습니다.',
+      path: ['confirmPassword'],
+    },
+  );
+
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type SignupFormValues = z.infer<typeof signupSchema>;
+export type UserInfoFormValues = z.infer<typeof userInfoSchema>;
