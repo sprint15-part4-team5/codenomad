@@ -240,7 +240,10 @@ export default function ReservationStatusPage() {
   // 🔧 유틸리티: 전역 상태 업데이트 및 리렌더링 트리거
   const updateStatusBadgeData = (statusBadgeData: { [date: string]: ReservationCountData }) => {
     // 전역 변수에 저장 (기존 방식과 호환성 유지)
-    window.statusBadgeData = statusBadgeData;
+    // 🔒 SSR 안전성: window 객체 존재 여부 확인
+    if (typeof window !== 'undefined') {
+      window.statusBadgeData = statusBadgeData;
+    }
 
     // 캘린더 리렌더링 트리거
     if (Object.keys(statusBadgeData).length > 0) {
@@ -476,6 +479,8 @@ export default function ReservationStatusPage() {
   }, [reservationDetails, selectedTab]);
 
   const handleDayClick = (clickedDate: Date, event?: MouseEvent) => {
+    // 🔒 SSR 안전성: window 객체 존재 여부 확인
+    if (typeof window === 'undefined') return;
     if (!selectedActivity) return;
     const key = formatDate(clickedDate);
 

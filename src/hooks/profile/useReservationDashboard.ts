@@ -200,7 +200,10 @@ export const useReservationDashboard = () => {
 
       // 🌐 전역 변수에 저장 (기존 방식과 호환성 유지)
       // 캘린더 컴포넌트에서 이 데이터를 참조하여 뱃지 표시
-      window.statusBadgeData = statusBadgeData;
+      // 🔒 SSR 안전성: window 객체 존재 여부 확인
+      if (typeof window !== 'undefined') {
+        window.statusBadgeData = statusBadgeData;
+      }
 
       // 🔄 캘린더 리렌더링 트리거
       if (Object.keys(statusBadgeData).length > 0) {
