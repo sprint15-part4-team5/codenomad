@@ -6,16 +6,25 @@ import { ProfileMobileContext } from '../layout';
 import { getUserProfile, updateUserProfile } from '@/lib/api/profile';
 // 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const InformationPage = () => {
+  // 🎯 zustand에서 사용자 정보 및 업데이트 함수 가져오기
+  const { user, setUser, setUserProfile } = useAuthStore();
+
+  // 📝 폼 상태 (로컬) - 편집 중 임시 상태
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
   const [nickname, setNickname] = useState('');
-  const [nicknameError, setNicknameError] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  // ❌ 에러 상태 (로컬)
+  const [emailError, setEmailError] = useState('');
+  const [nicknameError, setNicknameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [confirmError, setConfirmError] = useState('');
+
+  // ⏳ 로딩 상태 (로컬)
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [error, setError] = useState('');
@@ -29,9 +38,38 @@ const InformationPage = () => {
     const fetchUserProfile = async () => {
       try {
         setIsLoadingProfile(true);
+
+        // 🎯 zustand에 이미 사용자 정보가 있다면 그것을 사용
+        if (user?.email && user?.nickname) {
+          setEmail(user.email);
+          setNickname(user.nickname);
+          setIsLoadingProfile(false);
+          return;
+        }
+
+        // 📡 API에서 사용자 정보 가져오기
         const profile = await getUserProfile();
+
+        // 🔄 로컬 상태 업데이트
         setEmail(profile.email);
         setNickname(profile.nickname);
+
+        // 🎯 zustand 전역 상태도 업데이트
+        if (user) {
+          setUserProfile({
+            email: profile.email,
+            nickname: profile.nickname,
+          });
+        } else {
+          // user가 없다면 전체 user 객체 생성
+          setUser({
+            ...profile,
+            id: typeof profile.id === 'string' ? parseInt(profile.id, 10) : profile.id || 0,
+            profileImageUrl: profile.profileImageUrl || null,
+            createdAt: profile.createdAt || '',
+            updatedAt: profile.updatedAt || '',
+          });
+        }
       } catch {
         setError('사용자 정보를 불러오는데 실패했습니다.');
       } finally {
@@ -40,7 +78,7 @@ const InformationPage = () => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [user, setUser, setUserProfile]);
 
   // 이메일 유효성
   const validateEmail = (value: string) => {
@@ -106,6 +144,12 @@ const InformationPage = () => {
       }
 
       await updateUserProfile(updateData);
+
+      // 🎯 API 업데이트 성공 시 zustand 전역 상태도 업데이트
+      setUserProfile({
+        email: updateData.email,
+        nickname: updateData.nickname,
+      });
 
       alert('회원정보가 성공적으로 수정되었습니다.');
 
@@ -210,7 +254,7 @@ const InformationPage = () => {
         </button>
         <button
           type='submit'
-          className='text-16-m hover:shadow-brand-blue/60 bg-primary-500 rounded-12 h-41 flex-1 cursor-pointer px-10 py-3 text-white transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
+          className='text-16-m hover:shadow-brand-blue/60 bg-primary-500 h-41 flex-1 cursor-pointer rounded-xl px-10 py-3 text-white transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
           disabled={isLoading || !isFormValid}
         >
           {isLoading ? '저장 중...' : '저장하기'}

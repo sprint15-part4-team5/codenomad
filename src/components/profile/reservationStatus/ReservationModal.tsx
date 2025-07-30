@@ -1,17 +1,5 @@
-import React from 'react';
-
-// 📋 예약 데이터 타입 정의
-interface ReservationData {
-  id: number;
-  status: 'pending' | 'confirmed' | 'declined';
-  headCount: number;
-  nickname: string;
-  scheduleId: number | string;
-  timeSlot: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
+import React, { useEffect } from 'react';
+import type { ReservationData } from '@/components/profile/types';
 
 // 🎯 예약 모달 컴포넌트 Props
 interface ReservationModalProps {
@@ -59,6 +47,20 @@ const ReservationModal = ({
   onApprove,
   onDecline,
 }: ReservationModalProps) => {
+  // 🚫 모달이 열렸을 때 페이지 스크롤 방지
+  useEffect(() => {
+    // 현재 스크롤 위치 저장
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+
+    // 스크롤 방지
+    document.body.style.overflow = 'hidden';
+
+    // 컴포넌트 언마운트 시 스크롤 복원
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
   // 📊 탭별 예약 개수 계산 (기존 방식과 동일: 전체 데이터에서 계산)
   const getReservationCount = (tab: '신청' | '승인' | '거절') => {
     const statusMap = { 신청: 'pending', 승인: 'confirmed', 거절: 'declined' };
@@ -67,7 +69,7 @@ const ReservationModal = ({
 
   return (
     <div
-      className='fixed inset-0 z-50 flex items-start justify-start'
+      className='fixed inset-0 z-50 flex items-start justify-start bg-black/50'
       onClick={(e) => {
         // 🎯 모달 외부 클릭시 닫기
         if (e.target === e.currentTarget) {
@@ -161,7 +163,7 @@ const ReservationModal = ({
                     {selectedTab === '신청' ? (
                       <>
                         <button
-                          className='border-primary-500 bg-primary-100 text-primary-500 hover:border-primary-500 flex-1 rounded-lg border px-20 py-8 text-sm font-semibold transition-colors'
+                          className='flex-1 rounded-lg border border-blue-500 bg-blue-100 px-20 py-8 text-sm font-semibold text-blue-500 transition-colors hover:border-blue-500'
                           onClick={() =>
                             onApprove(reservation.id, parseInt(String(reservation.scheduleId), 10))
                           }
@@ -178,7 +180,7 @@ const ReservationModal = ({
                         </button>
                       </>
                     ) : selectedTab === '승인' ? (
-                      <span className='bg-primary-100 text-primary-500 rounded-lg px-20 py-8 text-sm font-semibold'>
+                      <span className='rounded-lg bg-blue-100 px-20 py-8 text-sm font-semibold text-blue-500'>
                         예약 승인
                       </span>
                     ) : selectedTab === '거절' ? (

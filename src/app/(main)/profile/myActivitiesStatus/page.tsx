@@ -7,7 +7,7 @@ import {
   getReservations,
   updateReservationStatus,
 } from '@/lib/api/profile/myActivitiesStatus';
-import { getMyActivities, MyActivity } from '@/lib/api/profile/myActivities';
+import { getMyActivities } from '@/lib/api/profile/myActivities';
 // 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import {
   MobilePageHeader,
@@ -18,66 +18,16 @@ import {
 import ReservationModal from '@/components/profile/reservationStatus/ReservationModal';
 // 🎣 커스텀 훅 import (파일명 변경: index.ts → hooks.ts)
 import { useCalendarData } from '@/hooks/profile/hooks';
-
-// 📋 예약 데이터 타입 정의
-interface ReservationData {
-  id: number;
-  status: 'pending' | 'confirmed' | 'declined'; // 예약 상태
-  headCount: number; // 예약 인원
-  nickname: string; // 예약자 닉네임
-  scheduleId: number | string; // 스케줄 ID
-  timeSlot: string; // 시간대 (예: "14:00 - 15:00")
-  date: string; // 예약 날짜
-  startTime: string; // 시작 시간
-  endTime: string; // 종료 시간
-}
-
-// 📅 스케줄 데이터 타입 정의 (특정 시간대의 모든 예약 포함)
-interface ScheduleData {
-  id: number | string;
-  scheduleId?: number | string;
-  timeSlot: string; // 시간대 표시용
-  startTime: string;
-  endTime: string;
-  reservations: (DashboardItem | ReservationData)[]; // 대시보드 아이템 또는 예약 데이터
-  headCount?: number;
-}
-
-// 🗓️ 대시보드 데이터 타입 정의 (날짜별로 스케줄들을 그룹화)
-interface DashboardData {
-  [date: string]: ScheduleData[]; // "2024-01-15": [스케줄1, 스케줄2, ...]
-}
-
-// 🎯 API 응답 타입 정의
-interface DashboardItem {
-  date: string;
-  reservations: {
-    pending: number;
-    confirmed: number;
-    declined: number;
-    completed?: number;
-  };
-}
-
-interface ScheduleFromApi {
-  id: number | string;
-  scheduleId?: number | string;
-  startTime: string;
-  endTime: string;
-  count?: {
-    pending: number;
-    confirmed: number;
-    declined: number;
-    completed?: number;
-  };
-}
-
-interface ReservationCountData {
-  pending: number;
-  confirmed: number;
-  declined: number;
-  completed: number;
-}
+// 📋 공통 타입들 import
+import type { MyActivity } from '@/components/profile/types/activity';
+import type {
+  ReservationData,
+  ScheduleData,
+  DashboardData,
+  DashboardItem,
+  ScheduleFromApi,
+  ReservationCounts as ReservationCountData,
+} from '@/components/profile/types';
 
 export default function ReservationStatusPage() {
   // 📅 날짜 관련 상태

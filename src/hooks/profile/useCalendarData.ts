@@ -1,65 +1,10 @@
 import { useMemo } from 'react';
-
-// 🎨 캘린더용 타입 정의 (캘린더 컴포넌트와 일치)
-type CalendarReservationData = {
-  status: string; // 한글 상태명 (예약, 승인, 거절, 완료)
-  count: number; // 해당 상태의 예약 개수
-  nickname: string; // 표시용 (실제로는 사용하지 않음)
-};
-
-// 📊 예약 카운트 데이터 타입
-interface ReservationCounts {
-  pending: number;
-  confirmed: number;
-  declined: number;
-  completed: number;
-}
-
-// 🎯 API 응답 타입 정의
-interface DashboardItem {
-  date: string;
-  reservations: {
-    pending: number;
-    confirmed: number;
-    declined: number;
-    completed?: number;
-  };
-}
-
-// 📋 예약 데이터 타입 정의
-interface ReservationData {
-  id: number;
-  status: 'pending' | 'confirmed' | 'declined';
-  headCount: number;
-  nickname: string;
-  scheduleId: number | string;
-  timeSlot: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
-
-// 📊 대시보드 데이터 타입 (reservations를 명확한 타입으로 정의)
-interface ScheduleData {
-  id: number | string;
-  scheduleId?: number | string;
-  timeSlot: string;
-  startTime: string;
-  endTime: string;
-  reservations: (DashboardItem | ReservationData)[]; // 명확한 타입 정의
-  headCount?: number;
-}
-
-interface DashboardData {
-  [date: string]: ScheduleData[];
-}
-
-// 🌐 Window 객체 확장 (statusBadgeData 타입 정의)
-declare global {
-  interface Window {
-    statusBadgeData?: Record<string, ReservationCounts>;
-  }
-}
+import type {
+  CalendarReservationData,
+  ReservationCounts,
+  DashboardItem,
+  DashboardData,
+} from '@/components/profile/types';
 
 // 🔧 공통 함수: 예약 카운트를 캘린더 뱃지로 변환
 const createReservationBadges = (counts: ReservationCounts): CalendarReservationData[] => {

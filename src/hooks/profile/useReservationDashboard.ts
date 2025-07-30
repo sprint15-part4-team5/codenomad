@@ -1,40 +1,12 @@
 import { useState } from 'react';
 import { getReservationDashboard, getReservedSchedule } from '@/lib/api/profile/myActivitiesStatus';
-
-// 📊 대시보드 데이터 타입 정의 (기존과 동일)
-interface ReservationCountData {
-  pending: number;
-  confirmed: number;
-  declined: number;
-  completed: number;
-}
-
-interface DashboardItem {
-  date: string;
-  reservations: ReservationCountData;
-}
-
-interface ScheduleFromApi {
-  id: number | string;
-  scheduleId?: number | string;
-  startTime: string;
-  endTime: string;
-  count?: ReservationCountData;
-}
-
-interface ScheduleData {
-  id: number | string;
-  scheduleId?: number | string;
-  timeSlot: string;
-  startTime: string;
-  endTime: string;
-  reservations: (DashboardItem | ReservationCountData)[];
-  headCount?: number;
-}
-
-interface DashboardData {
-  [date: string]: ScheduleData[];
-}
+import type {
+  ReservationCounts as ReservationCountData,
+  DashboardItem,
+  ScheduleFromApi,
+  ScheduleData,
+  DashboardData,
+} from '@/components/profile/types';
 
 // 🎣 예약 대시보드 관리 커스텀 훅
 // 역할: 월별 예약 현황 데이터 로드 + fallback 처리 + 상태 관리
