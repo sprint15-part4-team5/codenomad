@@ -91,7 +91,7 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
         <section
           className={clsx(
             'flex flex-col gap-24',
-            isDesktop ? 'sticky top-20 w-[25.625rem]' : 'mt-20',
+            isDesktop ? 'sticky top-[6.25rem] w-[25.625rem] self-start' : 'mt-20',
           )}
         >
           <ReservationContent activity={activity} />
