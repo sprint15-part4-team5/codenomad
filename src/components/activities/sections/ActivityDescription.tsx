@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import clsx from 'clsx';
+import Image from 'next/image';
 
 interface ActivityDescriptionProps {
   text: string;
@@ -52,9 +53,15 @@ const ActivityDescription = ({ text }: ActivityDescriptionProps) => {
       {isOverflowing && (
         <button
           onClick={() => setIsExpanded((prev) => !prev)}
-          className='border-primary-500 text-14-m h-50 w-250 self-center rounded-2xl border-1 md:w-300'
+          className='border-primary-500 text-14-m flex h-50 w-135 items-center justify-center self-center rounded-2xl border-1'
         >
           {!isExpanded ? '더보기' : '간략히'}
+          <Image
+            src={!isExpanded ? '/icons/icon_alt arrow_down.svg' : '/icons/icon_alt arrow_up.svg'}
+            alt={!isExpanded ? '더보기' : '간략히'}
+            width={24}
+            height={24}
+          />
         </button>
       )}
     </section>
