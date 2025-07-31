@@ -1,11 +1,13 @@
 'use client';
+import MobilePageHeader from '@/components/profile/common/MobilePageHeader';
 import Badge from '@/components/reservationList/Badge';
 import ReservationCard from '@/components/reservationList/ReservationCard';
 import { StatusType } from '@/components/reservationList/StatusBadge';
 import { getReservationList } from '@/lib/api/profile/reservationList';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useContext } from 'react';
+import { ProfileMobileContext } from '../layout';
 
 interface reservationsType {
   activity: {
@@ -35,7 +37,7 @@ const Page = () => {
   const [cursorId, setCursorId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-
+  const mobileContext = useContext(ProfileMobileContext);
   const observerEl = useRef<HTMLDivElement>(null);
   const statusList: { text: string; value: StatusType }[] = [
     { text: '예약 신청', value: 'pending' },
@@ -49,7 +51,7 @@ const Page = () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);
     try {
-      const res = await getReservationList(cursorId);
+      const res = await getReservationList(cursorId, filter ?? undefined);
       if (res.cursorId === cursorId) {
         console.warn('Same cursorId returned, potential API issue');
       }
@@ -65,7 +67,7 @@ const Page = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [cursorId, hasMore, isLoading]);
+  }, [cursorId, hasMore, isLoading, filter]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -87,13 +89,19 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    if (!filter) return;
+
     const getFilteredData = async (status: StatusType) => {
+      setIsLoading(true);
+      setCursorId(null);
+      setHasMore(true);
       const data = await getReservationList(null, status);
       setReservationList(data.reservations);
+      setCursorId(data.cursorId);
+      setIsLoading(false);
     };
-    if (filter) {
-      getFilteredData(filter);
-    }
+
+    getFilteredData(filter);
   }, [filter]);
 
   useEffect(() => {
@@ -111,8 +119,11 @@ const Page = () => {
   }, [handleObserver]);
 
   return (
-    <div className='mx-auto flex w-full flex-col justify-center p-24'>
-      <h1 className='text-18-b text-gray-950'>예약 내역</h1>
+    <div className='mx-auto flex w-full flex-col justify-center p-24 lg:px-126'>
+      <h1 className='text-18-b text-gray-950'>
+        <MobilePageHeader title='예약 내역' />
+        예약 내역
+      </h1>
       <h2 className='text-14-m my-10 text-gray-500'>예약 내역을 변경 및 취소 할 수 있습니다.</h2>
 
       <div className='scrollbar-hide overflow-x-scroll'>

@@ -1,21 +1,18 @@
+'use client';
+
+import { useParams, useSearchParams } from 'next/navigation';
 import ReviewModal from '@/components/reservationList/ReviewModal';
 
-type Props = {
-  params: {
-    reservationId: string;
-  };
-  searchParams: {
-    title: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    headCount: string;
-  };
-};
+export default function Page() {
+  const params = useParams();
+  const searchParams = useSearchParams();
 
-export default async function page({ params, searchParams }: Props) {
-  const { reservationId } = params;
-  const { title, date, startTime, endTime, headCount } = searchParams;
+  const reservationId = params?.reservationId as string;
+  const title = searchParams.get('title');
+  const date = searchParams.get('date');
+  const startTime = searchParams.get('startTime');
+  const endTime = searchParams.get('endTime');
+  const headCount = searchParams.get('headCount');
 
   if (!reservationId || isNaN(Number(reservationId))) {
     throw new Error('올바르지 않은 예약 ID입니다.');
@@ -33,15 +30,13 @@ export default async function page({ params, searchParams }: Props) {
   }
 
   return (
-    <>
-      <ReviewModal
-        title={title}
-        date={date}
-        startTime={startTime}
-        endTime={endTime}
-        headCount={numericHeadCount}
-        reservationId={numericReservationId}
-      />
-    </>
+    <ReviewModal
+      title={title}
+      date={date}
+      startTime={startTime}
+      endTime={endTime}
+      headCount={numericHeadCount}
+      reservationId={numericReservationId}
+    />
   );
 }

@@ -4,6 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import RatingStar from './RatingStar';
 import { postReview } from '@/lib/api/profile/reservationList';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { reviewRequestSchema, ReviewType } from '@/lib/schema/reservationsSchema';
 
 interface ReviewModalType {
   title: string;
@@ -22,14 +25,20 @@ const ReviewModal = ({
   headCount,
   reservationId,
 }: ReviewModalType) => {
-  const [rating, setRating] = useState<number>(1);
-  const [letterCount, setLetterCount] = useState(0);
-  const [activeSubmit, setActiveSubmit] = useState(true);
-  const [content, setContent] = useState('');
+  const defaultValue = {
+    rating: 1,
+    content: '',
+  };
+  const { register, handleSubmit, watch } = useForm({
+    resolver: zodResolver(reviewRequestSchema),
+    defaultValues: defaultValue,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const rating = watch('rating');
+  const content = watch('content');
+  const letterCount = content.length;
 
   useEffect(() => {
     document.body.style = 'overflow: hidden;';
@@ -43,14 +52,12 @@ const ReviewModal = ({
     router.push('/profile/reservations/exit');
   };
 
-  const submitReview = async () => {
-    if (isSubmitting) return;
-
+  const submitReview = async (data: ReviewType) => {
     try {
       setIsSubmitting(true);
-      const data = { rating, content };
       await postReview(reservationId, data);
       router.back();
+      router.refresh();
       document.body.style.overflow = 'auto';
     } catch (error) {
       console.error(error);
@@ -60,7 +67,14 @@ const ReviewModal = ({
     }
   };
   return (
-    <div className='fixed top-0 left-0 z-50 h-screen w-screen bg-black/50' onClick={onDismiss}>
+    <div
+      className='fixed top-0 left-0 z-50 h-screen w-screen bg-black/50'
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onDismiss();
+        }
+      }}
+    >
       <dialog
         open
         ref={dialogRef}
@@ -80,44 +94,44 @@ const ReviewModal = ({
           </span>
         </div>
         <div className='relative m-auto mt-14 mb-20'>
-          <RatingStar rating={rating} />
+          <RatingStar rating={Number(rating)} />
           <input
             className='input-range absolute top-0 h-36 w-full opacity-0 md:h-42'
             type='range'
             min={1}
             max={5}
             step={1}
-            onChange={(e) => setRating(Number(e.currentTarget.value))}
+            {...register('rating')}
           ></input>
         </div>
-        <h2 className='text-16-b md:text-18-b mb-12 text-gray-950'>소중한 경험을 들려주세요</h2>
-        <textarea
-          className='text-14-body-m md:text-16-m h-179 resize-none rounded-xl border-1 border-gray-100 p-20 text-gray-950 placeholder:text-gray-400'
-          placeholder='체험에서 느낀 경험을 자유롭게 남겨주세요'
-          maxLength={99}
-          ref={textAreaRef}
-          onChange={(e) => {
-            if (e.currentTarget.value.length !== 0) {
-              setActiveSubmit(false);
-            } else {
-              setActiveSubmit(true);
-            }
-            setLetterCount(e.currentTarget.value.length);
-            setContent(e.currentTarget.value);
-          }}
-        ></textarea>
-        <p className='text-13-m md:text-14-m mt-8 mb-20 text-right text-gray-600'>
-          {letterCount}/100
-        </p>
-        <button
-          className={
-            'md:text-16-b bg-primary-500 text-14-b rounded-xl py-12 text-white disabled:bg-gray-300 md:py-17'
-          }
-          disabled={activeSubmit}
-          onClick={submitReview}
+        <form
+          id='review'
+          onClick={(e) => e.stopPropagation()}
+          onSubmit={handleSubmit((data) => {
+            submitReview(data);
+          })}
         >
-          작성하기
-        </button>
+          <h2 className='text-16-b md:text-18-b mb-12 text-gray-950'>소중한 경험을 들려주세요</h2>
+          <textarea
+            className='text-14-body-m md:text-16-m h-179 w-full resize-none rounded-xl border-1 border-gray-100 p-20 text-gray-950 placeholder:text-gray-400'
+            placeholder='체험에서 느낀 경험을 자유롭게 남겨주세요'
+            maxLength={100}
+            {...register('content')}
+          ></textarea>
+          <p className='text-13-m md:text-14-m mt-8 mb-20 text-right text-gray-600'>
+            {letterCount}/100
+          </p>
+          <button
+            form='review'
+            type='submit'
+            className={
+              'md:text-16-b bg-primary-500 text-14-b w-full rounded-xl py-12 text-white disabled:bg-gray-300 md:py-17'
+            }
+            disabled={rating === 1 && content.length === 0}
+          >
+            작성하기
+          </button>
+        </form>
       </dialog>
     </div>
   );

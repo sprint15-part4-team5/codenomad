@@ -49,7 +49,7 @@ const ReservationCard = ({
       <div className='h-136 lg:h-181'>
         <div className='shadow-card absolute z-10 inline-block h-136 w-229 rounded-3xl bg-white p-20 md:w-360 lg:h-181 lg:w-485'>
           <StatusBadge status={status} />
-          <h2 className='text-14-b lg:text-18-b mt-8 mb-4 text-shadow-gray-950 lg:mt-12 lg:mb-10'>
+          <h2 className='text-14-b lg:text-18-b mt-8 mb-4 truncate whitespace-nowrap text-shadow-gray-950 lg:mt-12 lg:mb-10'>
             {title}
           </h2>
           <div>
