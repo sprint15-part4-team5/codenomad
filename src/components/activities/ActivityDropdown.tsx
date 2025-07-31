@@ -9,13 +9,13 @@ import { deleteMyActivity } from '@/lib/api/profile/myActivities';
 import { toast } from 'sonner';
 import showToastError from '@/lib/showToastError';
 
-interface DropdownMenuProps {
+interface ActivityDropdownProps {
   activityId: number;
 }
 
 const FALLBACK_MESSAGE = '체험 삭제 중 문제가 발생했습니다.';
 
-export default function DropdownMenu({ activityId }: DropdownMenuProps) {
+export default function ActivityDropdown({ activityId }: ActivityDropdownProps) {
   const route = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

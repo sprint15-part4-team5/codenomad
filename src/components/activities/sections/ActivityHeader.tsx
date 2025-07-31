@@ -1,6 +1,5 @@
-// components/activities/ClientActivitiesPage/sections/ActivityHeader.tsx
 import Image from 'next/image';
-import DropdownMenu from '@/components/activities/ActivitesDropdown';
+import ActivityDropdown from '@/components/activities/ActivityDropdown';
 import type { ActivityDetail } from '@/components/activities/Activities.types';
 
 interface ActivityHeaderProps {
@@ -26,7 +25,7 @@ const ActivityHeader = ({ activity, isOwner, activityId }: ActivityHeaderProps) 
           <p className='text-14-m text-gray-700'>{activity.address}</p>
         </div>
       </div>
-      {isOwner && <DropdownMenu activityId={activityId} />}
+      {isOwner && <ActivityDropdown activityId={activityId} />}
     </header>
   );
 };
