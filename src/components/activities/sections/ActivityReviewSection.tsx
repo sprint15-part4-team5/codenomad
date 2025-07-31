@@ -4,18 +4,18 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Pagination from '@/components/common/Pagination';
 import ReviewCard from '@/components/activities/ReviewCard';
-import type { ReviewResponse } from './Activities.types';
+import type { ReviewResponse } from '../Activities.types';
 import { fetchActivityReviews } from '@/lib/api/activities/index';
 import getSatisfactionText from '@/utils/activities/getSatisfactionText';
 
-interface ReviewSectionProps {
+interface ActivityReviewSectionProps {
   activityId: number;
 }
 
 const PAGE_SIZE = 3;
 const INITIAL_REVIEW_PAGE = 1;
 
-const ReviewSection = ({ activityId }: ReviewSectionProps) => {
+const ActivityReviewSection = ({ activityId }: ActivityReviewSectionProps) => {
   const [currentPage, setCurrentPage] = useState(INITIAL_REVIEW_PAGE);
   const [reviewData, setReviewData] = useState<ReviewResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -122,4 +122,4 @@ const ReviewSection = ({ activityId }: ReviewSectionProps) => {
   );
 };
 
-export default ReviewSection;
+export default ActivityReviewSection;

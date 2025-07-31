@@ -7,13 +7,14 @@ import ModalTrigger from './ModalTrigger';
 import DesktopCard from './DesktopCard';
 import type { ActivityDetail, ReservationState } from '../Activities.types';
 import { postReservation } from '@/lib/api/activities/index';
-import axios from 'axios';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import showToastError from '@/lib/showToastError';
 
 interface ReservationContentProps {
   activity: ActivityDetail;
 }
+const FALLBACK_MESSAGE = '예약 처리 중 문제가 발생했습니다.';
 
 const ReservationContent = ({ activity }: ReservationContentProps) => {
   const breakpoint = useResponsive();
@@ -43,7 +44,7 @@ const ReservationContent = ({ activity }: ReservationContentProps) => {
 
   const handleReservationConfirm = async (data: ReservationState) => {
     if (data.scheduleId === null) {
-      alert('예약 날짜(스케줄)를 선택해주세요.');
+      showToastError('예약 날짜(스케줄)를 선택해주세요.');
       return;
     }
 
@@ -60,13 +61,7 @@ const ReservationContent = ({ activity }: ReservationContentProps) => {
       await postReservation(activity.id, payload);
       setIsConfirmModalOpen(true);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const errorData = err.response?.data as { message?: string } | undefined;
-        const message = errorData?.message || err.message || '예약에 실패했습니다.';
-        alert(message);
-      } else {
-        alert('알 수 없는 에러가 발생했습니다.'); // 임시 alert
-      }
+      showToastError(err, { fallback: FALLBACK_MESSAGE });
     }
   };
 
