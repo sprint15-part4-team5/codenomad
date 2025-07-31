@@ -1,10 +1,6 @@
 import { StatusType } from '@/components/reservationList/StatusBadge';
 import instance from '@/lib/api/axios';
-
-export interface ReviewDataType {
-  rating: number;
-  content: string;
-}
+import { ReviewType } from '@/lib/schema/reservationsSchema';
 
 export const getReservationList = async (
   cursorId: number | null = null,
@@ -29,7 +25,7 @@ export const cancelReservation = async (reservationId: number) => {
   }
 };
 
-export const postReview = async (reservationId: number, data: ReviewDataType) => {
+export const postReview = async (reservationId: number, data: ReviewType) => {
   const res = await instance.post(`my-reservations/${reservationId}/reviews`, data);
   return res.data;
 };
