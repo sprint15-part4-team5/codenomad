@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from '@/lib/api/axios';
+import instance from '@/lib/api/axios';
+import { useCallback } from 'react';
 import type { Activity } from './LandingCard';
 import CategoryFilter from './CategoryFilter';
 import PriceSortDropdown from './PriceSortDropdown';
@@ -16,7 +17,7 @@ const AllActivities = () => {
   const [totalCount, setTotalCount] = useState(0);
   const PAGE_SIZE = 8;
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     try {
       const params: Record<string, string | number> = {
         method: 'offset',
@@ -26,17 +27,17 @@ const AllActivities = () => {
       if (selectedCategory) params.category = selectedCategory;
       if (selectedSort) params.sort = selectedSort;
 
-      const response = await axios.get('/activities', { params });
+      const response = await instance.get('/activities', { params });
       setActivities(response.data.activities);
       setTotalCount(response.data.totalCount);
     } catch (err) {
       console.error('체험 목록 요청 실패', err);
     }
-  };
+  }, [selectedCategory, selectedSort, currentPage]);
 
   useEffect(() => {
     fetchActivities();
-  }, [selectedCategory, selectedSort, currentPage]);
+  }, [fetchActivities]);
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
