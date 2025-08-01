@@ -1,13 +1,13 @@
 import { clsx } from 'clsx';
-import type { SubImage } from './Activities.types';
+import type { SubImage } from '../Activities.types';
 import SafeImage from '@/components/common/SafeImage';
 
-interface PhotoSectionProps {
+interface ActivityPhotoSectionProps {
   bannerImages: string;
   subImages: SubImage[];
 }
 
-const PhotoSection = ({ bannerImages, subImages }: PhotoSectionProps) => {
+const ActivityPhotoSection = ({ bannerImages, subImages }: ActivityPhotoSectionProps) => {
   const renderImageSection = () => {
     const length = subImages.length;
 
@@ -64,4 +64,4 @@ const PhotoSection = ({ bannerImages, subImages }: PhotoSectionProps) => {
   );
 };
 
-export default PhotoSection;
+export default ActivityPhotoSection;
