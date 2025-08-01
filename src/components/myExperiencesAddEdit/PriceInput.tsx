@@ -11,13 +11,16 @@ const PriceInput = <T extends FieldValues>({
   setValue,
 }: PriceInputProps<T>) => {
   // 숫자만 허용하는 입력 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     const onlyNums = e.target.value.replace(/[^0-9]/g, '');
     setValue(path as Path<T>, onlyNums as T[Path<T>], { shouldValidate: true });
   };
 
   // register에서 onChange를 제외하고 다른 속성들만 사용
-  const { onChange: _, ...registerProps } = register(path as Path<T>);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onChange, ...registerProps } = register(path as Path<T>);
 
   return (
     <div className='mb-24'>
