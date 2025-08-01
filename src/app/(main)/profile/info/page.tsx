@@ -6,6 +6,7 @@ import { ProfileMobileContext } from '../layout';
 import { getUserProfile, updateUserProfile } from '@/lib/api/profile';
 // 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const InformationPage = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const InformationPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [error, setError] = useState('');
-
+  const { setUserNickname } = useAuthStore();
   // 🔗 모바일 Context 연결: 부모 레이아웃의 onCancel 함수 가져오기
   // 이 함수를 호출하면 모바일에서 메뉴 화면으로 돌아감
   const mobileContext = useContext(ProfileMobileContext);
@@ -106,7 +107,7 @@ const InformationPage = () => {
       }
 
       await updateUserProfile(updateData);
-
+      setUserNickname(nickname);
       alert('회원정보가 성공적으로 수정되었습니다.');
 
       // 비밀번호 필드 초기화
