@@ -8,15 +8,19 @@ const ErrorFallback = () => {
   const router = useRouter();
 
   const handleClick = (): void => {
-    setErrorCount((prv) => prv + 1);
-    router.refresh();
-    showToastError(`연결 실패 재시도... ${errorCount}회`);
+    const newCount = errorCount + 1;
+    setErrorCount(newCount);
 
-    if (errorCount === 3) {
+    if (newCount >= 3) {
       showToastError('서버와의 연결이 불안정 합니다 잠시후 다시 시도해주세요');
       router.push('/');
+      return;
     }
+
+    router.refresh();
+    showToastError(`연결 실패 재시도... ${newCount}회`);
   };
+
   return (
     <>
       <div className='flex h-[90vh] flex-col items-center justify-center gap-24'>
