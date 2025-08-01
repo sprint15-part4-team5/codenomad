@@ -87,7 +87,7 @@ const ReservationCard = ({
             </div>
           </div>
         </div>
-        <div className='shadow-card relative left-40 h-full w-300 overflow-hidden rounded-3xl bg-gray-50 md:left-200 lg:left-350'>
+        <div className='shadow-card relative left-160 h-full w-180 overflow-hidden rounded-3xl bg-gray-50 md:left-320 lg:left-470'>
           <SafeImage src={bannerUrl} alt='banner_image' className='object-cover' fill />
         </div>
       </div>
