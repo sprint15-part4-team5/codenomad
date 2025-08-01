@@ -138,7 +138,7 @@ const MobileModal = ({
                 'text-16-b mt-30 h-50 w-full rounded-[0.875rem] py-15',
                 isConfirmEnabled
                   ? 'bg-primary-500 hover:bg-primary-600 text-white'
-                  : 'cursor-not-allowed bg-gray-300 text-gray-50',
+                  : 'bg-gray-300 text-gray-50',
               )}
               disabled={!isConfirmEnabled}
               onClick={handleNextStep}
