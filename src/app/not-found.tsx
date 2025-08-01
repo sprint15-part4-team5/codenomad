@@ -9,7 +9,7 @@ const Page = () => {
     <>
       <div className='flex h-screen flex-col items-center justify-center gap-24'>
         <div className='relative size-300'>
-          <Image alt='에러 이미지' src={'/icons/404_kkots.svg'} fill />
+          <Image alt='에러 이미지' src={'/icons/404_kkot.svg'} fill />
         </div>
         <h1 className='text-14-b md:text-18-b text-center text-gray-500'>
           앗, 이 페이지는 사라졌거나 존재하지 않아요. <br />
