@@ -1,11 +1,12 @@
 //알림 벨 아이콘 컴포넌트
 'use client';
 
-import axios from '@/lib/api/axios';
+import instance from '@/lib/api/axios';
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import NotiList from './NotiList';
 import clsx from 'clsx';
+import showToastError from '@/lib/showToastError';
 
 const NotiBell = () => {
   const [open, setOpen] = useState(false);
@@ -15,17 +16,28 @@ const NotiBell = () => {
   useEffect(() => {
     const checkNotifications = async () => {
       try {
-        const res = await axios.get('/my-notifications');
+        const res = await instance.get('/my-notifications');
         if (res.data.totalCount > 0) {
           setHasNewNotification(true);
         }
       } catch (err) {
-        console.error('알림 확인 실패:', err);
+        showToastError(err);
       }
     };
 
     checkNotifications();
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [open]);
 
   return (
     <div ref={bellRef} className='relative'>
@@ -49,7 +61,7 @@ const NotiBell = () => {
 
       {/* 알림 목록 드롭다운 */}
       {open && (
-        <div className='fixed top-[60px] left-1/2 z-50 -translate-x-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-12 sm:translate-x-0'>
+        <div className='fixed top-[3.75rem] left-1/2 z-40 -translate-x-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-12 sm:translate-x-0'>
           <NotiList setHasNewNotification={setHasNewNotification} />
         </div>
       )}

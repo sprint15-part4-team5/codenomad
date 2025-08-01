@@ -71,10 +71,13 @@ const LoginPage = () => {
         {/* 로고 */}
         <div>
           <Link href='/'>
-            <img
+            <Image
               src='/icons/wazylogoHorizon.svg'
-              alt='Logo'
-              className='mx-auto mb-32 w-144 md:w-255'
+              alt='Wazy Logo'
+              width={120}
+              height={120}
+              priority
+              className='mx-auto mb-32 md:w-255'
             />
           </Link>
         </div>

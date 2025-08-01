@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -19,7 +20,6 @@ const SignupPage = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch,
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     mode: 'onChange',
@@ -74,10 +74,13 @@ const SignupPage = () => {
         {/* 로고 */}
         <div>
           <Link href='/'>
-            <img
+            <Image
               src='/icons/wazylogoHorizon.svg'
-              alt='Logo'
-              className='mx-auto mb-32 w-144 md:w-255'
+              alt='Wazy Logo'
+              width={120}
+              height={120}
+              priority
+              className='mx-auto mb-32 md:w-255'
             />
           </Link>
         </div>
@@ -139,10 +142,12 @@ const SignupPage = () => {
           onClick={redirectToKakaoOAuth}
           className='text-16-m flex w-full cursor-pointer items-center justify-center rounded-[12px] border border-gray-300 py-12 text-gray-600 transition-colors duration-200 hover:bg-[#FEE500]'
         >
-          <img
+          <Image
             src='/icons/icon_kakao.svg'
             alt='kakaoicon'
-            className='text-13-m mr-8 h-20 w-20 text-gray-600'
+            width={20}
+            height={20}
+            className='mr-8 text-gray-600'
           />
           카카오 회원가입
         </button>
