@@ -86,7 +86,7 @@ const ActivityReviewSection = ({ activityId }: ActivityReviewSectionProps) => {
           {reviewData.totalCount}개
         </span>
       </h2>
-      <p className='text-2xl font-semibold text-gray-950'>{reviewData.averageRating}</p>
+      <p className='text-2xl font-semibold text-gray-950'>{reviewData.averageRating.toFixed(1)}</p>
       <p className='text-lg font-bold text-gray-950'>
         {getSatisfactionText(reviewData.averageRating)}
       </p>
