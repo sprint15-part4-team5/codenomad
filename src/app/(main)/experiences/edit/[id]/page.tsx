@@ -631,7 +631,7 @@ const ExperienceEditPage = () => {
           <button
             type='submit'
             disabled={isSubmitting}
-            className={`text-14-b h-41 w-120 rounded-[12px] py-12 text-white ${
+            className={`text-14-b h-41 w-120 rounded-xl py-12 text-white ${
               isSubmitting ? 'cursor-not-allowed bg-gray-400' : 'bg-primary-500'
             }`}
           >

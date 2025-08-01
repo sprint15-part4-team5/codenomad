@@ -8,7 +8,7 @@ const IntroImagesInput = ({ introPreviews = [], onChange, onRemove }: IntroImage
       <div className='flex gap-12 overflow-x-auto px-1 py-6 md:gap-14'>
         {/* 업로드 버튼(항상 왼쪽, 4개가 되어도 비활성화만) */}
         <label
-          className={`relative flex size-80 flex-shrink-0 cursor-pointer items-center justify-center rounded-[8px] border border-gray-100 bg-white md:size-126 lg:size-128 ${introPreviews.length >= 4 ? 'pointer-events-none' : ''}`}
+          className={`relative flex size-80 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg border border-gray-100 bg-white md:size-126 lg:size-128 ${introPreviews.length >= 4 ? 'pointer-events-none' : ''}`}
         >
           <div className='absolute inset-0 flex flex-col items-center justify-center gap-2 md:gap-10'>
             <Image src='/icons/icon_gray_plus.svg' alt='소개 이미지 추가' width={40} height={40} />
@@ -27,13 +27,13 @@ const IntroImagesInput = ({ introPreviews = [], onChange, onRemove }: IntroImage
         {introPreviews.map((src, idx) => (
           <div
             key={idx}
-            className='relative size-80 flex-shrink-0 rounded-[8px] border border-gray-100 md:size-126 lg:size-128'
+            className='relative size-80 flex-shrink-0 rounded-lg border border-gray-100 md:size-126 lg:size-128'
           >
             <Image
               src={src}
               alt={`소개 이미지 ${idx + 1}`}
               fill
-              className='rounded-[8px] object-cover'
+              className='rounded-lg object-cover'
             />
             <button
               type='button'
