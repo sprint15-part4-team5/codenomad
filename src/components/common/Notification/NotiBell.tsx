@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import NotiList from './NotiList';
 import clsx from 'clsx';
+import showToastError from '@/lib/showToastError';
 
 const NotiBell = () => {
   const [open, setOpen] = useState(false);
@@ -20,12 +21,29 @@ const NotiBell = () => {
           setHasNewNotification(true);
         }
       } catch (err) {
-        console.error('알림 확인 실패:', err);
+        showToastError(err, {
+          fallback: '알림을 불러오는데 실패했어요',
+          overrides: {
+            403: '접근 권한이 없어요.',
+            404: '알림 정보를 찾을 수 없습니다.',
+          },
+        });
       }
     };
 
     checkNotifications();
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [open]);
 
   return (
     <div ref={bellRef} className='relative'>
