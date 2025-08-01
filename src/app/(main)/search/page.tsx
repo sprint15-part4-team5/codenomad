@@ -9,10 +9,11 @@ import Pagination from '@/components/common/Pagination';
 import NoResult from '@/components/search/NoResult';
 import Banner from '@/components/landing/Banner';
 import LoadingPage from '@/components/common/LoadingPage';
+import showToastError from '@/lib/showToastError';
 
 const SearchContent = () => {
   const searchParams = useSearchParams();
-  const keyword = searchParams.get('keyword') || '';
+  const keyword = searchParams.get('keyword') ?? '';
   const page = Number(searchParams.get('page')) || 1;
   const size = 8;
   const router = useRouter();
@@ -20,23 +21,32 @@ const SearchContent = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
-  const fetchActivities = async () => {
-    try {
-      const res = await instance.get(`/activities`, {
-        params: {
-          method: 'offset',
-          keyword,
-          page,
-          size,
-        },
-      });
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const res = await instance.get('/activities', {
+          params: {
+            method: 'offset',
+            keyword,
+            page,
+            size,
+          },
+        });
+        setActivities(res.data.activities);
+        setTotalCount(res.data.totalCount);
+      } catch (err) {
+        showToastError(err, {
+          fallback: '검색 결과를 불러오는 데 실패했어요.',
+          overrides: {
+            403: '접근 권한이 없어요.',
+            404: '검색 결과가 없어요.',
+          },
+        });
+      }
+    };
 
-      setActivities(res.data.activities);
-      setTotalCount(res.data.totalCount);
-    } catch (err) {
-      console.error('검색 결과 요청 실패', err);
-    }
-  };
+    fetchActivities();
+  }, [keyword, page]);
 
   const handlePageChange = (newPage: number) => {
     const newParams = new URLSearchParams(searchParams);
@@ -45,24 +55,18 @@ const SearchContent = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    fetchActivities();
-  }, [keyword, page]);
-
   const totalPages = Math.ceil(totalCount / size);
 
   return (
     <main className='bg-gradient-main min-h-screen w-full px-20'>
       <div className='mx-auto max-w-screen-xl pt-40 md:pt-100'>
-        {/* 배너 & 검색바 */}
         <Banner />
 
-        {/* 검색 결과 안내 텍스트 */}
         <div className='text-20-b mt-40 mb-10'>‘{keyword}’에 대한 검색 결과</div>
         {totalCount > 0 && (
-          <div className='text-14-m mb-10 px-8 text-gray-400'>총 {totalCount}개 </div>
+          <div className='text-14-m mb-10 px-8 text-gray-400'>총 {totalCount}개</div>
         )}
-        {/* 결과 리스트 */}
+
         {activities.length === 0 ? (
           <NoResult />
         ) : (
@@ -73,7 +77,6 @@ const SearchContent = () => {
               ))}
             </section>
 
-            {/* 페이지네이션 */}
             {totalCount > 0 && (
               <Pagination
                 currentPage={page}

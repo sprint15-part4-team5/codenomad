@@ -2,20 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Dropdown from './Dropdown/Dropdown';
 import NotiBell from './Notification/NotiBell';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const Header = () => {
   const router = useRouter();
-  const pathname = usePathname();
-
-  const isHome = pathname === '/';
-  const isSearch = pathname.startsWith('/search');
   const { user, clearAuthStore } = useAuthStore();
-
-  // 유저 정보 로드
 
   const handleLogout = () => {
     clearAuthStore();
@@ -24,7 +18,7 @@ const Header = () => {
   };
 
   return (
-    <header className='fixed top-0 left-0 z-20 h-48 w-full bg-white md:h-80'>
+    <header className='fixed top-0 left-0 z-20 h-48 w-full border-b border-gray-100 bg-white md:h-80'>
       <div className='mx-auto flex h-full max-w-screen-xl items-center justify-between px-6'>
         {/* 로고 */}
         <Link href='/' className='flex items-center gap-2 p-6'>
@@ -34,7 +28,7 @@ const Header = () => {
             width={0}
             height={0}
             sizes='100vw'
-            className='h-36 w-auto md:h-40 lg:h-48'
+            className='h-36 w-auto md:h-40'
           />
         </Link>
 
@@ -57,7 +51,7 @@ const Header = () => {
                     height={30}
                     className='aspect-square rounded-full object-cover'
                   />
-                  <span className='text-14-m max-w-[100px] truncate leading-none whitespace-nowrap text-gray-950'>
+                  <span className='text-14-m max-w-[6.25rem] truncate leading-none whitespace-nowrap text-gray-950'>
                     {user.nickname}
                   </span>
                 </div>
