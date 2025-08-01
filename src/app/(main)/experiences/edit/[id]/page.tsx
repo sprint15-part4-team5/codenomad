@@ -643,7 +643,7 @@ const ExperienceEditPage = () => {
         open={leaveModalOpen}
         icon={
           <Image
-            src='/icons/icon_alert.svg'
+            src='/icons/icon_alert_cancel.svg'
             alt='경고'
             width={24}
             height={24}
