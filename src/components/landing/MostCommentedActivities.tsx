@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import axios from '@/lib/api/axios';
+import instance from '@/lib/api/axios';
 import type { Activity } from './LandingCard';
 import LandingCard from './LandingCard';
 
@@ -11,7 +11,7 @@ const MostCommentedActivities = () => {
 
   const fetchMostCommentedActivities = async () => {
     try {
-      const response = await axios.get('/activities', {
+      const response = await instance.get('/activities', {
         params: {
           method: 'offset',
           sort: 'most_reviewed',

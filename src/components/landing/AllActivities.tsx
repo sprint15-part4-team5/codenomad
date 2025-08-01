@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from '@/lib/api/axios';
+import instance from '@/lib/api/axios';
 import type { Activity } from './LandingCard';
 import CategoryFilter from './CategoryFilter';
 import PriceSortDropdown from './PriceSortDropdown';
@@ -26,7 +26,7 @@ const AllActivities = () => {
       if (selectedCategory) params.category = selectedCategory;
       if (selectedSort) params.sort = selectedSort;
 
-      const response = await axios.get('/activities', { params });
+      const response = await instance.get('/activities', { params });
       setActivities(response.data.activities);
       setTotalCount(response.data.totalCount);
     } catch (err) {
