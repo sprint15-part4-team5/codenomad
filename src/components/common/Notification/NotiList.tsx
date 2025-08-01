@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import NotiItem from './NotiItem';
-import axios from '@/lib/api/axios';
+import instance from '@/lib/api/axios';
 import { AxiosError } from 'axios';
 import NotiNull from './NotiNull';
 
@@ -17,12 +17,12 @@ interface NotiListProps {
 }
 
 const fetchNotifications = async () => {
-  const res = await axios.get('/my-notifications');
+  const res = await instance.get('/my-notifications');
   return res.data;
 };
 
 const deleteNotification = async (notificationId: number) => {
-  await axios.delete(`/my-notifications/${notificationId}`);
+  await instance.delete(`/my-notifications/${notificationId}`);
 };
 
 const NotiList = ({ setHasNewNotification }: NotiListProps) => {

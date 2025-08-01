@@ -1,7 +1,7 @@
 //알림 벨 아이콘 컴포넌트
 'use client';
 
-import axios from '@/lib/api/axios';
+import instance from '@/lib/api/axios';
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import NotiList from './NotiList';
@@ -15,7 +15,7 @@ const NotiBell = () => {
   useEffect(() => {
     const checkNotifications = async () => {
       try {
-        const res = await axios.get('/my-notifications');
+        const res = await instance.get('/my-notifications');
         if (res.data.totalCount > 0) {
           setHasNewNotification(true);
         }
