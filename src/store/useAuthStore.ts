@@ -14,7 +14,7 @@ export const useAuthStore = create<AuthState>()(
       clearAuthStore: () =>
         set({ accessToken: null, refreshToken: null, user: null, isLoggedIn: false }),
       setUser: (user: UserType) => set({ user: user }),
-      setNickname: (newNickname: string) =>
+      setUserNickname: (newNickname: string) =>
         set((state) => ({
           user: state.user ? { ...state.user, nickname: newNickname } : null,
         })),
