@@ -15,7 +15,7 @@ import ActivityReviewSection from '@/components/activities/sections/ActivityRevi
 import ReservationContent from '@/components/activities/ReservationFlow/ReservationContent';
 
 import type { ActivityDetail } from '@/components/activities/Activities.types';
-import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
 interface ClientActivitiesPageProps {
   id: number;
@@ -49,24 +49,7 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
   }, [id]);
 
   if (loading) return <p>로딩 중...</p>;
-  if (!activity)
-    return (
-      <div className='flex min-h-[80vh] flex-col items-center justify-center gap-24'>
-        <div className='relative size-300'>
-          <Image alt='에러 이미지' src={'/icons/404_kkot.svg'} fill />
-        </div>
-        <h1 className='text-14-b md:text-18-b text-center text-gray-500'>
-          데이터를 불러오지 못했습니다. <br />
-          잠시 후 다시 시도해주세요.
-        </h1>
-        <button
-          className='bg-primary-500 text-14-m h-50 w-250 self-center rounded-2xl text-white md:w-300'
-          onClick={() => window.location.reload()}
-        >
-          다시 시도
-        </button>
-      </div>
-    );
+  if (!activity) return notFound();
 
   const isOwner = user?.id === activity.userId;
 
