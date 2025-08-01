@@ -17,7 +17,9 @@ const ConfirmModalPage = () => {
       router.back();
     } catch {}
   };
-  const onCancel = () => {};
+  const onCancel = () => {
+    router.back();
+  };
   return (
     <CommonModal
       open={true}
