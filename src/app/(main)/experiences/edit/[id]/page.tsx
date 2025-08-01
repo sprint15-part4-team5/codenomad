@@ -249,9 +249,6 @@ const ExperienceEditPage = () => {
       introPreviews,
       reserveTimes,
     };
-    console.log('[isModified 체크] currentData:', currentData);
-    console.log('[isModified 체크] initialData:', initialData);
-    console.log('[isModified 체크] isEqual:', isEqual(currentData, initialData));
     setIsModified(!isEqual(currentData, initialData));
   }, [
     watchedTitle,
@@ -394,25 +391,19 @@ const ExperienceEditPage = () => {
 
   // 뒤로가기 핸들러
   const handleBackClick = useCallback(() => {
-    // 디버깅용 로그 추가
-    console.log('[뒤로가기] 클릭됨, hasChanged:', hasChanged());
     if (hasChanged()) {
       setPendingAction(() => () => router.back());
       setLeaveModalOpen(true);
-      console.log('[뒤로가기] 변경사항 있음 → 모달 open');
     } else {
-      console.log('[뒤로가기] 변경사항 없음 → 바로 뒤로가기');
       router.back();
     }
   }, [hasChanged, router]);
 
   // popstate(뒤로가기 등) 이벤트 감지
   useEffect(() => {
-    const handleRouteChange = (e: PopStateEvent) => {
+    const handleRouteChange = () => {
       if (hasChanged()) {
-        e.preventDefault?.();
         setPendingAction(() => () => {
-          window.removeEventListener('popstate', handleRouteChange);
           router.back();
         });
         setLeaveModalOpen(true);
@@ -426,20 +417,6 @@ const ExperienceEditPage = () => {
     return () => window.removeEventListener('popstate', handleRouteChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasChanged, pathname]);
-
-  // router.push 등 프로그래밍 이동 시 로딩 표시
-  useEffect(() => {
-    const handleStart = () => setRouteLoading(true);
-    const handleComplete = () => setRouteLoading(false);
-    window.addEventListener('routeChangeStart', handleStart);
-    window.addEventListener('routeChangeComplete', handleComplete);
-    window.addEventListener('routeChangeError', handleComplete);
-    return () => {
-      window.removeEventListener('routeChangeStart', handleStart);
-      window.removeEventListener('routeChangeComplete', handleComplete);
-      window.removeEventListener('routeChangeError', handleComplete);
-    };
-  }, []);
 
   // 나가기 모달 "네" 클릭 핸들러
   const handleLeave = useCallback(() => {
@@ -599,6 +576,7 @@ const ExperienceEditPage = () => {
           value={watchedPrice || ''}
           error={errors.price?.message}
           register={register}
+          setValue={setValue}
           path='price'
         />
         <AddressInput

@@ -8,26 +8,16 @@ const PriceInput = <T extends FieldValues>({
   error,
   register,
   path,
+  setValue,
 }: PriceInputProps<T>) => {
-  // IME, 붙여넣기 등 모든 입력에서 숫자만 남기기
-  const handleInput = (
-    e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
-    // input 엘리먼트에서만 동작
-    if (e.currentTarget instanceof HTMLInputElement) {
-      const onlyNums = e.currentTarget.value.replace(/[^0-9]/g, '');
-      if (e.currentTarget.value !== onlyNums) {
-        e.currentTarget.value = onlyNums;
-        // react-hook-form 값도 동기화
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype,
-          'value',
-        )?.set;
-        nativeInputValueSetter?.call(e.currentTarget, onlyNums);
-        e.currentTarget.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    }
+  // 숫자만 허용하는 입력 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+    setValue(path as Path<T>, onlyNums as T[Path<T>], { shouldValidate: true });
   };
+
+  // register에서 onChange를 제외하고 다른 속성들만 사용
+  const { onChange: _, ...registerProps } = register(path as Path<T>);
 
   return (
     <div className='mb-24'>
@@ -39,8 +29,8 @@ const PriceInput = <T extends FieldValues>({
         value={value}
         inputMode='numeric'
         type='text'
-        onInput={handleInput}
-        {...register(path as Path<T>)}
+        onChange={handleChange}
+        {...registerProps}
       />
       {value && <div className='text-14-r mt-2 text-gray-500'>{formatPrice(Number(value))}</div>}
     </div>

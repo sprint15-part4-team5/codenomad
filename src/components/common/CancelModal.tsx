@@ -6,6 +6,8 @@
  * - cancelText, confirmText: 버튼 텍스트
  * - onCancel, onConfirm: 버튼 클릭 핸들러
  */
+import React from 'react';
+
 interface CommonModalProps {
   open: boolean;
   icon?: React.ReactNode;
@@ -37,10 +39,14 @@ const CommonModal = ({
           </div>
         )}
         {/* 텍스트: <br />로 줄바꿈 */}
-        <div
-          className='text-18-body-b md:text-20-body-b mb-20 text-center md:mb-24'
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
+        <div className='text-18-body-b md:text-20-body-b mb-20 text-center md:mb-24'>
+          {text.split('<br />').map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              {index < text.split('<br />').length - 1 && <br />}
+            </React.Fragment>
+          ))}
+        </div>
         {/* 버튼 */}
         <div className='flex w-full justify-center gap-8 md:gap-12'>
           <button

@@ -283,6 +283,7 @@ const ExperienceAddPage = () => {
           value={watch('price') || ''}
           error={errors.price?.message}
           register={register}
+          setValue={setValue}
           path='price'
         />
         <AddressInput

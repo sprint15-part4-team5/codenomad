@@ -160,7 +160,7 @@ const AddressInput = ({
             placeholder='상세주소를 입력해 주세요 (선택사항)'
             value={detailAddress}
             onChange={(e) => onDetailAddressChange?.(e.target.value)}
-            className='shadow-custom-5 text-16-m focus:outline-primary-500 w-full rounded-[16px] border-none bg-white px-20 py-16 text-gray-950 outline-1 outline-offset-[-1px] outline-gray-200 transition-all duration-150 placeholder:text-gray-400 focus:outline-[1.5px]'
+            className='shadow-custom-5 text-16-m focus:outline-primary-500 w-full rounded-2xl border-none bg-white px-20 py-16 text-gray-950 outline-1 outline-offset-[-1px] outline-gray-200 transition-all duration-150 placeholder:text-gray-400 focus:outline-[1.5px]'
           />
           {detailError && <div className='text-12-m mt-2 text-red-500'>{detailError}</div>}
         </div>
