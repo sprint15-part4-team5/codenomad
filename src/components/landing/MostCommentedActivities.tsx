@@ -6,16 +6,20 @@ import type { Activity } from './LandingCard';
 import LandingCard from './LandingCard';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 
+const SCROLL_DELAY_MS = 2000;
+const SCROLL_GAP_PX = 16;
+
+const getCardWidth = () => {
+  if (typeof window === 'undefined') return 152;
+  const width = window.innerWidth;
+  if (width >= 1024) return 262;
+  if (width >= 640) return 332;
+  return 152;
+};
+
 const MostCommentedActivities = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  const getCardWidth = () => {
-    const width = window.innerWidth;
-    if (width >= 1024) return 262;
-    if (width >= 640) return 332;
-    return 152;
-  };
 
   const fetchMostCommentedActivities = async () => {
     try {
@@ -38,8 +42,8 @@ const MostCommentedActivities = () => {
   }, []);
 
   useAutoScroll(scrollRef, {
-    getScrollStep: () => getCardWidth() + 16,
-    delay: 2000,
+    getScrollStep: () => getCardWidth() + SCROLL_GAP_PX,
+    delay: SCROLL_DELAY_MS,
   });
 
   return (

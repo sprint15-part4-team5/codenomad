@@ -21,13 +21,7 @@ const NotiBell = () => {
           setHasNewNotification(true);
         }
       } catch (err) {
-        showToastError(err, {
-          fallback: '알림을 불러오는데 실패했어요',
-          overrides: {
-            403: '접근 권한이 없어요.',
-            404: '알림 정보를 찾을 수 없습니다.',
-          },
-        });
+        showToastError(err);
       }
     };
 
