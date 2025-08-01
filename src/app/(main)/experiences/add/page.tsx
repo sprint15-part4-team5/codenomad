@@ -47,6 +47,18 @@ const ExperienceAddPage = () => {
   const [lastSubmitTime, setLastSubmitTime] = useState<number>(0);
   const router = useRouter();
 
+  // 모달 오픈 시 body 스크롤 막기
+  useEffect(() => {
+    if (leaveModalOpen || modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [leaveModalOpen, modalOpen]);
+
   const {
     register,
     handleSubmit,
@@ -140,11 +152,7 @@ const ExperienceAddPage = () => {
       if (currentTime - lastSubmitTime < 1000) return;
       setLastSubmitTime(currentTime);
       const validReserveTimes = reserveTimes.filter((rt) => rt.date && rt.start && rt.end);
-      if (
-        !banner ||
-        validReserveTimes.length === 0 ||
-        isDuplicateTime()
-      ) {
+      if (!banner || validReserveTimes.length === 0 || isDuplicateTime()) {
         alert('필수 항목을 모두 입력해 주세요.\n또는 예약 시간이 중복되었습니다.');
         return;
       }
@@ -177,15 +185,7 @@ const ExperienceAddPage = () => {
         setIsSubmitting(false);
       }
     },
-    [
-      isSubmitting,
-      isSubmitted,
-      lastSubmitTime,
-      reserveTimes,
-      banner,
-      introImages,
-      isDuplicateTime,
-    ],
+    [isSubmitting, isSubmitted, lastSubmitTime, reserveTimes, banner, introImages, isDuplicateTime],
   );
 
   // 뒤로가기

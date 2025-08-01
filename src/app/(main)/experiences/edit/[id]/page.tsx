@@ -90,6 +90,18 @@ const ExperienceEditPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  // 모달 오픈 시 body 스크롤 막기
+  useEffect(() => {
+    if (leaveModalOpen || modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [leaveModalOpen, modalOpen]);
   // 새로 업로드된 이미지와 미리보기 URL을 매핑하는 Map
   const [imageUrlMap, setImageUrlMap] = useState<Map<string, File>>(new Map());
   const [isSubmitting, setIsSubmitting] = useState(false);
