@@ -1,63 +1,54 @@
 'use client';
 
-import { useState } from 'react';
-import axios from 'axios';
 import Link from 'next/link';
-import Input from '@/components/common/Input';
-import ConfirmModal from '@/components/common/ConfirmModal';
+import Image from 'next/image';
+import axios from 'axios';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import Input from '@/components/auth/Input';
+import ConfirmModal from '@/components/common/ConfirmModal';
 import { loginApi } from '@/lib/api/auth';
 import { useAuthStore } from '@/store/useAuthStore';
 import { redirectToKakaoOAuth } from '@/lib/utils/kakao';
+import { loginSchema, type LoginFormValues } from '@/lib/schema/authSchema';
 
 const LoginPage = () => {
+  const router = useRouter();
   const { setAccessToken, setRefreshToken, setUser } = useAuthStore();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
+  });
 
-  // 유효성 검사 함수
-  const validateEmail = (value: string) => {
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    setEmailError(isValid ? '' : '이메일 형식으로 작성해 주세요.');
-  };
-
-  const validatePassword = (value: string) => {
-    setPasswordError(value.length >= 8 ? '' : '8자 이상 작성해 주세요.');
-  };
-
-  // 폼 유효성 상태
-  const isFormValid = email && password && !emailError && !passwordError;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isFormValid) return;
-
+  const onSubmit = async (data: LoginFormValues) => {
     try {
-      const res = await loginApi({ email, password });
+      const res = await loginApi(data);
       const { user, accessToken, refreshToken } = res;
 
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
       setUser(user);
 
-      // 성공 시 이동, 에러 시 모달
       router.push('/');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverMessage = (error.response?.data as { message?: string })?.message;
-        const fallback = '로그인에 실패했습니다.';
-        setErrorMessage(serverMessage ?? fallback);
+        setErrorMessage(serverMessage ?? '로그인에 실패했습니다.');
       } else {
         setErrorMessage('알 수 없는 오류가 발생했습니다.');
       }
 
-      setIsModalOpen(true); // 모달 오픈
+      setIsModalOpen(true);
     }
   };
 
@@ -74,7 +65,7 @@ const LoginPage = () => {
       />
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className='rounded-16 flex w-full max-w-376 flex-col space-y-24 bg-white p-24 md:max-w-640 md:p-32'
       >
         {/* 로고 */}
@@ -88,40 +79,36 @@ const LoginPage = () => {
           </Link>
         </div>
 
-        {/* 이메일 입력 */}
+        {/* 이메일 */}
         <Input
           label='이메일'
           type='email'
           placeholder='이메일을 입력해 주세요'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={(e) => validateEmail(e.target.value)}
-          error={emailError}
+          {...register('email')}
+          error={errors.email?.message}
           autoComplete='email'
         />
 
-        {/* 비밀번호 입력 */}
+        {/* 비밀번호 */}
         <Input
           label='비밀번호'
           type='password'
           placeholder='비밀번호를 입력해 주세요'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={(e) => validatePassword(e.target.value)}
-          error={passwordError}
+          {...register('password')}
+          error={errors.password?.message}
           autoComplete='current-password'
         />
 
         {/* 로그인 버튼 */}
         <button
           className='text-16-m bg-primary-500 h-48 w-full cursor-pointer rounded-[16px] text-white disabled:bg-gray-300'
-          disabled={!isFormValid}
+          disabled={!isValid}
           type='submit'
         >
           로그인하기
         </button>
 
-        {/* or */}
+        {/* or 구분선 */}
         <div className='flex w-full items-center justify-center'>
           <hr className='flex-grow border-t border-gray-300' />
           <span className='text-16-m px-16 whitespace-nowrap text-gray-500'>or</span>
@@ -131,9 +118,16 @@ const LoginPage = () => {
         {/* 카카오 로그인 */}
         <button
           onClick={handleKakaoLogin}
+          type='button'
           className='text-16-m flex h-48 w-full cursor-pointer items-center justify-center rounded-[16px] border border-gray-300 text-gray-600 transition-colors duration-200 hover:bg-[#FEE500]'
         >
-          <img src='/icons/icon_kakao.svg' alt='kakaoicon' className='mr-8 h-20 w-20' />
+          <Image
+            src='/icons/icon_kakao.svg'
+            alt='kakaoicon'
+            width={20}
+            height={20}
+            className='mr-8'
+          />
           카카오 로그인
         </button>
 

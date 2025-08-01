@@ -1,76 +1,42 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/common/Input';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Input from '@/components/auth/Input';
 import ConfirmModal from '@/components/common/ConfirmModal';
-import axios from 'axios';
+import { signupSchema, SignupFormValues } from '@/lib/schema/authSchema';
 import { signupApi } from '@/lib/api/auth';
 import { redirectToKakaoOAuth } from '@/lib/utils/kakao';
+import axios from 'axios';
 
 const SignupPage = () => {
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [nicknameError, setNicknameError] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [confirmError, setConfirmError] = useState('');
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    watch,
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    mode: 'onChange',
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  const router = useRouter();
-
-  // 이메일 유효성
-  const validateEmail = (value: string) => {
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    setEmailError(isValid ? '' : '잘못된 이메일입니다.');
-  };
-
-  // 닉네임 유효성
-  const validateNickname = (value: string) => {
-    setNicknameError(value.length <= 10 ? '' : '10자 이하로 작성해주세요.');
-  };
-
-  // 비밀번호 유효성
-  const validatePassword = (value: string) => {
-    setPasswordError(value.length >= 8 ? '' : '8자 이상 입력해주세요.');
-  };
-
-  const validateConfirm = (value: string) => {
-    setConfirmError(value === password ? '' : '비밀번호가 일치하지 않습니다.');
-  };
-
-  // 비밀번호 변경하면 다시 확인되게
-  useEffect(() => {
-    if (confirmPassword) {
-      validateConfirm(confirmPassword);
-    }
-  }, [password]);
-
-  // 폼 유효성 상태
-  const isFormValid =
-    nickname &&
-    email &&
-    password &&
-    confirmPassword &&
-    !nicknameError &&
-    !emailError &&
-    !passwordError &&
-    !confirmError;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isFormValid) return;
-
+  const onSubmit = async (data: SignupFormValues) => {
     try {
-      await signupApi({ email, password, nickname }); // API 요청
-      setIsSuccessModalOpen(true); // 성공 모달
+      await signupApi({
+        email: data.email,
+        password: data.password,
+        nickname: data.nickname,
+      });
+      setIsSuccessModalOpen(true);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverMessage = (error.response?.data as { message?: string })?.message;
@@ -79,13 +45,8 @@ const SignupPage = () => {
       } else {
         setErrorMessage('알 수 없는 오류가 발생했습니다.');
       }
-
       setIsModalOpen(true);
     }
-  };
-
-  const handleKakaoSignup = () => {
-    redirectToKakaoOAuth();
   };
 
   return (
@@ -107,7 +68,7 @@ const SignupPage = () => {
       />
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className='rounded-16 w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
       >
         {/* 로고 */}
@@ -120,59 +81,51 @@ const SignupPage = () => {
             />
           </Link>
         </div>
+
         <Input
           label='이메일'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={(e) => validateEmail(e.target.value)}
           placeholder='이메일을 입력해 주세요'
-          error={emailError}
           type='email'
           autoComplete='email'
+          {...register('email')}
+          error={errors.email?.message}
         />
 
         <Input
           label='닉네임'
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          onBlur={(e) => validateNickname(e.target.value)}
           placeholder='닉네임을 입력해 주세요'
-          error={nicknameError}
           autoComplete='username'
+          {...register('nickname')}
+          error={errors.nickname?.message}
         />
 
         <Input
           label='비밀번호'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={(e) => validatePassword(e.target.value)}
           placeholder='8자 이상 입력해 주세요'
-          error={passwordError}
           type='password'
-          autoComplete='password'
+          autoComplete='new-password'
+          {...register('password')}
+          error={errors.password?.message}
         />
 
         <Input
           label='비밀번호 확인'
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onBlur={(e) => validateConfirm(e.target.value)}
           placeholder='비밀번호를 한번 더 입력해 주세요'
-          error={confirmError}
           type='password'
           autoComplete='new-password'
+          {...register('confirmPassword')}
+          error={errors.confirmPassword?.message}
         />
 
-        {/* 회원가입 버튼 */}
         <button
           type='submit'
-          disabled={!isFormValid}
+          disabled={!isValid}
           className='text-16-m bg-primary-500 hover:shadow-brand-blue/60 h-48 w-full cursor-pointer rounded-[12px] py-3 text-white transition-all duration-200 hover:shadow-md disabled:bg-gray-300'
         >
           회원가입 하기
         </button>
 
-        {/* or */}
+        {/* SNS 구분선 */}
         <div className='flex w-full items-center justify-center'>
           <hr className='flex-grow border-t border-gray-300' />
           <span className='text-16-m px-16 whitespace-nowrap text-gray-500'>
@@ -183,7 +136,7 @@ const SignupPage = () => {
 
         {/* 카카오 회원가입 */}
         <button
-          onClick={handleKakaoSignup}
+          onClick={redirectToKakaoOAuth}
           className='text-16-m flex w-full cursor-pointer items-center justify-center rounded-[12px] border border-gray-300 py-12 text-gray-600 transition-colors duration-200 hover:bg-[#FEE500]'
         >
           <img
