@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import isEqual from 'lodash/isEqual';
 import TitleInput from '@/components/myExperiencesAddEdit/TitleInput';
 import CategoryInput from '@/components/myExperiencesAddEdit/CategoryInput';
@@ -14,6 +14,7 @@ import IntroImagesInput from '@/components/myExperiencesAddEdit/IntroImagesInput
 import ReserveTimesInput from '@/components/myExperiencesAddEdit/ReserveTimesInput';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import CommonModal from '@/components/common/CancelModal';
+import LoadingPage from '@/components/common/LoadingPage';
 import { uploadImage, updateExperience, getExperienceDetail } from '@/lib/api/experiences';
 import { notFound } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -61,15 +62,19 @@ interface ExperienceData {
 import { useAuthStore } from '@/store/useAuthStore';
 
 const ExperienceEditPage = () => {
+  // ...existing code...
+
   const params = useParams();
   const router = useRouter();
   const experienceId = params.id as string;
+  const pathname = usePathname();
 
   // 로그인 유저 정보
   const { user } = useAuthStore();
 
   // 로딩 및 에러 상태
   const [loading, setLoading] = useState(true);
+  const [routeLoading, setRouteLoading] = useState(false); // 페이지 이동 로딩
   const [error, setError] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState<boolean>(true); // 본인 여부
 
@@ -85,6 +90,8 @@ const ExperienceEditPage = () => {
   const [banner, setBanner] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [introPreviews, setIntroPreviews] = useState<string[]>([]);
+  // 서버에서 받아온 subImages의 id와 url을 저장
+  const [serverSubImages, setServerSubImages] = useState<{ id: number; imageUrl: string }[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
@@ -148,8 +155,9 @@ const ExperienceEditPage = () => {
           setIsOwner(true);
         }
 
-        // subImages에서 imageUrl만 추출
+        // subImages에서 imageUrl만 추출 및 id 저장
         const subImageUrls = data.subImages?.map((img) => img.imageUrl) || [];
+        setServerSubImages(data.subImages || []);
 
         // 상태 업데이트
         setTitle(data.title);
@@ -288,6 +296,7 @@ const ExperienceEditPage = () => {
           throw new Error('배너 이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
         }
       }
+      // 새로 추가된 이미지 업로드
       const subImageUrlsToAdd: string[] = [];
       for (const preview of introPreviews) {
         if (preview.startsWith('blob:')) {
@@ -303,7 +312,13 @@ const ExperienceEditPage = () => {
           }
         }
       }
-      // 스케줄 변경/추가/삭제 계산
+
+      // 삭제된 subImages id 계산 (서버에 있던 이미지 중, introPreviews에 없는 것)
+      const removedSubImageIds = serverSubImages
+        .filter((img) => !introPreviews.includes(img.imageUrl))
+        .map((img) => img.id);
+
+      // 스케줄 변경/추가/삭제 계산 (기존 코드 유지)
       const currentInitialSchedules = initialData.reserveTimes.filter((rt) => rt.id);
       const currentInitialSchedulesMap = new Map(currentInitialSchedules.map((rt) => [rt.id, rt]));
       const newScheduleIds = reserveTimes.filter((rt) => rt.id).map((rt) => rt.id!);
@@ -328,6 +343,7 @@ const ExperienceEditPage = () => {
       }));
       const changedScheduleIds = changedSchedules.map((rt) => rt.id!);
       const finalScheduleIdsToRemove = [...scheduleIdsToRemove, ...changedScheduleIds];
+
       const updateData = {
         title: data.title,
         category: data.category,
@@ -335,7 +351,7 @@ const ExperienceEditPage = () => {
         price: numericPrice,
         address: data.address,
         bannerImageUrl: finalBannerUrl,
-        subImageIdsToRemove: [],
+        subImageIdsToRemove: removedSubImageIds,
         subImageUrlsToAdd,
         scheduleIdsToRemove: finalScheduleIdsToRemove,
         schedulesToAdd,
@@ -372,17 +388,40 @@ const ExperienceEditPage = () => {
     }
   }, [hasChanged, router]);
 
-  // 새로고침/닫기/뒤로가기 경고
+  // popstate(뒤로가기 등) 이벤트 감지
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    const handleRouteChange = (e: PopStateEvent) => {
       if (hasChanged()) {
-        e.preventDefault();
-        e.returnValue = '';
+        e.preventDefault?.();
+        setPendingAction(() => () => {
+          window.removeEventListener('popstate', handleRouteChange);
+          router.back();
+        });
+        setLeaveModalOpen(true);
+        window.history.pushState(null, '', pathname);
+        return false;
       }
+      setRouteLoading(true);
+      return true;
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isModified, isSubmitting, loading, hasChanged]);
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasChanged, pathname]);
+
+  // router.push 등 프로그래밍 이동 시 로딩 표시
+  useEffect(() => {
+    const handleStart = () => setRouteLoading(true);
+    const handleComplete = () => setRouteLoading(false);
+    window.addEventListener('routeChangeStart', handleStart);
+    window.addEventListener('routeChangeComplete', handleComplete);
+    window.addEventListener('routeChangeError', handleComplete);
+    return () => {
+      window.removeEventListener('routeChangeStart', handleStart);
+      window.removeEventListener('routeChangeComplete', handleComplete);
+      window.removeEventListener('routeChangeError', handleComplete);
+    };
+  }, []);
 
   // 나가기 모달 "네" 클릭 핸들러
   const handleLeave = useCallback(() => {
@@ -465,12 +504,10 @@ const ExperienceEditPage = () => {
     setIntroPreviews(introPreviews.filter((_, i) => i !== idx));
   };
 
-  // 로딩 상태
-  if (loading) {
+  // 로딩 상태 (데이터 or 라우터)
+  if (loading || routeLoading) {
     return (
-      <div className='flex h-screen items-center justify-center'>
-        <div className='text-16-m text-gray-500'>체험 정보를 불러오는 중...</div>
-      </div>
+      <LoadingPage message={loading ? '체험 정보를 불러오는 중...' : '페이지를 이동 중입니다...'} />
     );
   }
 
