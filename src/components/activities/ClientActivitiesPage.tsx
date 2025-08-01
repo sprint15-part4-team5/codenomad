@@ -13,9 +13,9 @@ import ActivityDescription from '@/components/activities/sections/ActivityDescri
 import ActivityMapSection from '@/components/activities/sections/ActivityMapSection';
 import ActivityReviewSection from '@/components/activities/sections/ActivityReviewSection';
 import ReservationContent from '@/components/activities/ReservationFlow/ReservationContent';
+import ErrorFallback from '@/components/activities/ErrorFallback';
 
 import type { ActivityDetail } from '@/components/activities/Activities.types';
-import { notFound } from 'next/navigation';
 
 interface ClientActivitiesPageProps {
   id: number;
@@ -26,7 +26,7 @@ const FALLBACK_MESSAGE = '데이터를 불러오지 못했습니다.';
 const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
   const screenSize = useResponsive();
   const [activity, setActivity] = useState<ActivityDetail | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { user } = useAuthStore();
 
@@ -35,7 +35,6 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
   useEffect(() => {
     const loadActivity = async () => {
       try {
-        setLoading(true);
         const res = await fetchActivitiesDetails(id);
         setActivity(res);
       } catch (err) {
@@ -49,7 +48,7 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
   }, [id]);
 
   if (loading) return <p>로딩 중...</p>;
-  if (!activity) return notFound();
+  if (!activity) return <ErrorFallback />;
 
   const isOwner = user?.id === activity.userId;
 
