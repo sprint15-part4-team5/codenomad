@@ -7,7 +7,7 @@ const Page = () => {
   const router = useRouter();
   return (
     <>
-      <div className='flex h-screen flex-col items-center justify-center gap-24'>
+      <div className='flex h-[90vh] flex-col items-center justify-center gap-24'>
         <div className='relative size-300'>
           <Image alt='에러 이미지' src={'/icons/404_kkot.svg'} fill />
         </div>
