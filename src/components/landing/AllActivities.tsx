@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import instance from '@/lib/api/axios';
+import { useCallback } from 'react';
 import type { Activity } from './LandingCard';
 import CategoryFilter from './CategoryFilter';
 import PriceSortDropdown from './PriceSortDropdown';
@@ -16,7 +17,7 @@ const AllActivities = () => {
   const [totalCount, setTotalCount] = useState(0);
   const PAGE_SIZE = 8;
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     try {
       const params: Record<string, string | number> = {
         method: 'offset',
@@ -32,11 +33,11 @@ const AllActivities = () => {
     } catch (err) {
       console.error('체험 목록 요청 실패', err);
     }
-  };
+  }, [selectedCategory, selectedSort, currentPage]);
 
   useEffect(() => {
     fetchActivities();
-  }, [selectedCategory, selectedSort, currentPage]);
+  }, [fetchActivities]);
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
