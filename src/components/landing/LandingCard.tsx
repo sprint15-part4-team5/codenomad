@@ -25,7 +25,7 @@ const LandingCard = ({ activity }: { activity: Activity }) => {
           src={bannerImageUrl || '/imgs/thumbnail.jpg'}
           alt={bannerImageUrl ? `${title} 썸네일있음` : '썸네일 이미지 없음'}
           fill
-          sizes='(min-width: 1024px) 262px, (min-width: 640px) 332px, 152px'
+          sizes='(min-width: 1024px) 16.375rem, (min-width: 640px) 20.75rem, 9.5rem'
           className='object-cover'
         />
       </div>

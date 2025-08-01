@@ -12,7 +12,6 @@ interface SortDropdownProps {
 const SORT_OPTIONS = [
   { label: '낮은 가격순', value: 'price_asc' },
   { label: '높은 가격순', value: 'price_desc' },
-
 ];
 
 const PriceSortDropdown = ({ selectedSort, onSelectSort }: SortDropdownProps) => {
@@ -22,10 +21,7 @@ const PriceSortDropdown = ({ selectedSort, onSelectSort }: SortDropdownProps) =>
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -38,7 +34,7 @@ const PriceSortDropdown = ({ selectedSort, onSelectSort }: SortDropdownProps) =>
   }, [isOpen]);
 
   return (
-    <div className='relative' ref={dropdownRef} >
+    <div className='relative' ref={dropdownRef}>
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         className='text-14-m flex items-center gap-4 text-gray-700'
@@ -54,7 +50,7 @@ const PriceSortDropdown = ({ selectedSort, onSelectSort }: SortDropdownProps) =>
       </button>
 
       {isOpen && (
-        <ul className='absolute top-full right-1/2 z-10 mt-4 min-w-[90px] translate-x-1/2 rounded-md border border-gray-200 bg-white whitespace-nowrap shadow-md sm:right-0 sm:translate-x-0'>
+        <ul className='absolute top-full right-1/2 z-10 mt-4 min-w-[5.625rem] translate-x-1/2 rounded-md border border-gray-200 bg-white whitespace-nowrap shadow-md sm:right-0 sm:translate-x-0'>
           {SORT_OPTIONS.map((option) => (
             <li key={option.value}>
               <button

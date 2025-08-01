@@ -21,7 +21,7 @@ const SearchBar = () => {
 
   return (
     <section className='m-18 flex w-full flex-col items-center gap-4'>
-      <div className='relative w-full max-w-[900px]'>
+      <div className='relative w-full max-w-[56.25rem]'>
         {/* 아이콘 */}
         <span className='absolute top-1/2 left-12 -translate-y-1/2'>
           <Image src='/icons/icon_search.svg' alt='검색 아이콘' width={24} height={24} />
@@ -32,7 +32,7 @@ const SearchBar = () => {
           aria-label='체험 검색 버튼'
           type='button'
           onClick={handleSearch}
-          className='bg-primary-500 text-12-b md:text-14-b absolute top-1/2 right-10 h-[41px] w-[85px] -translate-y-1/2 cursor-pointer rounded-[14px] text-white transition md:h-[50] md:w-[120]'
+          className='bg-primary-500 text-12-b md:text-14-b absolute top-1/2 right-10 h-[2.5625rem] w-[5.3125rem] -translate-y-1/2 cursor-pointer rounded-[0.875rem] text-white transition md:h-[3.125rem] md:w-[7.5rem]'
         >
           검색하기
         </button>
@@ -45,7 +45,7 @@ const SearchBar = () => {
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder='내가 원하는 체험은?'
-          className='text-14-m shadow-custom-5 md:text-16-m h-53 w-full rounded-[18px] bg-white pr-[95px] pl-[48px] text-gray-600 focus:outline-none md:h-70 md:pr-[130px]'
+          className='text-14-m shadow-custom-5 md:text-16-m h-53 w-full rounded-[1.125rem] bg-white pr-[5.9375rem] pl-[3rem] text-gray-600 focus:outline-none md:h-[4.375rem] md:pr-[8.125rem]'
         />
       </div>
       <div className='mt-18 flex w-full items-center justify-center gap-12 px-4'>
