@@ -78,12 +78,7 @@ const ExperienceEditPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState<boolean>(true); // 본인 여부
 
-  // 입력값 상태
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [desc, setDesc] = useState('');
-  const [price, setPrice] = useState('');
-  const [address, setAddress] = useState('');
+  // 입력값 상태 (react-hook-form만 사용)
   const [reserveTimes, setReserveTimes] = useState<ReserveTime[]>([
     { date: '', start: '', end: '' },
   ]);
@@ -106,7 +101,7 @@ const ExperienceEditPage = () => {
   const [initialData, setInitialData] = useState({
     title: '',
     category: '',
-    desc: '',
+    description: '',
     price: '',
     address: '',
     bannerPreview: '',
@@ -126,11 +121,11 @@ const ExperienceEditPage = () => {
     mode: 'onBlur',
     shouldUnregister: false, // 이 옵션 추가
     defaultValues: {
-      title,
-      category,
-      price,
-      address,
-      description: desc,
+      title: '',
+      category: '',
+      price: '',
+      address: '',
+      description: '',
       detailAddress: '', // 필요시
     },
   });
@@ -160,11 +155,11 @@ const ExperienceEditPage = () => {
         setServerSubImages(data.subImages || []);
 
         // 상태 업데이트
-        setTitle(data.title);
-        setCategory(data.category); // API에서 받은 한글 카테고리 직접 사용
-        setDesc(data.description);
-        setPrice(String(data.price));
-        setAddress(data.address);
+        setValue('title', data.title);
+        setValue('category', data.category);
+        setValue('description', data.description);
+        setValue('price', String(data.price));
+        setValue('address', data.address);
         setBannerPreview(data.bannerImageUrl);
         setIntroPreviews(subImageUrls);
 
@@ -196,7 +191,7 @@ const ExperienceEditPage = () => {
         setInitialData({
           title: data.title,
           category: data.category,
-          desc: data.description,
+          description: data.description,
           price: String(data.price),
           address: data.address,
           bannerPreview: data.bannerImageUrl,
@@ -225,26 +220,33 @@ const ExperienceEditPage = () => {
     fetchExperienceData();
   }, [experienceId, setValue, user]);
 
-  // 변경사항 확인 (깊은 비교)
+  // 변경사항 확인 (깊은 비교) - react-hook-form의 watch 사용
+  const watchedTitle = watch('title');
+  const watchedCategory = watch('category');
+  const watchedDesc = watch('description');
+  const watchedPrice = watch('price');
+  const watchedAddress = watch('address');
   useEffect(() => {
     const currentData = {
-      title,
-      category,
-      desc,
-      price,
-      address,
+      title: watchedTitle,
+      category: watchedCategory,
+      description: watchedDesc,
+      price: watchedPrice,
+      address: watchedAddress,
       bannerPreview,
       introPreviews,
       reserveTimes,
     };
-
+    console.log('[isModified 체크] currentData:', currentData);
+    console.log('[isModified 체크] initialData:', initialData);
+    console.log('[isModified 체크] isEqual:', isEqual(currentData, initialData));
     setIsModified(!isEqual(currentData, initialData));
   }, [
-    title,
-    category,
-    desc,
-    price,
-    address,
+    watchedTitle,
+    watchedCategory,
+    watchedDesc,
+    watchedPrice,
+    watchedAddress,
     bannerPreview,
     introPreviews,
     reserveTimes,
@@ -380,10 +382,14 @@ const ExperienceEditPage = () => {
 
   // 뒤로가기 핸들러
   const handleBackClick = useCallback(() => {
+    // 디버깅용 로그 추가
+    console.log('[뒤로가기] 클릭됨, hasChanged:', hasChanged());
     if (hasChanged()) {
       setPendingAction(() => () => router.back());
       setLeaveModalOpen(true);
+      console.log('[뒤로가기] 변경사항 있음 → 모달 open');
     } else {
+      console.log('[뒤로가기] 변경사항 없음 → 바로 뒤로가기');
       router.back();
     }
   }, [hasChanged, router]);
@@ -564,10 +570,10 @@ const ExperienceEditPage = () => {
         <TitleInput<FormValues>
           register={register}
           error={errors.title?.message}
-          value={watch('title') || ''}
+          value={watchedTitle || ''}
         />
         <CategoryInput
-          value={watch('category') || ''}
+          value={watchedCategory || ''}
           onChange={(v) => setValue('category', v)}
           options={categoryOptions}
           error={errors.category?.message}
@@ -575,17 +581,17 @@ const ExperienceEditPage = () => {
         <DescriptionInput<FormValues>
           register={register}
           error={errors.description?.message}
-          value={watch('description') || ''}
+          value={watchedDesc || ''}
         />
         <PriceInput
-          value={watch('price') || ''}
+          value={watchedPrice || ''}
           error={errors.price?.message}
           register={register}
           path='price'
         />
         <AddressInput
           error={errors.address?.message}
-          value={watch('address') || ''}
+          value={watchedAddress || ''}
           onChange={(v) => setValue('address', v)}
           detailAddress={watch('detailAddress') || ''}
           onDetailAddressChange={(v) => setValue('detailAddress', v)}
