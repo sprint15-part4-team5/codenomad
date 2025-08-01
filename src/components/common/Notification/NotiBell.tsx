@@ -49,7 +49,7 @@ const NotiBell = () => {
 
       {/* 알림 목록 드롭다운 */}
       {open && (
-        <div className='fixed top-[3.75rem] left-1/2 z-50 -translate-x-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-12 sm:translate-x-0'>
+        <div className='fixed top-[3.75rem] left-1/2 z-40 -translate-x-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-12 sm:translate-x-0'>
           <NotiList setHasNewNotification={setHasNewNotification} />
         </div>
       )}
