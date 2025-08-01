@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import type { ReservationData } from '@/components/profile/types/reservation';
-
+import { format } from 'date-fns';
 import DraggableContainer from '@/components/common/DraggableContainer';
 import { useDraggableBottomSheet } from '@/hooks/useDraggableBottomSheet';
+import { useResponsive } from '@/hooks/useResponsive'; // 훅 경로에 맞게 조정하세요
 
 interface ReservationModalProps {
   selectedDate: Date;
@@ -26,9 +27,6 @@ interface ReservationModalProps {
   onDecline: (reservationId: number, scheduleId: number) => void;
 }
 
-const MOBILE_MAX_WIDTH = 640;
-const TABLET_MAX_WIDTH = 1024;
-
 const ReservationModal = ({
   selectedDate,
   selectedTab,
@@ -42,7 +40,7 @@ const ReservationModal = ({
   onApprove,
   onDecline,
 }: ReservationModalProps) => {
-  // 모달 열린 동안 페이지 스크롤 막기
+  // 페이지 스크롤 막기 (body + html)
   useEffect(() => {
     const originalBodyOverflow = document.body.style.overflow;
     const originalHtmlOverflow = document.documentElement.style.overflow;
@@ -62,42 +60,33 @@ const ReservationModal = ({
     };
   }, []);
 
-  // 반응형 디바이스 타입 감지 (pc, tablet, mobile 분리)
-  const getDeviceType = () => {
-    const width = window.innerWidth;
-    if (width <= MOBILE_MAX_WIDTH) return 'mobile';
-    if (width <= TABLET_MAX_WIDTH) return 'tablet';
-    return 'pc';
-  };
-  const [deviceType, setDeviceType] = useState<'pc' | 'tablet' | 'mobile'>(getDeviceType());
-  useEffect(() => {
-    const handleResize = () => setDeviceType(getDeviceType());
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // useResponsive 훅 사용
+  const screenSize = useResponsive(); // 'sm', 'md', 'lg'
+  const isMobile = screenSize === 'sm';
+  const isTablet = screenSize === 'md';
+  const isPC = screenSize === 'lg';
 
-  // 바텀시트 드래그 훅 (태블릿/모바일 바텀시트 모드)
+  // 바텀시트 드래그 훅 (모바일/태블릿에서 사용)
   const { containerRef, closeWithAnimation, handleTouchStart, handleTouchMove, handleTouchEnd } =
     useDraggableBottomSheet({
-      isOpen: deviceType !== 'pc',
+      isOpen: !isPC,
       onClose,
       threshold: 120,
     });
 
-  // 날짜 포맷
-  const formatDate = (date: Date) =>
-    `${date.getFullYear().toString().slice(2)}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+  // 날짜 포맷 함수
+  const formatDate = (date: Date) => format(date, 'yy년 M월 d일');
 
-  // 탭별 예약 개수 계산
+  // 탭별 예약 개수 계산 함수
   const getReservationCount = (tab: '신청' | '승인' | '거절') => {
     const statusMap = { 신청: 'pending', 승인: 'confirmed', 거절: 'declined' };
     return reservationDetails.filter((r) => r.status === statusMap[tab]).length;
   };
 
-  // 태블릿 전용 레이아웃 (년월일 최상단 → 상태 탭 → 좌우 분할)
+  // 태블릿 전용 바텀시트 레이아웃 (년월일 상단 → 탭 → 좌우 분할)
   const TabletModalContent = (
-    <div className='relative mx-auto flex w-full max-w-700 flex-col rounded-2xl bg-white px-3 pt-10 pb-8 md:px-12'>
-      {/* 닫기 버튼은 태블릿/모바일에서 제거 */}
+    <div className='relative mx-auto flex w-full max-w-[700px] flex-col rounded-2xl bg-white px-3 pt-10 pb-8 md:px-12'>
+      {/* 닫기 버튼은 모바일/태블릿에서 없앴음 */}
 
       {/* 1. 년월일 */}
       <div className='mb-6 text-center text-xl font-extrabold tracking-tight text-gray-900'>
@@ -124,8 +113,9 @@ const ReservationModal = ({
         ))}
       </div>
 
-      {/* 3. 좌우 분할: 왼쪽 시간 드롭다운, 오른쪽 예약 내역 */}
+      {/* 3. 좌우 분할 영역 */}
       <div className='mx-auto flex w-full max-w-xl flex-row justify-center gap-8'>
+        {/* 좌측: 예약 시간 드롭다운 */}
         <div className='flex w-[50%] max-w-220 min-w-180 flex-col'>
           <label className='mb-3 block text-base font-bold text-gray-900'>예약 시간</label>
           <select
@@ -144,6 +134,7 @@ const ReservationModal = ({
           </select>
         </div>
 
+        {/* 우측: 예약 내역 리스트 */}
         <div className='flex w-[50%] min-w-0 flex-1 flex-col'>
           <label className='mb-2 block text-sm font-semibold text-gray-700'>예약 내역</label>
           <div className='flex max-h-275 flex-col gap-4 overflow-y-auto'>
@@ -199,16 +190,16 @@ const ReservationModal = ({
               <div className='py-8 text-center text-base text-gray-400'>예약 내역이 없습니다.</div>
             )}
           </div>
-          {/* 닫기 버튼도 없음 */}
+          {/* 닫기 버튼(태블릿/모바일에 없음) */}
         </div>
       </div>
     </div>
   );
 
-  // PC 및 모바일 공통 ModalContent (닫기 버튼 PC에서만 보임)
+  // PC 및 모바일 공통 ModalContent (PC에서만 닫기 버튼 보임)
   const ModalContent = (
     <>
-      {deviceType === 'pc' && (
+      {isPC && (
         <button
           className='absolute top-6 right-6 text-2xl font-bold text-gray-400 hover:text-gray-700'
           onClick={onClose}
@@ -219,8 +210,10 @@ const ReservationModal = ({
         </button>
       )}
 
+      {/* 날짜 헤더 */}
       <div className='mb-6 w-full text-center text-lg font-bold'>{formatDate(selectedDate)}</div>
 
+      {/* 탭 메뉴 */}
       <div className='mb-6 flex w-full border-b'>
         {(['신청', '승인', '거절'] as const).map((tab) => (
           <button
@@ -240,6 +233,7 @@ const ReservationModal = ({
         ))}
       </div>
 
+      {/* 예약 시간 선택 */}
       <div className='mb-6 w-full'>
         <label className='mb-2 block text-sm font-semibold'>예약 시간</label>
         <select
@@ -257,6 +251,7 @@ const ReservationModal = ({
         </select>
       </div>
 
+      {/* 예약 내역 리스트 */}
       <div className='mb-6 w-full'>
         <label className='mb-2 block text-sm font-semibold'>예약 내역</label>
         <div className='flex max-h-260 flex-col gap-4 overflow-y-auto'>
@@ -321,12 +316,12 @@ const ReservationModal = ({
         </div>
       </div>
 
-      {/* 닫기 버튼 PC에서만 보임 */}
+      {/* 닫기 버튼 PC에서만 노출 */}
     </>
   );
 
   // 렌더링 분기
-  if (deviceType === 'tablet') {
+  if (isTablet) {
     return (
       <div
         className='fixed inset-0 z-50 bg-black/50'
@@ -346,7 +341,8 @@ const ReservationModal = ({
       </div>
     );
   }
-  if (deviceType === 'mobile') {
+
+  if (isMobile) {
     return (
       <div
         className='fixed inset-0 z-50 bg-black/50'
@@ -367,24 +363,28 @@ const ReservationModal = ({
     );
   }
 
-  // PC 모드: 화면 중앙에 고정 모달
-  return (
-    <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
-      onClick={onClose}
-    >
+  if (isPC) {
+    // PC 모드 - 화면 중앙 고정 모달 + 백드롭 + 배경 클릭 시 닫기 + 스크롤 잠금(이미 적용)
+    return (
       <div
-        className='max-h-[90vh] w-420 flex-col items-center overflow-y-auto rounded-3xl bg-white p-20 shadow-xl transition-transform duration-300'
-        style={{
-          position: 'relative',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
-        }}
-        onClick={(e) => e.stopPropagation()}
+        className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
+        onClick={onClose}
       >
-        {ModalContent}
+        <div
+          className='max-h-[90vh] w-420 flex-col items-center overflow-y-auto rounded-3xl bg-white p-20 shadow-xl transition-transform duration-300'
+          style={{
+            position: 'relative',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {ModalContent}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };
 
 export default ReservationModal;
