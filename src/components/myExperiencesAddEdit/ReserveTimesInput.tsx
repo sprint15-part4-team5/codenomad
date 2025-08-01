@@ -111,7 +111,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
               {/* 달력 아이콘 클릭 시 CalendarModal 노출 */}
               {calendarOpenIdx === idx && (isEdit || idx === 0) && (
                 <div
-                  className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/50'
+                  className='fixed inset-0 z-49 flex items-center justify-center bg-black/50'
                   onClick={(e) => {
                     // 배경 클릭 시 모달 닫기
                     if (e.target === e.currentTarget) {
@@ -120,7 +120,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                   }}
                 >
                   <div
-                    className='relative z-[10000] flex w-375 flex-col items-center rounded-lg bg-white p-24 shadow-lg md:w-407 lg:w-398'
+                    className='relative z-50 flex w-375 flex-col items-center rounded-lg bg-white p-24 shadow-lg md:w-407 lg:w-398'
                     onClick={(e) => {
                       // 모달 내부 클릭 시 이벤트 전파 중단
                       e.stopPropagation();
