@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import Image from 'next/image';
 
 interface LoadingPageProps {
   message?: string;
@@ -9,7 +9,7 @@ interface LoadingPageProps {
 const LoadingPage = ({ message = '페이지를 불러오는 중입니다...' }: LoadingPageProps) => {
   return (
     <main className='flex min-h-screen w-full flex-col items-center justify-start bg-white px-4 pt-[25vh]'>
-      <img
+      <Image
         src='/icons/kkotLoding.gif'
         alt='로딩 중 빙빙돌아가는 꽃'
         className='mb-6 h-120 w-120 object-contain sm:h-255 sm:w-255'

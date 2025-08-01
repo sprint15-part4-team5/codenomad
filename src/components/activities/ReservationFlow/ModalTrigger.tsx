@@ -57,7 +57,7 @@ const ModalTrigger = ({
 
   return createPortal(
     <>
-      <div className='sticky right-0 bottom-0 left-0 z-10 flex h-124 w-auto flex-col justify-center gap-12 border-t-1 border-[#e6e6e6] bg-white px-20 py-24'>
+      <div className='sticky right-0 bottom-0 left-0 z-49 flex h-124 w-auto flex-col justify-center gap-12 border-t-1 border-[#e6e6e6] bg-white px-20 py-24'>
         <div className='flex justify-between'>
           <p className='text-18-b text-gray-950'>
             {price} <span className='text-16-b text-[#79747e]'>/ 명</span>
