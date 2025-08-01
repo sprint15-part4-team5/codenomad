@@ -1,5 +1,5 @@
 'use client';
-import ConfirmModal from '@/components/common/ConfirmModal';
+import CommonModal from '@/components/common/CancelModal';
 import { cancelReservation } from '@/lib/api/profile/reservationList';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -13,14 +13,18 @@ const ConfirmModalPage = () => {
   }
   const onDismiss = async () => {
     try {
-      const res = await cancelReservation(Number(reservationId));
+      await cancelReservation(Number(reservationId));
       router.back();
-    } catch (err) {}
+    } catch {}
   };
+  const onCancel = () => {};
   return (
-    <>
-      <ConfirmModal isOpen={true} message='예약을 취소하시겠습니까?' onClose={onDismiss} />
-    </>
+    <CommonModal
+      open={true}
+      text='예약을 취소하시겠습니까?'
+      onConfirm={onDismiss}
+      onCancel={onCancel}
+    />
   );
 };
 
