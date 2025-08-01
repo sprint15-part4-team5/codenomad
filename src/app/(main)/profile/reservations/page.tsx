@@ -2,12 +2,11 @@
 import MobilePageHeader from '@/components/profile/common/MobilePageHeader';
 import Badge from '@/components/reservationList/Badge';
 import ReservationCard from '@/components/reservationList/ReservationCard';
-import { StatusType } from '@/components/reservationList/StatusBadge';
+import { StatusType } from '@/components/reservationList/reservations.types';
 import { getReservationList } from '@/lib/api/profile/reservationList';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { ProfileMobileContext } from '../layout';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 interface reservationsType {
   activity: {
@@ -29,7 +28,6 @@ interface reservationsType {
   updatedAt: string;
   userId: number;
 }
-
 const Page = () => {
   const [filter, setFilter] = useState<StatusType | null>(null);
   const [reservationList, setReservationList] = useState<reservationsType[]>([]);
@@ -37,7 +35,6 @@ const Page = () => {
   const [cursorId, setCursorId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const mobileContext = useContext(ProfileMobileContext);
   const observerEl = useRef<HTMLDivElement>(null);
   const statusList: { text: string; value: StatusType }[] = [
     { text: '예약 신청', value: 'pending' },

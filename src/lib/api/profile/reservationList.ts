@@ -1,4 +1,4 @@
-import { StatusType } from '@/components/reservationList/StatusBadge';
+import { StatusType } from '@/components/reservationList/reservations.types';
 import instance from '@/lib/api/axios';
 import { ReviewType } from '@/lib/schema/reservationsSchema';
 

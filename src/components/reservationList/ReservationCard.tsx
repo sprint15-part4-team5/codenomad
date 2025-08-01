@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import StatusBadge, { StatusType } from './StatusBadge';
+import StatusBadge from './StatusBadge';
 import { useRouter } from 'next/navigation';
 import { formatPrice } from '@/utils/formatPrice';
+import { StatusType } from './reservations.types';
 
 interface ReservationCardType {
   status: StatusType;
