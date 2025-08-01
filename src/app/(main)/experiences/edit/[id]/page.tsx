@@ -55,16 +55,23 @@ interface ExperienceData {
     startTime: string;
     endTime: string;
   }>;
+  userId: string | number; // 작성자 id 추가
 }
+
+import { useAuthStore } from '@/store/useAuthStore';
 
 const ExperienceEditPage = () => {
   const params = useParams();
   const router = useRouter();
   const experienceId = params.id as string;
 
+  // 로그인 유저 정보
+  const { user } = useAuthStore();
+
   // 로딩 및 에러 상태
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState<boolean>(true); // 본인 여부
 
   // 입력값 상태
   const [title, setTitle] = useState('');
@@ -131,6 +138,15 @@ const ExperienceEditPage = () => {
         setError(null);
 
         const data: ExperienceData = await getExperienceDetail(experienceId);
+
+        // userId 비교 (string/number 모두 지원)
+        if (!user || String(data.userId) !== String(user.id)) {
+          setIsOwner(false);
+          setLoading(false);
+          return;
+        } else {
+          setIsOwner(true);
+        }
 
         // subImages에서 imageUrl만 추출
         const subImageUrls = data.subImages?.map((img) => img.imageUrl) || [];
@@ -199,7 +215,7 @@ const ExperienceEditPage = () => {
     };
 
     fetchExperienceData();
-  }, [experienceId, setValue]);
+  }, [experienceId, setValue, user]);
 
   // 변경사항 확인 (깊은 비교)
   useEffect(() => {
@@ -254,7 +270,9 @@ const ExperienceEditPage = () => {
       validReserveTimes.length === 0 ||
       isDuplicateTime()
     ) {
-      alert('필수 항목을 모두 입력해 주세요.\n최소 하나의 예약 시간이 필요하며, 중복된 시간대는 불가능합니다.');
+      alert(
+        '필수 항목을 모두 입력해 주세요.\n최소 하나의 예약 시간이 필요하며, 중복된 시간대는 불가능합니다.',
+      );
       return;
     }
     try {
@@ -287,9 +305,7 @@ const ExperienceEditPage = () => {
       }
       // 스케줄 변경/추가/삭제 계산
       const currentInitialSchedules = initialData.reserveTimes.filter((rt) => rt.id);
-      const currentInitialSchedulesMap = new Map(
-        currentInitialSchedules.map((rt) => [rt.id, rt])
-      );
+      const currentInitialSchedulesMap = new Map(currentInitialSchedules.map((rt) => [rt.id, rt]));
       const newScheduleIds = reserveTimes.filter((rt) => rt.id).map((rt) => rt.id!);
       const scheduleIdsToRemove = currentInitialSchedules
         .map((rt) => rt.id!)
@@ -332,9 +348,13 @@ const ExperienceEditPage = () => {
         typeof error === 'object' &&
         error !== null &&
         'response' in error &&
-        typeof (error as { response?: { data?: { message?: string } } }).response?.data?.message === 'string'
+        typeof (error as { response?: { data?: { message?: string } } }).response?.data?.message ===
+          'string'
       ) {
-        alert((error as { response: { data: { message: string } } }).response.data.message || '수정에 실패했습니다. 다시 시도해 주세요.');
+        alert(
+          (error as { response: { data: { message: string } } }).response.data.message ||
+            '수정에 실패했습니다. 다시 시도해 주세요.',
+        );
       } else {
         alert('수정에 실패했습니다. 다시 시도해 주세요.');
       }
@@ -454,6 +474,21 @@ const ExperienceEditPage = () => {
     );
   }
 
+  // 본인 아님
+  if (!isOwner) {
+    return (
+      <div className='flex h-screen flex-col items-center justify-center'>
+        <div className='text-16-m mb-16 text-red-500'>본인만 체험을 수정할 수 있습니다.</div>
+        <button
+          onClick={() => router.back()}
+          className='bg-primary-500 rounded-lg px-24 py-8 text-white'
+        >
+          돌아가기
+        </button>
+      </div>
+    );
+  }
+
   // 에러 상태
   if (error) {
     return (
@@ -506,11 +541,11 @@ const ExperienceEditPage = () => {
           value={watch('description') || ''}
         />
         <PriceInput
-  value={watch('price') || ''}
-  error={errors.price?.message}
-  register={register}
-  path='price'
-/>
+          value={watch('price') || ''}
+          error={errors.price?.message}
+          register={register}
+          path='price'
+        />
         <AddressInput
           error={errors.address?.message}
           value={watch('address') || ''}
