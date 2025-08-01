@@ -111,7 +111,7 @@ const ReservationModal = ({
             key={tab}
             className={`flex-1 border-b-2 py-3 text-lg font-bold transition-colors ${
               selectedTab === tab
-                ? 'border-blue-500 text-blue-500'
+                ? 'border-primary-500 text-primary-500'
                 : 'border-transparent text-gray-400'
             }`}
             onClick={(e) => {
@@ -151,7 +151,7 @@ const ReservationModal = ({
               filteredReservations.map((reservation, i) => (
                 <div
                   key={i}
-                  className='border-primary-500 flex h-95 flex-row items-center justify-between overflow-hidden rounded-xl border bg-white px-6 py-4'
+                  className='border-primary-500 flex h-95 flex-row items-center justify-between overflow-hidden rounded-xl border-2 bg-white px-6 py-4'
                 >
                   <div className='flex flex-col gap-2'>
                     <div className='flex items-center gap-2'>
@@ -227,7 +227,7 @@ const ReservationModal = ({
             key={tab}
             className={`flex-1 border-b-2 py-2 text-center font-semibold transition-colors ${
               selectedTab === tab
-                ? 'border-blue-500 text-blue-500'
+                ? 'border-primary-500 text-primary-500'
                 : 'border-transparent text-gray-400'
             }`}
             onClick={(e) => {
@@ -243,7 +243,7 @@ const ReservationModal = ({
       <div className='mb-6 w-full'>
         <label className='mb-2 block text-sm font-semibold'>예약 시간</label>
         <select
-          className='h-54 w-full rounded-xl border bg-white px-4 text-lg sm:px-10 sm:text-base md:text-lg'
+          className='border-primary-500 h-54 w-full rounded-xl border-2 bg-white px-4 text-lg sm:px-10 sm:text-base md:text-lg'
           value={selectedTime}
           onChange={(e) => onTimeChange(e.target.value)}
           onClick={(e) => e.stopPropagation()}
@@ -264,7 +264,7 @@ const ReservationModal = ({
             filteredReservations.map((reservation, i) => (
               <div
                 key={i}
-                className='flex h-94 max-h-94 min-h-72 flex-row items-center justify-between overflow-hidden rounded-xl border border-gray-200 bg-white p-4 px-5 shadow-sm sm:rounded-2xl sm:p-5 md:px-10'
+                className='border-primary-500 flex h-94 max-h-94 min-h-72 flex-row items-center justify-between overflow-hidden rounded-xl border-2 bg-white p-4 px-5 shadow-sm sm:rounded-2xl sm:p-5 md:px-10'
               >
                 <div className='flex flex-col gap-2'>
                   <div className='flex items-center gap-2'>
