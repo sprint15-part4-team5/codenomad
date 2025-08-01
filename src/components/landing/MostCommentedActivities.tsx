@@ -67,7 +67,7 @@ const MostCommentedActivities = () => {
       <h2 className='text-20-b md:text-24-b mb-30'>인기 체험</h2>
       <div ref={scrollRef} className='no-scrollbar flex gap-16 overflow-x-auto sm:gap-24'>
         {activities.map((item) => (
-          <div key={item.id} className='min-w-[152px] sm:min-w-[332px] lg:min-w-[262px]'>
+          <div key={item.id} className='min-w-[9.5rem] sm:min-w-[20.75rem] lg:min-w-[16.375rem]'>
             <LandingCard activity={item} />
           </div>
         ))}

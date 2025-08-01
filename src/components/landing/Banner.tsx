@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 
 const Banner = () => {
   return (
-    <section className='relative h-320 w-full overflow-hidden rounded-[12px] sm:h-420 sm:rounded-[24px] lg:h-520'>
+    <section className='relative h-320 w-full overflow-hidden rounded-[0.75rem] sm:h-420 sm:rounded-[1.5rem] lg:h-520'>
       <Image
         src='/imgs/banner.jpg'
         alt='메인 배너 이미지'
