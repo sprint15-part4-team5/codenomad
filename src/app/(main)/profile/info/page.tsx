@@ -3,27 +3,25 @@
 import { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import Input from '@/components/common/Input';
 import { ProfileMobileContext } from '../layout';
 import { getUserProfile, updateUserProfile } from '@/lib/api/profile';
-// 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
 import { useAuthStore } from '@/store/useAuthStore';
+// 	서버/API에서 받은 프로필 데이터 검증 및 타입 변환
+import { ProfileSchema } from '@/lib/schema/profileSchema';
+// 사용자 정보 수정 폼 입력값 유효성 검증
 import { userInfoSchema, type UserInfoFormValues } from '@/lib/schema/authSchema';
 
 const InformationPage = () => {
-  // 🎯 zustand에서 사용자 정보 및 업데이트 함수 가져오기
   const { user, setUser, setUserProfile } = useAuthStore();
 
-  // ⏳ 로딩 상태 (로컬)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [error, setError] = useState('');
 
-  // 🔗 모바일 Context 연결: 부모 레이아웃의 onCancel 함수 가져오기
-  // 이 함수를 호출하면 모바일에서 메뉴 화면으로 돌아감
   const mobileContext = useContext(ProfileMobileContext);
 
-  // 🎯 react-hook-form + zod를 사용한 폼 관리
   const {
     register,
     handleSubmit,
@@ -41,38 +39,28 @@ const InformationPage = () => {
     },
   });
 
-  // 컴포넌트 마운트 시 사용자 정보 가져오기
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         setIsLoadingProfile(true);
+        setError('');
 
-        // 🎯 zustand에 이미 사용자 정보가 있다면 그것을 사용
-        if (user?.email && user?.nickname) {
-          setValue('email', user.email);
-          setValue('nickname', user.nickname);
-          setIsLoadingProfile(false);
-          return;
-        }
+        const rawProfile = await getUserProfile();
 
-        // 📡 API에서 사용자 정보 가져오기
-        const profile = await getUserProfile();
+        // Zod parse로 타입 안전하게 변환 및 검증
+        const profile = ProfileSchema.parse(rawProfile);
 
-        // 🔄 폼 필드 업데이트
         setValue('email', profile.email);
         setValue('nickname', profile.nickname);
 
-        // 🎯 zustand 전역 상태도 업데이트
         if (user) {
           setUserProfile({
             email: profile.email,
             nickname: profile.nickname,
           });
         } else {
-          // user가 없다면 전체 user 객체 생성
           setUser({
             ...profile,
-            id: typeof profile.id === 'string' ? parseInt(profile.id, 10) : profile.id || 0,
             profileImageUrl: profile.profileImageUrl || null,
             createdAt: profile.createdAt || '',
             updatedAt: profile.updatedAt || '',
@@ -88,10 +76,8 @@ const InformationPage = () => {
     fetchUserProfile();
   }, [user, setUser, setUserProfile, setValue]);
 
-  // 🎯 비밀번호 필드 감시
   const watchedPassword = watch('password');
 
-  // 🎯 react-hook-form + zod를 사용한 폼 제출 처리
   const onSubmit = async (data: UserInfoFormValues) => {
     try {
       setError('');
@@ -105,22 +91,19 @@ const InformationPage = () => {
         email: data.email,
       };
 
-      // 비밀번호가 입력된 경우에만 포함
       if (data.password && data.password.length > 0) {
         updateData.newPassword = data.password;
       }
 
       await updateUserProfile(updateData);
 
-      // 🎯 API 업데이트 성공 시 zustand 전역 상태도 업데이트
       setUserProfile({
         email: updateData.email,
         nickname: updateData.nickname,
       });
 
-      alert('회원정보가 성공적으로 수정되었습니다.');
+      alert('회원정보가 성공적으로 수정되었습니다!');
 
-      // 비밀번호 필드 초기화
       setValue('password', '');
       setValue('confirmPassword', '');
     } catch (err: unknown) {
@@ -141,12 +124,10 @@ const InformationPage = () => {
     }
   };
 
-  // ⏳ 로딩 상태: 공통 LoadingSpinner 컴포넌트 사용
   if (isLoadingProfile) {
     return <LoadingSpinner message='사용자 정보를 불러오는 중...' useLogo={true} />;
   }
 
-  // ⏳ 폼 제출 중 로딩 상태
   if (isSubmitting) {
     return <LoadingSpinner message='정보를 저장하는 중...' useLogo={true} />;
   }
@@ -156,10 +137,8 @@ const InformationPage = () => {
       onSubmit={handleSubmit(onSubmit)}
       className='rounded-16 mx-auto w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
     >
-      {/* 🆕 공통 MobilePageHeader 컴포넌트 사용 */}
       <MobilePageHeader title='내 정보' description='닉네임과 비밀번호를 수정하실 수 있습니다.' />
 
-      {/* 에러 메시지 */}
       {error && <div className='rounded-lg bg-red-50 p-3 text-sm text-red-500'>{error}</div>}
 
       <Input
@@ -169,7 +148,6 @@ const InformationPage = () => {
         error={errors.nickname?.message}
         autoComplete='username'
       />
-
       <Input
         label='이메일'
         {...register('email')}
@@ -179,7 +157,6 @@ const InformationPage = () => {
         autoComplete='email'
         readOnly
       />
-
       <Input
         label='새 비밀번호 (변경 시에만 입력)'
         {...register('password')}
@@ -188,7 +165,6 @@ const InformationPage = () => {
         type='password'
         autoComplete='new-password'
       />
-
       <Input
         label='새 비밀번호 확인'
         {...register('confirmPassword')}
@@ -199,7 +175,7 @@ const InformationPage = () => {
         disabled={!watchedPassword}
       />
 
-      {/* 저장/취소 버튼 (모바일에서만 보임) */}
+      {/* 모바일 저장/취소 버튼 */}
       <div className='flex justify-center gap-3 md:hidden'>
         <button
           type='button'
@@ -218,7 +194,7 @@ const InformationPage = () => {
         </button>
       </div>
 
-      {/* 저장 버튼 (PC에서만 보임) */}
+      {/* PC 저장 버튼 */}
       <div className='hidden justify-center md:flex'>
         <button
           type='submit'
