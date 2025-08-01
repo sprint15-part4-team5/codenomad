@@ -91,7 +91,7 @@
 @layer base {
   button {
     cursor: pointer;
-    @apply hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed disabled:bg-gray-300;
+    @apply hover:brightness-95 active:brightness-90 disabled:cursor-not-allowed;
   }
 }
 
