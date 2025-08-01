@@ -31,7 +31,6 @@ const TABLET_MAX_WIDTH = 1024;
 
 const ReservationModal = ({
   selectedDate,
-  calendarCellRect,
   selectedTab,
   selectedTime,
   timeOptions,
@@ -43,32 +42,41 @@ const ReservationModal = ({
   onApprove,
   onDecline,
 }: ReservationModalProps) => {
-  // 모달 열렸을 때 페이지 스크롤 차단
+  // 모달 열린 동안 페이지 스크롤 막기
   useEffect(() => {
-    const originalStyle = window.getComputedStyle(document.body).overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyHeight = document.body.style.height;
+    const originalHtmlHeight = document.documentElement.style.height;
+
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+    document.documentElement.style.height = '100vh';
+
     return () => {
-      document.body.style.overflow = originalStyle;
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.height = originalBodyHeight;
+      document.documentElement.style.height = originalHtmlHeight;
     };
   }, []);
 
-  // 디바이스 타입 감지 (pc / tablet / mobile)
+  // 반응형 디바이스 타입 감지 (pc, tablet, mobile 분리)
   const getDeviceType = () => {
     const width = window.innerWidth;
     if (width <= MOBILE_MAX_WIDTH) return 'mobile';
     if (width <= TABLET_MAX_WIDTH) return 'tablet';
     return 'pc';
   };
-
   const [deviceType, setDeviceType] = useState<'pc' | 'tablet' | 'mobile'>(getDeviceType());
-
   useEffect(() => {
     const handleResize = () => setDeviceType(getDeviceType());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 바텀시트 드래그 훅 (태블릿/모바일용)
+  // 바텀시트 드래그 훅 (태블릿/모바일 바텀시트 모드)
   const { containerRef, closeWithAnimation, handleTouchStart, handleTouchMove, handleTouchEnd } =
     useDraggableBottomSheet({
       isOpen: deviceType !== 'pc',
@@ -76,22 +84,22 @@ const ReservationModal = ({
       threshold: 120,
     });
 
-  // 날짜 포맷 함수
+  // 날짜 포맷
   const formatDate = (date: Date) =>
     `${date.getFullYear().toString().slice(2)}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 
-  // 탭별 예약 개수 계산 함수
+  // 탭별 예약 개수 계산
   const getReservationCount = (tab: '신청' | '승인' | '거절') => {
     const statusMap = { 신청: 'pending', 승인: 'confirmed', 거절: 'declined' };
     return reservationDetails.filter((r) => r.status === statusMap[tab]).length;
   };
 
-  // 태블릿 전용: 년월일 상단, 상태 탭, 좌우 분할 레이아웃
+  // 태블릿 전용 레이아웃 (년월일 최상단 → 상태 탭 → 좌우 분할)
   const TabletModalContent = (
     <div className='relative mx-auto flex w-full max-w-700 flex-col rounded-2xl bg-white px-3 pt-10 pb-8 md:px-12'>
-      {/* 닫기 버튼: 모바일/태블릿 모두 숨김 (제거) */}
+      {/* 닫기 버튼은 태블릿/모바일에서 제거 */}
 
-      {/* 1. 년월일 최상단 */}
+      {/* 1. 년월일 */}
       <div className='mb-6 text-center text-xl font-extrabold tracking-tight text-gray-900'>
         {formatDate(selectedDate)}
       </div>
@@ -116,13 +124,12 @@ const ReservationModal = ({
         ))}
       </div>
 
-      {/* 3. 좌우 분할 영역 */}
+      {/* 3. 좌우 분할: 왼쪽 시간 드롭다운, 오른쪽 예약 내역 */}
       <div className='mx-auto flex w-full max-w-xl flex-row justify-center gap-8'>
-        {/* 좌측: 예약 시간 드롭다운 */}
         <div className='flex w-[50%] max-w-220 min-w-180 flex-col'>
           <label className='mb-3 block text-base font-bold text-gray-900'>예약 시간</label>
           <select
-            className='tablet-dropdown-style block h-54 w-full rounded-2xl border-2 border-gray-200 bg-white px-6 py-4 text-lg font-semibold text-gray-700 transition outline-none focus:border-blue-500'
+            className='tablet-dropdown-style border-primary-500 focus:border-primary-500 block h-54 w-full rounded-2xl border-2 bg-white px-6 py-4 text-lg font-semibold text-gray-700 transition outline-none'
             value={selectedTime}
             onChange={(e) => onTimeChange(e.target.value)}
             onClick={(e) => e.stopPropagation()}
@@ -137,7 +144,6 @@ const ReservationModal = ({
           </select>
         </div>
 
-        {/* 우측: 예약 내역 리스트 */}
         <div className='flex w-[50%] min-w-0 flex-1 flex-col'>
           <label className='mb-2 block text-sm font-semibold text-gray-700'>예약 내역</label>
           <div className='flex max-h-275 flex-col gap-4 overflow-y-auto'>
@@ -145,7 +151,7 @@ const ReservationModal = ({
               filteredReservations.map((reservation, i) => (
                 <div
                   key={i}
-                  className='flex h-95 flex-row items-center justify-between overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 shadow-sm'
+                  className='border-primary-500 flex h-95 flex-row items-center justify-between overflow-hidden rounded-xl border bg-white px-6 py-4'
                 >
                   <div className='flex flex-col gap-2'>
                     <div className='flex items-center gap-2'>
@@ -193,16 +199,15 @@ const ReservationModal = ({
               <div className='py-8 text-center text-base text-gray-400'>예약 내역이 없습니다.</div>
             )}
           </div>
-          {/* 닫기 버튼 없음 (숨김) */}
+          {/* 닫기 버튼도 없음 */}
         </div>
       </div>
     </div>
   );
 
-  // PC 및 모바일 공통 ModalContent
+  // PC 및 모바일 공통 ModalContent (닫기 버튼 PC에서만 보임)
   const ModalContent = (
     <>
-      {/* 닫기 버튼: PC에서만 보임 */}
       {deviceType === 'pc' && (
         <button
           className='absolute top-6 right-6 text-2xl font-bold text-gray-400 hover:text-gray-700'
@@ -214,10 +219,8 @@ const ReservationModal = ({
         </button>
       )}
 
-      {/* 날짜 헤더 */}
       <div className='mb-6 w-full text-center text-lg font-bold'>{formatDate(selectedDate)}</div>
 
-      {/* 탭 메뉴 */}
       <div className='mb-6 flex w-full border-b'>
         {(['신청', '승인', '거절'] as const).map((tab) => (
           <button
@@ -237,7 +240,6 @@ const ReservationModal = ({
         ))}
       </div>
 
-      {/* 예약 시간 선택 */}
       <div className='mb-6 w-full'>
         <label className='mb-2 block text-sm font-semibold'>예약 시간</label>
         <select
@@ -255,7 +257,6 @@ const ReservationModal = ({
         </select>
       </div>
 
-      {/* 예약 내역 리스트 */}
       <div className='mb-6 w-full'>
         <label className='mb-2 block text-sm font-semibold'>예약 내역</label>
         <div className='flex max-h-260 flex-col gap-4 overflow-y-auto'>
@@ -320,7 +321,7 @@ const ReservationModal = ({
         </div>
       </div>
 
-      {/* 닫기 버튼 (PC에서만 노출) */}
+      {/* 닫기 버튼 PC에서만 보임 */}
     </>
   );
 
@@ -366,18 +367,16 @@ const ReservationModal = ({
     );
   }
 
-  // PC 모드
+  // PC 모드: 화면 중앙에 고정 모달
   return (
     <div
-      className='fixed inset-0 z-50 flex items-start justify-start bg-black/50'
+      className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'
       onClick={onClose}
     >
       <div
-        className='flex max-h-[90vh] w-420 translate-y-0 flex-col items-center overflow-y-auto rounded-3xl bg-white p-20 shadow-xl transition-transform duration-300'
+        className='max-h-[90vh] w-420 flex-col items-center overflow-y-auto rounded-3xl bg-white p-20 shadow-xl transition-transform duration-300'
         style={{
-          position: 'absolute',
-          top: `${calendarCellRect.modalTop || calendarCellRect.top}px`,
-          left: `${calendarCellRect.modalLeft || calendarCellRect.left + calendarCellRect.width + 16}px`,
+          position: 'relative',
           boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
         }}
         onClick={(e) => e.stopPropagation()}
