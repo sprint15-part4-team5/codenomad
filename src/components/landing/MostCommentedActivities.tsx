@@ -4,10 +4,18 @@ import { useState, useEffect, useRef } from 'react';
 import instance from '@/lib/api/axios';
 import type { Activity } from './LandingCard';
 import LandingCard from './LandingCard';
+import { useAutoScroll } from '@/hooks/useAutoScroll';
 
 const MostCommentedActivities = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const getCardWidth = () => {
+    const width = window.innerWidth;
+    if (width >= 1024) return 262;
+    if (width >= 640) return 332;
+    return 152;
+  };
 
   const fetchMostCommentedActivities = async () => {
     try {
@@ -29,39 +37,11 @@ const MostCommentedActivities = () => {
     fetchMostCommentedActivities();
   }, []);
 
-  // 인기체험 카드 자동 슬라이드(2초마다)
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+  useAutoScroll(scrollRef, {
+    getScrollStep: () => getCardWidth() + 16,
+    delay: 2000,
+  });
 
-    let scrollAmount = 0;
-
-    const getCardWidth = () => {
-      const width = window.innerWidth;
-      if (width >= 1024) return 262;
-      if (width >= 640) return 332;
-      return 152;
-    };
-
-    const cardWidth = getCardWidth();
-    const scrollStep = cardWidth + 16;
-
-    const interval = setInterval(() => {
-      if (!scrollContainer) return;
-      scrollAmount += scrollStep;
-
-      if (scrollAmount >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-        scrollAmount = 0;
-      }
-
-      scrollContainer.scrollTo({
-        left: scrollAmount,
-        behavior: 'smooth',
-      });
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [activities]);
   return (
     <section className='mt-80 mb-60'>
       <h2 className='text-20-b md:text-24-b mb-30'>인기 체험</h2>
