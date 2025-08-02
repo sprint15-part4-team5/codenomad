@@ -46,7 +46,7 @@ const Section4 = () => {
             rating={review.rating}
             content={review.content}
             createdAt={review.createdAt}
-            className='min-h-187 w-auto lg:min-h-300 lg:p-10'
+            className='min-h-187 w-auto lg:min-h-300 lg:w-350 lg:p-10'
           />
         ))}
       </div>
