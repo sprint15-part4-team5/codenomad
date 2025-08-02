@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import isEqual from 'lodash/isEqual';
 import TitleInput from '@/components/myExperiencesAddEdit/TitleInput';
 import CategoryInput from '@/components/myExperiencesAddEdit/CategoryInput';
@@ -14,6 +14,7 @@ import IntroImagesInput from '@/components/myExperiencesAddEdit/IntroImagesInput
 import ReserveTimesInput from '@/components/myExperiencesAddEdit/ReserveTimesInput';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import CommonModal from '@/components/common/CancelModal';
+import LoadingPage from '@/components/common/LoadingPage';
 import { uploadImage, updateExperience, getExperienceDetail } from '@/lib/api/experiences';
 import { notFound } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -55,32 +56,52 @@ interface ExperienceData {
     startTime: string;
     endTime: string;
   }>;
+  userId: string | number; // 작성자 id 추가
 }
 
+import { useAuthStore } from '@/store/useAuthStore';
+
 const ExperienceEditPage = () => {
+  // ...existing code...
+
   const params = useParams();
   const router = useRouter();
   const experienceId = params.id as string;
+  const pathname = usePathname();
+
+  // 로그인 유저 정보
+  const { user } = useAuthStore();
 
   // 로딩 및 에러 상태
   const [loading, setLoading] = useState(true);
+  const [routeLoading, setRouteLoading] = useState(false); // 페이지 이동 로딩
   const [error, setError] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState<boolean>(true); // 본인 여부
 
-  // 입력값 상태
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [desc, setDesc] = useState('');
-  const [price, setPrice] = useState('');
-  const [address, setAddress] = useState('');
+  // 입력값 상태 (react-hook-form만 사용)
   const [reserveTimes, setReserveTimes] = useState<ReserveTime[]>([
     { date: '', start: '', end: '' },
   ]);
   const [banner, setBanner] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [introPreviews, setIntroPreviews] = useState<string[]>([]);
+  // 서버에서 받아온 subImages의 id와 url을 저장
+  const [serverSubImages, setServerSubImages] = useState<{ id: number; imageUrl: string }[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  // 모달 오픈 시 body 스크롤 막기
+  useEffect(() => {
+    if (leaveModalOpen || modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [leaveModalOpen, modalOpen]);
   // 새로 업로드된 이미지와 미리보기 URL을 매핑하는 Map
   const [imageUrlMap, setImageUrlMap] = useState<Map<string, File>>(new Map());
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,7 +113,7 @@ const ExperienceEditPage = () => {
   const [initialData, setInitialData] = useState({
     title: '',
     category: '',
-    desc: '',
+    description: '',
     price: '',
     address: '',
     bannerPreview: '',
@@ -112,11 +133,11 @@ const ExperienceEditPage = () => {
     mode: 'onBlur',
     shouldUnregister: false, // 이 옵션 추가
     defaultValues: {
-      title,
-      category,
-      price,
-      address,
-      description: desc,
+      title: '',
+      category: '',
+      price: '',
+      address: '',
+      description: '',
       detailAddress: '', // 필요시
     },
   });
@@ -132,15 +153,25 @@ const ExperienceEditPage = () => {
 
         const data: ExperienceData = await getExperienceDetail(experienceId);
 
-        // subImages에서 imageUrl만 추출
+        // userId 비교 (string/number 모두 지원)
+        if (!user || String(data.userId) !== String(user.id)) {
+          setIsOwner(false);
+          setLoading(false);
+          return;
+        } else {
+          setIsOwner(true);
+        }
+
+        // subImages에서 imageUrl만 추출 및 id 저장
         const subImageUrls = data.subImages?.map((img) => img.imageUrl) || [];
+        setServerSubImages(data.subImages || []);
 
         // 상태 업데이트
-        setTitle(data.title);
-        setCategory(data.category); // API에서 받은 한글 카테고리 직접 사용
-        setDesc(data.description);
-        setPrice(String(data.price));
-        setAddress(data.address);
+        setValue('title', data.title);
+        setValue('category', data.category);
+        setValue('description', data.description);
+        setValue('price', String(data.price));
+        setValue('address', data.address);
         setBannerPreview(data.bannerImageUrl);
         setIntroPreviews(subImageUrls);
 
@@ -172,7 +203,7 @@ const ExperienceEditPage = () => {
         setInitialData({
           title: data.title,
           category: data.category,
-          desc: data.description,
+          description: data.description,
           price: String(data.price),
           address: data.address,
           bannerPreview: data.bannerImageUrl,
@@ -199,28 +230,32 @@ const ExperienceEditPage = () => {
     };
 
     fetchExperienceData();
-  }, [experienceId, setValue]);
+  }, [experienceId, setValue, user]);
 
-  // 변경사항 확인 (깊은 비교)
+  // 변경사항 확인 (깊은 비교) - react-hook-form의 watch 사용
+  const watchedTitle = watch('title');
+  const watchedCategory = watch('category');
+  const watchedDesc = watch('description');
+  const watchedPrice = watch('price');
+  const watchedAddress = watch('address');
   useEffect(() => {
     const currentData = {
-      title,
-      category,
-      desc,
-      price,
-      address,
+      title: watchedTitle,
+      category: watchedCategory,
+      description: watchedDesc,
+      price: watchedPrice,
+      address: watchedAddress,
       bannerPreview,
       introPreviews,
       reserveTimes,
     };
-
     setIsModified(!isEqual(currentData, initialData));
   }, [
-    title,
-    category,
-    desc,
-    price,
-    address,
+    watchedTitle,
+    watchedCategory,
+    watchedDesc,
+    watchedPrice,
+    watchedAddress,
     bannerPreview,
     introPreviews,
     reserveTimes,
@@ -254,7 +289,9 @@ const ExperienceEditPage = () => {
       validReserveTimes.length === 0 ||
       isDuplicateTime()
     ) {
-      alert('필수 항목을 모두 입력해 주세요.\n최소 하나의 예약 시간이 필요하며, 중복된 시간대는 불가능합니다.');
+      alert(
+        '필수 항목을 모두 입력해 주세요.\n최소 하나의 예약 시간이 필요하며, 중복된 시간대는 불가능합니다.',
+      );
       return;
     }
     try {
@@ -270,6 +307,7 @@ const ExperienceEditPage = () => {
           throw new Error('배너 이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
         }
       }
+      // 새로 추가된 이미지 업로드
       const subImageUrlsToAdd: string[] = [];
       for (const preview of introPreviews) {
         if (preview.startsWith('blob:')) {
@@ -285,11 +323,15 @@ const ExperienceEditPage = () => {
           }
         }
       }
-      // 스케줄 변경/추가/삭제 계산
+
+      // 삭제된 subImages id 계산 (서버에 있던 이미지 중, introPreviews에 없는 것)
+      const removedSubImageIds = serverSubImages
+        .filter((img) => !introPreviews.includes(img.imageUrl))
+        .map((img) => img.id);
+
+      // 스케줄 변경/추가/삭제 계산 (기존 코드 유지)
       const currentInitialSchedules = initialData.reserveTimes.filter((rt) => rt.id);
-      const currentInitialSchedulesMap = new Map(
-        currentInitialSchedules.map((rt) => [rt.id, rt])
-      );
+      const currentInitialSchedulesMap = new Map(currentInitialSchedules.map((rt) => [rt.id, rt]));
       const newScheduleIds = reserveTimes.filter((rt) => rt.id).map((rt) => rt.id!);
       const scheduleIdsToRemove = currentInitialSchedules
         .map((rt) => rt.id!)
@@ -312,6 +354,7 @@ const ExperienceEditPage = () => {
       }));
       const changedScheduleIds = changedSchedules.map((rt) => rt.id!);
       const finalScheduleIdsToRemove = [...scheduleIdsToRemove, ...changedScheduleIds];
+
       const updateData = {
         title: data.title,
         category: data.category,
@@ -319,7 +362,7 @@ const ExperienceEditPage = () => {
         price: numericPrice,
         address: data.address,
         bannerImageUrl: finalBannerUrl,
-        subImageIdsToRemove: [],
+        subImageIdsToRemove: removedSubImageIds,
         subImageUrlsToAdd,
         scheduleIdsToRemove: finalScheduleIdsToRemove,
         schedulesToAdd,
@@ -332,9 +375,13 @@ const ExperienceEditPage = () => {
         typeof error === 'object' &&
         error !== null &&
         'response' in error &&
-        typeof (error as { response?: { data?: { message?: string } } }).response?.data?.message === 'string'
+        typeof (error as { response?: { data?: { message?: string } } }).response?.data?.message ===
+          'string'
       ) {
-        alert((error as { response: { data: { message: string } } }).response.data.message || '수정에 실패했습니다. 다시 시도해 주세요.');
+        alert(
+          (error as { response: { data: { message: string } } }).response.data.message ||
+            '수정에 실패했습니다. 다시 시도해 주세요.',
+        );
       } else {
         alert('수정에 실패했습니다. 다시 시도해 주세요.');
       }
@@ -352,17 +399,24 @@ const ExperienceEditPage = () => {
     }
   }, [hasChanged, router]);
 
-  // 새로고침/닫기/뒤로가기 경고
+  // popstate(뒤로가기 등) 이벤트 감지
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    const handleRouteChange = () => {
       if (hasChanged()) {
-        e.preventDefault();
-        e.returnValue = '';
+        setPendingAction(() => () => {
+          router.back();
+        });
+        setLeaveModalOpen(true);
+        window.history.pushState(null, '', pathname);
+        return false;
       }
+      setRouteLoading(true);
+      return true;
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isModified, isSubmitting, loading, hasChanged]);
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasChanged, pathname]);
 
   // 나가기 모달 "네" 클릭 핸들러
   const handleLeave = useCallback(() => {
@@ -445,11 +499,24 @@ const ExperienceEditPage = () => {
     setIntroPreviews(introPreviews.filter((_, i) => i !== idx));
   };
 
-  // 로딩 상태
-  if (loading) {
+  // 로딩 상태 (데이터 or 라우터)
+  if (loading || routeLoading) {
     return (
-      <div className='flex h-screen items-center justify-center'>
-        <div className='text-16-m text-gray-500'>체험 정보를 불러오는 중...</div>
+      <LoadingPage message={loading ? '체험 정보를 불러오는 중...' : '페이지를 이동 중입니다...'} />
+    );
+  }
+
+  // 본인 아님
+  if (!isOwner) {
+    return (
+      <div className='flex h-screen flex-col items-center justify-center'>
+        <div className='text-16-m mb-16 text-red-500'>본인만 체험을 수정할 수 있습니다.</div>
+        <button
+          onClick={() => router.back()}
+          className='bg-primary-500 rounded-lg px-24 py-8 text-white'
+        >
+          돌아가기
+        </button>
       </div>
     );
   }
@@ -492,10 +559,10 @@ const ExperienceEditPage = () => {
         <TitleInput<FormValues>
           register={register}
           error={errors.title?.message}
-          value={watch('title') || ''}
+          value={watchedTitle || ''}
         />
         <CategoryInput
-          value={watch('category') || ''}
+          value={watchedCategory || ''}
           onChange={(v) => setValue('category', v)}
           options={categoryOptions}
           error={errors.category?.message}
@@ -503,17 +570,18 @@ const ExperienceEditPage = () => {
         <DescriptionInput<FormValues>
           register={register}
           error={errors.description?.message}
-          value={watch('description') || ''}
+          value={watchedDesc || ''}
         />
         <PriceInput
-  value={watch('price') || ''}
-  error={errors.price?.message}
-  register={register}
-  path='price'
-/>
+          value={watchedPrice || ''}
+          error={errors.price?.message}
+          register={register}
+          setValue={setValue}
+          path='price'
+        />
         <AddressInput
           error={errors.address?.message}
-          value={watch('address') || ''}
+          value={watchedAddress || ''}
           onChange={(v) => setValue('address', v)}
           detailAddress={watch('detailAddress') || ''}
           onDetailAddressChange={(v) => setValue('detailAddress', v)}
@@ -541,7 +609,7 @@ const ExperienceEditPage = () => {
           <button
             type='submit'
             disabled={isSubmitting}
-            className={`text-14-b h-41 w-120 rounded-[12px] py-12 text-white ${
+            className={`text-14-b h-41 w-120 rounded-xl py-12 text-white ${
               isSubmitting ? 'cursor-not-allowed bg-gray-400' : 'bg-primary-500'
             }`}
           >
@@ -565,7 +633,7 @@ const ExperienceEditPage = () => {
         open={leaveModalOpen}
         icon={
           <Image
-            src='/icons/icon_alert.svg'
+            src='/icons/icon_alert_cancel.svg'
             alt='경고'
             width={24}
             height={24}

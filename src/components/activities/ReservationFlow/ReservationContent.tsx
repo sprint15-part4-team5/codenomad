@@ -66,13 +66,13 @@ const ReservationContent = ({ activity }: ReservationContentProps) => {
   };
 
   const handleConfirmModalClose = () => {
-    setIsConfirmModalOpen(false);
-    resetReservation();
-
     if (needsLoginRedirect) {
       setNeedsLoginRedirect(false);
       router.push('/login');
     }
+
+    setIsConfirmModalOpen(false);
+    resetReservation();
   };
 
   const handleChangeSchedule = (id: number | null) => {

@@ -27,7 +27,7 @@ const ActivityPhotoSection = ({ bannerImages, subImages }: ActivityPhotoSectionP
     }
 
     const gridClass = clsx(
-      'grid h-full w-full gap-12',
+      'grid h-full w-full gap-8 md:gap-12 ',
       length === 2 && 'grid-rows-2',
       length >= 3 && 'grid-cols-2 grid-rows-2',
     );
@@ -55,7 +55,7 @@ const ActivityPhotoSection = ({ bannerImages, subImages }: ActivityPhotoSectionP
   };
 
   return (
-    <section className='flex h-245 w-auto items-center justify-center gap-12 overflow-hidden rounded-3xl sm:h-400 lg:h-600'>
+    <section className='flex h-245 w-auto items-center justify-center gap-8 overflow-hidden rounded-3xl sm:h-400 md:gap-12 lg:h-600'>
       <figure className='relative h-full w-full overflow-hidden'>
         <SafeImage className='object-cover' src={bannerImages} alt='메인 이미지' fill />
       </figure>

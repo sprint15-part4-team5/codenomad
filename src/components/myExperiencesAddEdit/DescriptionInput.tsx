@@ -1,6 +1,6 @@
 import Input from '@/components/common/Input';
 import { Path } from 'react-hook-form';
-import type { DescriptionInputProps } from './types';
+import type { DescriptionInputProps } from './MyExperiences';
 import type { FieldValues } from 'react-hook-form';
 
 const DescriptionInput = <T extends FieldValues = FieldValues>({

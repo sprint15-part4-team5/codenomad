@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Calendar from 'react-calendar';
-// 기본 스타일 제거 - 커스텀 스타일만 사용
-// import 'react-calendar/dist/Calendar.css';
+
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
@@ -12,8 +11,6 @@ const cn = (...inputs: (string | undefined)[]) => twMerge(clsx(inputs));
 
 // 캘린더 타입 정의
 type CalendarValue = Date | null;
-// react-calendar의 정확한 Value 타입 (Range와 ValuePiece 포함)
-type ReactCalendarValue = Date | null | Date[] | [Date | null, Date | null]; // Range 타입도 포함
 
 export interface CalendarProps {
   selectedDate?: CalendarValue;
@@ -300,26 +297,15 @@ const CalendarComponent = ({
         background-color: #f3f4f6 !important;
       }
       
-      /* 선택된 날짜 스타일 */
-      .react-calendar__tile--active {
-        background-color: #60a5fa !important;
-        color: #ffffff !important;
-        border-radius: 100% !important;
-      }
-      
       .react-calendar__tile--active:hover {
-        background-color: #2563eb !important;
+        background-color: #1e7517 !important;
       }
       
       /* 오늘 날짜 스타일 */
       .react-calendar__tile--now {
-        background-color: #eff6ff !important;
-        color: #3b82f6 !important;
+        background-color: #f1f7ee !important;
+        color: #63a85d !important;
         font-weight: 600 !important;
-      }
-      
-      .react-calendar__tile--now:hover {
-        background-color: #dbeafe !important;
       }
       
       /* 다른 월의 날짜 스타일 - 가장 높은 우선순위로 설정 */
@@ -336,34 +322,30 @@ const CalendarComponent = ({
         background-color: #f9fafb !important;
         color: #d1d5db !important;
       }
-      
-      /* 이전/다음 달 주말 날짜도 강제로 회색 */
-      .react-calendar__month-view__days__day--neighboringMonth.react-calendar__month-view__days__day--weekend {
-        color: #d1d5db !important;
-      }
-      
-      /* 현재 달의 주말 스타일 제거 - 모든 날짜 같은 색상 */
-      .react-calendar__month-view__days__day--weekend:not(.react-calendar__month-view__days__day--neighboringMonth) {
-        color: #374151 !important;
-      }
+
       
       /* ========== 2025.07 추가: 비활성화된 날짜 스타일 ========== */
       .react-calendar__tile:disabled {
-        background-color: #f9fafb !important;
+        // background-color: #f9fafb !important;
         color: #d1d5db !important;
         cursor: not-allowed !important;
       }
-      
-      .react-calendar__tile:disabled:hover {
-        background-color: #f9fafb !important;
+
+      .react-calendar__month-view__days__day--neighboringMonth {
+        color: #d1d5db !important;
       }
       
       /* ========== 2025.07 추가: 강조 표시된 날짜 스타일 ========== */
       /* highlightedDates 배열에 포함된 날짜들에 적용되는 노란색 강조 스타일 */
       .highlighted-date {
-        background-color: #fef3c7 !important; /* 연한 노란색 배경 */
-        color: #92400e !important; /* 갈색 텍스트 */
+        color: #374151 !important; /* 갈색 텍스트 */
         font-weight: 600 !important; /* 글자 굵게 */
+      }
+
+      .react-calendar__tile--active {
+        background-color: #31ae23 !important;
+        color: #ffffff !important;
+        border-radius: 100% !important;
       }
     `;
 

@@ -1,4 +1,5 @@
 import StarRatingDisplay from './StarRatingDisplay';
+import cn from '@/utils/cn';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -7,13 +8,19 @@ interface ReviewCardProps {
   rating: number;
   content: string;
   createdAt: string;
+  className?: string;
 }
 
-const ReviewCard = ({ nickname, rating, content, createdAt }: ReviewCardProps) => {
+const ReviewCard = ({ nickname, rating, content, createdAt, className }: ReviewCardProps) => {
   const date = new Date(createdAt);
   const viewDate = format(date, 'yyyy.M.d', { locale: ko });
   return (
-    <div className='shadow-custom-5 flex h-auto w-auto flex-col gap-12 rounded-3xl bg-white p-20'>
+    <div
+      className={cn(
+        'shadow-custom-5 flex h-auto w-auto flex-col gap-12 rounded-3xl bg-white p-20',
+        className,
+      )}
+    >
       <div className='flex flex-col justify-center gap-4'>
         <div className='flex items-center gap-8'>
           <p className='text-16-b text-gray-950'>{nickname}</p>

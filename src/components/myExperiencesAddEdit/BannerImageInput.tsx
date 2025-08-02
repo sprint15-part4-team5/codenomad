@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { BannerImageInputProps } from './types';
+import type { BannerImageInputProps } from './MyExperiences';
 
 const BannerImageInput = ({
   bannerPreview,
@@ -13,7 +13,7 @@ const BannerImageInput = ({
       <div className='text-16-b mb-10'>배너 이미지 등록</div>
       <div className='flex gap-12 md:gap-14'>
         <label
-          className={`relative flex size-80 cursor-pointer items-center justify-center rounded-[8px] border border-gray-100 bg-white md:size-126 lg:size-128 ${bannerPreview ? 'pointer-events-none' : ''}`}
+          className={`relative flex size-80 cursor-pointer items-center justify-center rounded-lg border border-gray-100 bg-white md:size-126 lg:size-128 ${bannerPreview ? 'pointer-events-none' : ''}`}
         >
           <div className='absolute inset-0 flex flex-col items-center justify-center gap-2 md:gap-10'>
             <Image src='/icons/icon_gray_plus.svg' alt='배너 이미지 추가' width={40} height={40} />
@@ -29,12 +29,12 @@ const BannerImageInput = ({
           />
         </label>
         {bannerPreview && (
-          <div className='relative size-80 flex-shrink-0 rounded-[8px] border border-gray-100 md:size-126 lg:size-128'>
+          <div className='relative size-80 flex-shrink-0 rounded-lg border border-gray-100 md:size-126 lg:size-128'>
             <Image
               src={bannerPreview}
               alt='배너 이미지 미리보기'
               fill
-              className='rounded-[8px] object-cover'
+              className='rounded-lg object-cover'
             />
             <button type='button' className='absolute -top-5 -right-5 z-10' onClick={onRemove}>
               <Image

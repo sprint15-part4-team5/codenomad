@@ -1,6 +1,7 @@
 import Calendar from '@/components/common/Calendar';
 import { Schedule } from '../Activities.types';
 import { useMemo, useCallback, useEffect } from 'react';
+import { parseISO, startOfToday, isBefore } from 'date-fns';
 import {
   stringToDate,
   checkDateDisabled,
@@ -17,6 +18,16 @@ interface CalendarStepProps {
 const CalendarStep = ({ schedules, selectedDate, onDateSelect }: CalendarStepProps) => {
   // 예약 가능한 날짜 Set
   const availableDates = useMemo(() => new Set(schedules.map((s) => s.date)), [schedules]);
+
+  // 예약 가능한 날짜들을 Date 배열로 변환 (highlightedDates용) - 오늘 이후 날짜만
+  const highlightedDates = useMemo(() => {
+    const today = startOfToday();
+
+    return Array.from(availableDates)
+      .map((dateStr) => parseISO(dateStr))
+      .filter((date) => !isNaN(date.getTime())) // 유효한 날짜인지 확인
+      .filter((date) => !isBefore(date, today)); // 오늘 이후 포함
+  }, [availableDates]);
 
   // 오늘 날짜 자동 선택 로직
   useEffect(() => {
@@ -43,6 +54,7 @@ const CalendarStep = ({ schedules, selectedDate, onDateSelect }: CalendarStepPro
       selectedDate={selectedDate ? stringToDate(selectedDate) : null}
       onClickDay={handleDateChange}
       isDateDisabled={isDateDisabled}
+      highlightedDates={highlightedDates}
     />
   );
 };
