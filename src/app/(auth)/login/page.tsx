@@ -39,7 +39,7 @@ const LoginPage = () => {
       setRefreshToken(refreshToken);
       setUser(user);
 
-      router.push('/');
+      router.push('/home');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverMessage = (error.response?.data as { message?: string })?.message;
@@ -70,7 +70,7 @@ const LoginPage = () => {
       >
         {/* 로고 */}
         <div>
-          <Link href='/'>
+          <Link href='/home'>
             <Image
               src='/icons/wazylogoHorizon.svg'
               alt='Wazy Logo'

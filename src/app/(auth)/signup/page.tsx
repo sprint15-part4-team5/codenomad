@@ -73,7 +73,7 @@ const SignupPage = () => {
       >
         {/* 로고 */}
         <div>
-          <Link href='/'>
+          <Link href='/home'>
             <Image
               src='/icons/wazylogoHorizon.svg'
               alt='Wazy Logo'
