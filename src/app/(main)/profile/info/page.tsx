@@ -152,83 +152,85 @@ const InformationPage = () => {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className='rounded-16 mx-auto w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
-    >
-      {/* 🆕 공통 MobilePageHeader 컴포넌트 사용 */}
-      <MobilePageHeader title='내 정보' description='닉네임과 비밀번호를 수정하실 수 있습니다.' />
+    <div className='mx-auto flex w-full flex-col justify-center p-24 lg:px-126'>
+      <h1 className='text-18-b text-gray-950'>
+        <MobilePageHeader title='내 정보' description='닉네임과 비밀번호를 수정하실 수 있습니다.' />
+      </h1>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='rounded-16 mx-auto w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
+      >
+        {/* 에러 메시지 */}
+        {error && <div className='rounded-lg bg-red-50 p-3 text-sm text-red-500'>{error}</div>}
 
-      {/* 에러 메시지 */}
-      {error && <div className='rounded-lg bg-red-50 p-3 text-sm text-red-500'>{error}</div>}
+        <Input
+          label='닉네임'
+          {...register('nickname')}
+          placeholder='닉네임을 입력해 주세요'
+          error={errors.nickname?.message}
+          autoComplete='username'
+        />
 
-      <Input
-        label='닉네임'
-        {...register('nickname')}
-        placeholder='닉네임을 입력해 주세요'
-        error={errors.nickname?.message}
-        autoComplete='username'
-      />
+        <Input
+          label='이메일'
+          {...register('email')}
+          placeholder='이메일을 입력해 주세요'
+          error={errors.email?.message}
+          type='email'
+          autoComplete='email'
+          readOnly
+        />
 
-      <Input
-        label='이메일'
-        {...register('email')}
-        placeholder='이메일을 입력해 주세요'
-        error={errors.email?.message}
-        type='email'
-        autoComplete='email'
-        readOnly
-      />
+        <Input
+          label='새 비밀번호 (변경 시에만 입력)'
+          {...register('password')}
+          placeholder='8자 이상 입력해 주세요'
+          error={errors.password?.message}
+          type='password'
+          autoComplete='new-password'
+        />
 
-      <Input
-        label='새 비밀번호 (변경 시에만 입력)'
-        {...register('password')}
-        placeholder='8자 이상 입력해 주세요'
-        error={errors.password?.message}
-        type='password'
-        autoComplete='new-password'
-      />
+        <Input
+          label='새 비밀번호 확인'
+          {...register('confirmPassword')}
+          placeholder='비밀번호를 한번 더 입력해 주세요'
+          error={errors.confirmPassword?.message}
+          type='password'
+          autoComplete='new-password'
+          disabled={!watchedPassword}
+        />
 
-      <Input
-        label='새 비밀번호 확인'
-        {...register('confirmPassword')}
-        placeholder='비밀번호를 한번 더 입력해 주세요'
-        error={errors.confirmPassword?.message}
-        type='password'
-        autoComplete='new-password'
-        disabled={!watchedPassword}
-      />
+        {/* 저장/취소 버튼 (모바일에서만 보임) */}
+        <div className='flex justify-center gap-3 md:hidden'>
+          <button
+            type='button'
+            className='text-16-m h-41 flex-1 rounded-[12px] border border-gray-300 bg-white px-10 py-3 text-gray-700'
+            onClick={mobileContext?.onCancel}
+            disabled={isSubmitting}
+          >
+            취소하기
+          </button>
+          <button
+            type='submit'
+            className='text-16-m hover:shadow-brand-blue/60 bg-primary-500 h-41 flex-1 cursor-pointer rounded-xl px-10 py-3 text-white transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
+            disabled={isSubmitting || !isValid}
+          >
+            {isSubmitting ? '저장 중...' : '저장하기'}
+          </button>
+        </div>
 
-      {/* 저장/취소 버튼 (모바일에서만 보임) */}
-      <div className='flex justify-center gap-3 md:hidden'>
-        <button
-          type='button'
-          className='text-16-m h-41 flex-1 rounded-[12px] border border-gray-300 bg-white px-10 py-3 text-gray-700'
-          onClick={mobileContext?.onCancel}
-          disabled={isSubmitting}
-        >
-          취소하기
-        </button>
-        <button
-          type='submit'
-          className='text-16-m hover:shadow-brand-blue/60 bg-primary-500 h-41 flex-1 cursor-pointer rounded-xl px-10 py-3 text-white transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
-          disabled={isSubmitting || !isValid}
-        >
-          {isSubmitting ? '저장 중...' : '저장하기'}
-        </button>
-      </div>
-
-      {/* 저장 버튼 (PC에서만 보임) */}
-      <div className='hidden justify-center md:flex'>
-        <button
-          type='submit'
-          className='text-16-m hover:shadow-brand-blue/60 bg-primary-500 h-41 w-120 cursor-pointer rounded-xl py-3 text-white transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
-          disabled={isSubmitting || !isValid}
-        >
-          {isSubmitting ? '저장 중...' : '저장하기'}
-        </button>
-      </div>
-    </form>
+        {/* 저장 버튼 (PC에서만 보임) */}
+        <div className='hidden justify-center md:flex'>
+          <button
+            type='submit'
+            className='text-16-m hover:shadow-brand-blue/60 bg-primary-500 h-41 w-120 cursor-pointer rounded-xl py-3 text-white transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
+            disabled={isSubmitting || !isValid}
+          >
+            {isSubmitting ? '저장 중...' : '저장하기'}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

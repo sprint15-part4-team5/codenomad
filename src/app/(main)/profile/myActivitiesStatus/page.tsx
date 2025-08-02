@@ -524,42 +524,46 @@ export default function ReservationStatusPage() {
   }
 
   return (
-    <section className='mx-auto w-full max-w-2xl'>
-      <MobilePageHeader
-        title='예약 현황'
-        description='내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.'
-      />
-      <ReservationCalendar
-        selectedDate={date}
-        onDateChange={setDate}
-        onDayClick={handleDayClick}
-        onMonthChange={(newDate) => setDate(newDate)}
-        reservationData={calendarReservationData}
-        experiences={myActivities.map((act) => ({ ...act, id: act.id.toString() }))}
-        selectedExperienceId={selectedActivity?.id.toString()}
-        onExperienceChange={(experienceId) => {
-          const newSelected = myActivities.find((act) => act.id.toString() === experienceId);
-          if (newSelected) {
-            setSelectedActivity(newSelected);
-          }
-        }}
-      />
-      {selectedDate && calendarCellRect && (
-        <ReservationModal
-          selectedDate={selectedDate}
-          calendarCellRect={calendarCellRect}
-          selectedTab={selectedTab}
-          selectedTime={selectedTime}
-          timeOptions={timeOptions}
-          reservationDetails={reservationDetails}
-          filteredReservations={filteredReservations}
-          onTabChange={setSelectedTab}
-          onTimeChange={setSelectedTime}
-          onClose={closeModal}
-          onApprove={handleApproveReservation}
-          onDecline={handleDeclineReservation}
+    <div className='mx-auto flex w-full flex-col justify-center p-24 lg:px-126'>
+      <h1 className='text-18-b text-gray-950'>
+        <MobilePageHeader
+          title='예약 현황'
+          description='내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.'
         />
-      )}
-    </section>
+      </h1>
+      <section>
+        <ReservationCalendar
+          selectedDate={date}
+          onDateChange={setDate}
+          onDayClick={handleDayClick}
+          onMonthChange={(newDate) => setDate(newDate)}
+          reservationData={calendarReservationData}
+          experiences={myActivities.map((act) => ({ ...act, id: act.id.toString() }))}
+          selectedExperienceId={selectedActivity?.id.toString()}
+          onExperienceChange={(experienceId) => {
+            const newSelected = myActivities.find((act) => act.id.toString() === experienceId);
+            if (newSelected) {
+              setSelectedActivity(newSelected);
+            }
+          }}
+        />
+        {selectedDate && calendarCellRect && (
+          <ReservationModal
+            selectedDate={selectedDate}
+            calendarCellRect={calendarCellRect}
+            selectedTab={selectedTab}
+            selectedTime={selectedTime}
+            timeOptions={timeOptions}
+            reservationDetails={reservationDetails}
+            filteredReservations={filteredReservations}
+            onTabChange={setSelectedTab}
+            onTimeChange={setSelectedTime}
+            onClose={closeModal}
+            onApprove={handleApproveReservation}
+            onDecline={handleDeclineReservation}
+          />
+        )}
+      </section>
+    </div>
   );
 }
