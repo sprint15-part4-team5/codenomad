@@ -1,8 +1,13 @@
 'use client';
 
-import { useState, createContext, useEffect } from 'react';
+import { useState, createContext, useEffect, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import ProfileMenu from '@/components/profile/ProfileMenu';
+
+// 모바일 메뉴 경로 중앙 관리
+type ProfilePath = '/profile' | '/profile/';
+const MOBILE_MENU_PATHS = ['/profile', '/profile/'] as const;
+const BASE_PROFILE_PATH = '/profile';
 
 // 모바일 전용 Context: 서브페이지에서 메뉴로 돌아가는 기능 제공
 export const ProfileMobileContext = createContext<{ onCancel: () => void } | null>(null);
@@ -10,53 +15,55 @@ export const ProfileMobileContext = createContext<{ onCancel: () => void } | nul
 export default function MyLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  // 모바일에서 메뉴/콘텐츠 전환 상태
   const [showContent, setShowContent] = useState(false);
-
-  // 모바일 기준 (화면 사이즈 768px 미만) 여부 체크
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
 
-  // 모바일에서 URL과 상태 동기화: pathname 변화에 따라 showContent 업데이트
+  // 경로에 따른 화면 상태 결정 로직을 함수로 분리
+  const isMenuPath = useCallback((path: string): boolean => {
+    const isValidPath = (p: string): p is ProfilePath => {
+      return MOBILE_MENU_PATHS.includes(p as ProfilePath);
+    };
+
+    return isValidPath(path);
+  }, []);
+
+  // 화면 상태 업데이트 로직을 함수로 분리
+  const updateContentVisibility = useCallback(
+    (path: string) => {
+      setShowContent(!isMenuPath(path));
+    },
+    [isMenuPath],
+  );
+
+  // pathname 변화에 따른 상태 업데이트
   useEffect(() => {
     if (!isMobile) return;
+    updateContentVisibility(pathname);
+  }, [pathname, isMobile, updateContentVisibility]);
 
-    // 모바일에서 기본 메뉴 페이지 경로(ex: '/profile')는 showContent false
-    // 상세 페이지 경로는 showContent true로 간주 (예: /profile/info, /profile/reservations 등)
-    // 필요하면 조건을 프로젝트 라우팅 구조에 맞게 조정하세요
-    const mobileMenuPaths = ['/profile', '/profile/']; // 메뉴 페이지 URL, 필요하면 추가
-
-    if (mobileMenuPaths.includes(pathname)) {
-      setShowContent(false); // 메뉴 화면
-    } else {
-      setShowContent(true); // 상세 화면
-    }
-  }, [pathname, isMobile]);
-
-  // 브라우저 뒤로가기 시 popstate 이벤트로 상태 복구
+  // popstate 이벤트 핸들러
   useEffect(() => {
     if (!isMobile) return;
 
     const onPopState = () => {
-      // 뒤로가기/앞으로가기로 인해 URL이 바뀔 때 pathname에 따라 상태 변경
-      const currentPath = window.location.pathname;
-      const mobileMenuPaths = ['/profile', '/profile/'];
-
-      if (mobileMenuPaths.includes(currentPath)) {
-        setShowContent(false);
-      } else {
-        setShowContent(true);
-      }
+      updateContentVisibility(window.location.pathname);
     };
 
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [isMobile]);
+  }, [isMobile, updateContentVisibility]);
 
-  // 모바일 메뉴 클릭 시 URL 이동과 상태 전환을 함께 수행하는 함수
+  // 모바일 메뉴 클릭 핸들러
   const handleMenuClick = (path: string) => {
     setShowContent(true);
     router.push(path);
   };
+
+  // 모바일 취소 핸들러
+  const handleCancel = useCallback(() => {
+    setShowContent(false);
+    router.push(BASE_PROFILE_PATH);
+  }, [router]);
 
   return (
     <div className='mx-auto flex min-h-screen max-w-375 flex-col items-center gap-8 bg-white px-4 py-10 md:max-w-744 md:flex-row md:items-start md:justify-center md:gap-12 md:px-8 lg:max-w-7xl lg:px-16'>
@@ -81,17 +88,7 @@ export default function MyLayout({ children }: { children: React.ReactNode }) {
         {/* 모바일: showContent true일 때만 렌더링, Context 통해 onCancel 함수 전달 */}
         <div className='block flex min-h-[60vh] items-center justify-center md:hidden'>
           {showContent && (
-            <ProfileMobileContext.Provider
-              value={{
-                onCancel: () => {
-                  // 모바일 상세 화면에서 '취소' 혹은 메뉴로 돌아가기 동작
-
-                  // 메뉴 페이지로 URL 이동
-                  setShowContent(false);
-                  router.push('/profile'); // 모바일 메뉴 페이지 경로로 다시 이동
-                },
-              }}
-            >
+            <ProfileMobileContext.Provider value={{ onCancel: handleCancel }}>
               {children}
             </ProfileMobileContext.Provider>
           )}
