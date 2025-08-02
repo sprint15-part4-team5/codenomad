@@ -68,15 +68,16 @@ const Lightbox = ({ images, currentIndex, isOpen, onClose }: LightboxProps) => {
       onClick={onClose}
     >
       {/* 닫기 버튼 */}
-      <div className='mr-10 w-fit self-end p-4'>
-        <button className='text-2xl text-white md:text-3xl' onClick={onClose}>
-          ✕
-        </button>
-      </div>
+      <button
+        className='fixed top-4 right-4 z-[1001] text-2xl text-white md:top-10 md:right-10 md:text-3xl'
+        onClick={onClose}
+      >
+        ✕
+      </button>
 
       {/* 이미지 + 버튼 (가로 중앙 정렬) */}
       <div className='relative w-fit' onClick={(e) => e.stopPropagation()}>
-        <div className='relative h-auto w-300 md:size-500 lg:w-700'>
+        <div className='lg:400 relative size-300 md:size-500 lg:w-700'>
           <Image
             src={images[index].src}
             alt={images[index].alt}
@@ -109,12 +110,15 @@ const Lightbox = ({ images, currentIndex, isOpen, onClose }: LightboxProps) => {
       </div>
 
       {/* 썸네일 */}
-      <div className='mt-8 flex w-full justify-center gap-4 overflow-x-auto px-4'>
+      <div
+        className='mt-8 flex w-full justify-center gap-4 overflow-x-auto px-4'
+        onClick={(e) => e.stopPropagation()}
+      >
         {images.map((img, i) => (
           <div
             key={i}
             className={clsx(
-              'relative h-20 w-28 cursor-pointer overflow-hidden rounded-md border-2 md:h-28 md:w-44',
+              'relative h-50 w-50 cursor-pointer overflow-hidden rounded-md border-2 md:h-50 md:w-100',
               i === index ? 'border-white' : 'border-transparent opacity-60 hover:opacity-100',
             )}
             onClick={() => setIndex(i)}
