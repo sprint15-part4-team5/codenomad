@@ -33,7 +33,7 @@ const LANDING_REVIEWS = [
 
 const Section4 = () => {
   return (
-    <section className='bg-primary-400 flex h-full w-full flex-col items-center justify-center gap-32 p-20 md:gap-64 lg:h-814'>
+    <section className='bg-primary-400 flex h-full w-full flex-col items-center justify-center gap-32 p-20 md:h-859 md:gap-64 lg:h-814'>
       <h2 className='font-hakgyo text-primary-100 text-2xl font-semibold tracking-[-0.1rem] md:text-[3rem] lg:text-[4rem]'>
         다양한 체험들을 즐겨보세요
       </h2>
