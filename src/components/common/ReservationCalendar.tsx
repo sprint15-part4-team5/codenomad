@@ -277,7 +277,7 @@ const ReservationCalendar = ({
           navigationLabel={({ date }) => (
             <span
               className={cn(
-                'text-16-b md:text-20-b w-79 text-center tracking-tight text-black md:w-99',
+                'text-16-b md:text-20-b min-w-79 text-center tracking-tight whitespace-nowrap text-black md:min-w-99',
                 "flex font-['Pretendard',sans-serif]",
               )}
             >

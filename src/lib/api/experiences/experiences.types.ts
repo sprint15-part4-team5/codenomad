@@ -17,6 +17,7 @@ export interface ExperienceDetail {
     startTime: string;
     endTime: string;
   }>;
+  userId: number | string;
 }
 
 // ================== 체험 등록 ==================

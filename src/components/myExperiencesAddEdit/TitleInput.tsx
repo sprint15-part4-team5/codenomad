@@ -1,6 +1,6 @@
 import { Path } from 'react-hook-form';
 import Input from '@/components/common/Input';
-import type { TitleInputProps } from './types';
+import type { TitleInputProps } from './MyExperiences';
 import type { FieldValues } from 'react-hook-form';
 
 const TitleInput = <T extends FieldValues = FieldValues>({

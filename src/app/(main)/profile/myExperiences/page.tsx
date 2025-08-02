@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ExperienceCard from '@/components/profile/ExperienceCard';
-import { getMyActivities, MyActivity, deleteMyActivity } from '@/lib/api/profile/myActivities';
+import { getMyActivities, deleteMyActivity } from '@/lib/api/profile/myActivities';
+import type { MyActivity } from '@/components/profile/types/activity';
 // 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
 import CommonModal from '@/components/common/CancelModal';
@@ -126,69 +128,78 @@ export default function MyExperiencesPage() {
   const addExperienceButton = (
     <Link
       href='/experiences/add'
-      className='flex h-48 w-138 items-center justify-center rounded-lg bg-blue-500 text-center text-base whitespace-nowrap text-white transition-colors hover:bg-blue-600'
+      className='bg-primary-500 flex items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors md:h-48 md:w-120 lg:h-48 lg:w-138'
     >
       <span className='flex h-full w-full items-center justify-center'>체험 등록하기</span>
     </Link>
   );
 
   return (
-    <section className='mx-auto w-full max-w-2xl'>
-      {/* 🆕 공통 MobilePageHeader 컴포넌트 사용 */}
-      <MobilePageHeader
-        title='내 체험 관리'
-        description='내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.'
-        actionButton={addExperienceButton}
-      />
+    <div className='mx-auto flex w-full flex-col justify-center p-24 lg:px-126'>
+      <h1 className='text-18-b text-gray-950'>
+        <MobilePageHeader
+          title='내 체험 관리'
+          description='내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.'
+          actionButton={addExperienceButton}
+        />
+      </h1>
 
-      {/* ⏳ 초기 로딩 상태 */}
-      {isInitialLoading ? (
-        <LoadingSpinner message='내 체험을 불러오는 중...' useLogo={true} />
-      ) : (
-        <>
-          {/* 🎯 체험이 없는 경우: 빈 상태 표시 */}
-          {activities.length === 0 && !isLoading ? (
-            <div className='shadow-custom-5 mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
-              <img src='/icons/empty.svg' alt='empty' width={120} height={120} className='mb-6' />
-              <p className='mb-4 text-lg text-gray-500'>아직 등록한 체험이 없어요</p>
-              {/* 📱 모바일에서만 보이는 등록 버튼 */}
-              <Link
-                href='/experiences/add'
-                className='bg-primary-500 block flex h-48 w-138 items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors'
-              >
-                <span className='flex h-full w-full items-center justify-center'>
-                  체험 등록하기
-                </span>
-              </Link>
-            </div>
-          ) : null}
+      {/* 모바일 전용 등록 버튼 */}
+      <div className='md:hidden'>
+        <Link
+          href='/experiences/add'
+          className='bg-primary-500 mb-15 flex w-full items-center justify-center rounded-lg py-4 text-white'
+        >
+          체험 등록하기
+        </Link>
+      </div>
 
-          {/* 📋 체험이 있을 때: ExperienceCard로 목록 렌더링 */}
-          {activities.length > 0 && (
-            <div className='flex w-full flex-col gap-6'>
-              {activities.map((activity) => (
-                <ExperienceCard
-                  key={activity.id}
-                  id={activity.id}
-                  title={activity.title}
-                  rating={activity.rating}
-                  reviews={activity.reviewCount}
-                  price={activity.price}
-                  image={activity.bannerImageUrl}
-                  onDelete={handleDelete}
+      <section>
+        {/* ⏳ 초기 로딩 상태 */}
+        {isInitialLoading ? (
+          <LoadingSpinner message='내 체험을 불러오는 중...' useLogo={true} />
+        ) : (
+          <>
+            {/* 🎯 체험이 없는 경우: 빈 상태 표시 */}
+            {activities.length === 0 && !isLoading ? (
+              <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
+                <Image
+                  src='/icons/no_experience.svg'
+                  alt='empty'
+                  width={120}
+                  height={120}
+                  className='mb-6'
                 />
-              ))}
+                <p className='mb-20 text-lg text-gray-500'>아직 등록한 체험이 없어요</p>
+              </div>
+            ) : null}
 
-              {/* 🎯 무한 스크롤 트리거 요소: IntersectionObserver가 감시하는 핵심 요소 */}
-              {hasMore && ( // hasMore가 true일 때만 렌더링 (더 로드할 데이터가 있을 때)
-                <div
-                  ref={loaderRef} // 🔗 IntersectionObserver가 감시하는 요소
-                  className='flex justify-center py-4'
-                >
-                  {isLoading && ( // 추가 로딩 중일 때만 메시지 표시
-                    <div className='text-sm text-gray-500'>더 많은 체험을 불러오는 중...</div>
-                  )}
-                  {/* 
+            {/* 📋 체험이 있을 때: ExperienceCard로 목록 렌더링 */}
+            {activities.length > 0 && (
+              <div className='flex w-full flex-col gap-6'>
+                {activities.map((activity) => (
+                  <ExperienceCard
+                    key={activity.id}
+                    id={activity.id}
+                    title={activity.title}
+                    rating={activity.rating}
+                    reviews={activity.reviewCount}
+                    price={activity.price}
+                    image={activity.bannerImageUrl}
+                    onDelete={handleDelete}
+                  />
+                ))}
+
+                {/* 🎯 무한 스크롤 트리거 요소: IntersectionObserver가 감시하는 핵심 요소 */}
+                {hasMore && ( // hasMore가 true일 때만 렌더링 (더 로드할 데이터가 있을 때)
+                  <div
+                    ref={loaderRef} // 🔗 IntersectionObserver가 감시하는 요소
+                    className='flex justify-center py-4'
+                  >
+                    {isLoading && ( // 추가 로딩 중일 때만 메시지 표시
+                      <div className='text-sm text-gray-500'>더 많은 체험을 불러오는 중...</div>
+                    )}
+                    {/* 
                     🎯 동작 원리:
                     1. 사용자가 스크롤해서 이 div가 화면에 10% 보이면
                     2. IntersectionObserver가 감지하고
@@ -196,29 +207,24 @@ export default function MyExperiencesPage() {
                     4. 새 데이터 로드 완료
                     5. hasMore가 false가 되면 이 요소가 사라져서 무한 스크롤 종료
                   */}
-                </div>
-              )}
-            </div>
-          )}
-        </>
-      )}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
 
-      {/* 🗑️ 삭제 확인 모달 */}
-      <CommonModal
-        open={showDeleteModal}
-        icon={
-          <div className='flex h-full w-full items-center justify-center text-red-500'>
-            <svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'>
-              <path d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z' />
-            </svg>
-          </div>
-        }
-        text='정말 삭제하시겠습니까?<br />삭제된 체험은 복구할 수 없습니다.'
-        cancelText='취소'
-        confirmText='삭제하기'
-        onCancel={closeDeleteModal}
-        onConfirm={confirmDelete}
-      />
-    </section>
+        {/* 🗑️ 삭제 확인 모달 */}
+        <CommonModal
+          open={showDeleteModal}
+          icon={<Image src='/icons/icon_cancel.svg' alt='delete' width={80} height={80} />}
+          text='정말 삭제하시겠습니까?<br />삭제된 체험은 복구할 수 없습니다.'
+          cancelText='취소'
+          confirmText='삭제하기'
+          onCancel={closeDeleteModal}
+          onConfirm={confirmDelete}
+        />
+      </section>
+    </div>
   );
 }

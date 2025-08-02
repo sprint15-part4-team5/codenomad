@@ -21,7 +21,7 @@ const Header = () => {
     <header className='fixed top-0 left-0 z-20 h-48 w-full border-b border-gray-100 bg-white md:h-80'>
       <div className='mx-auto flex h-full max-w-screen-xl items-center justify-between px-6'>
         {/* 로고 */}
-        <Link href='/' className='flex items-center gap-2 p-6'>
+        <Link href='/home' className='flex items-center gap-2 p-6'>
           <Image
             src='/icons/wazyLogoVertical.svg'
             alt='wazy 로고'

@@ -28,4 +28,6 @@ export interface AuthState {
   clearAuthStore: () => void;
   setUser: (user: UserType) => void;
   setUserProfileImage: (newUrl: string) => void;
+  setUserProfile: (updates: Partial<Pick<UserType, 'email' | 'nickname'>>) => void;
+
 }

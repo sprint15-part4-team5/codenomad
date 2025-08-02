@@ -1,10 +1,12 @@
 /* 웹폰트 Pretendard import (CDN) */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://cdn.jsdelivr.net/gh/fonts-archive/HakgyoansimDunggeunmiso/subsets/HakgyoansimDunggeunmiso-dynamic-subset.css');
 @import 'tailwindcss';
 
 /* Tailwind CSS 설정 */
 @theme {
   --color-white: #ffffff;
+  --color-main: #f4f4e9;
   --color-black: #000000;
   --color-gray-25: #f8f8f8;
   --color-gray-50: #edeef2;
@@ -19,8 +21,11 @@
   --color-gray-900: #323236;
   --color-gray-950: #1f1f22;
   --color-primary-100: #e9f6d0;
+  --color-primary-400: #9db575;
   --color-primary-500: #31ae23;
   --color-red: #eb5757;
+
+  --font-hakgyo: 'Hakgyoansim Dunggeunmiso', sans-serif;
 
   --spacing: 0.0625rem;
 
@@ -139,7 +144,7 @@
 
 /* 기본 스타일 설정 */
 :root {
-  --background: #ffffff;
+  --background: #fafaf8;
   --foreground: #171717;
 }
 
@@ -156,8 +161,4 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.bg-gradient-main {
-  background: #f4f4e9;
 }

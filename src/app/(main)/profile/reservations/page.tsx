@@ -2,12 +2,11 @@
 import MobilePageHeader from '@/components/profile/common/MobilePageHeader';
 import Badge from '@/components/reservationList/Badge';
 import ReservationCard from '@/components/reservationList/ReservationCard';
-import { StatusType } from '@/components/reservationList/StatusBadge';
+import { StatusType } from '@/components/reservationList/reservations.types';
 import { getReservationList } from '@/lib/api/profile/reservationList';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { ProfileMobileContext } from '../layout';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 interface reservationsType {
   activity: {
@@ -29,7 +28,6 @@ interface reservationsType {
   updatedAt: string;
   userId: number;
 }
-
 const Page = () => {
   const [filter, setFilter] = useState<StatusType | null>(null);
   const [reservationList, setReservationList] = useState<reservationsType[]>([]);
@@ -37,7 +35,6 @@ const Page = () => {
   const [cursorId, setCursorId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const mobileContext = useContext(ProfileMobileContext);
   const observerEl = useRef<HTMLDivElement>(null);
   const statusList: { text: string; value: StatusType }[] = [
     { text: '예약 신청', value: 'pending' },
@@ -121,11 +118,11 @@ const Page = () => {
   return (
     <div className='mx-auto flex w-full flex-col justify-center p-24 lg:px-126'>
       <h1 className='text-18-b text-gray-950'>
-        <MobilePageHeader title='예약 내역' />
-        예약 내역
+        <MobilePageHeader
+          title='예약 내역'
+          description='예약 내역을 변경 및 취소 할 수 있습니다.'
+        />
       </h1>
-      <h2 className='text-14-m my-10 text-gray-500'>예약 내역을 변경 및 취소 할 수 있습니다.</h2>
-
       <div className='scrollbar-hide overflow-x-scroll'>
         <div className='my-14 flex w-max grow-0 gap-8'>
           {statusList.map((item) => {

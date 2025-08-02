@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Input from '@/components/common/Input';
+import TimeDropdown from '@/components/common/TimeDropdown';
 import Image from 'next/image';
 import CalendarComponent from '@/components/common/Calendar';
-import type { ReserveTime, ReserveTimesInputProps } from './types';
+import type { ReserveTime, ReserveTimesInputProps } from './MyExperiences';
 
 const TIME_OPTIONS = Array.from({ length: 25 }, (_, i) => {
   const hour = i.toString().padStart(2, '0');
@@ -111,7 +112,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
               {/* 달력 아이콘 클릭 시 CalendarModal 노출 */}
               {calendarOpenIdx === idx && (isEdit || idx === 0) && (
                 <div
-                  className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/50'
+                  className='fixed inset-0 z-49 flex items-center justify-center bg-black/50'
                   onClick={(e) => {
                     // 배경 클릭 시 모달 닫기
                     if (e.target === e.currentTarget) {
@@ -120,7 +121,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                   }}
                 >
                   <div
-                    className='relative z-[10000] flex w-375 flex-col items-center rounded-lg bg-white p-24 shadow-lg md:w-407 lg:w-398'
+                    className='relative z-50 flex w-375 flex-col items-center rounded-lg bg-white p-24 shadow-lg md:w-407 lg:w-398'
                     onClick={(e) => {
                       // 모달 내부 클릭 시 이벤트 전파 중단
                       e.stopPropagation();
@@ -149,7 +150,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                       onClick={() => {
                         setCalendarOpenIdx(null);
                       }}
-                      className='text-14-m mt-16 w-full rounded-[12px] bg-gray-100 py-10 text-gray-700 transition-colors hover:bg-gray-200'
+                      className='text-14-m mt-16 w-full rounded-xl bg-gray-100 py-10 text-gray-700 transition-colors hover:bg-gray-200'
                     >
                       취소
                     </button>
@@ -158,33 +159,25 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
               )}
             </div>
             {/* 시작시간,종료시간 인풋 */}
-            <div className='flex items-center gap-14 md:gap-10'>
-              {/* 시작 시간 인풋 */}
-              <div className='w-124.5 md:w-122'>
-                <Input
-                  label='' // 모바일에서는 label 숨김
-                  as='select'
-                  options={TIME_OPTIONS}
-                  className='w-full'
-                  value={rt.start ?? '00:00'}
-                  onChange={(e) => handleTimeChange(idx, 'start', e.target.value)}
-                  hideLabelOnMobile
-                />
-              </div>
+            <div className='flex items-center  gap-14 md:gap-10'>
+              {/* 시작 시간 TimeDropdown 공통 컴포넌트 */}
+              <TimeDropdown
+                value={rt.start}
+                onChange={(val) => handleTimeChange(idx, 'start', val)}
+                options={TIME_OPTIONS}
+                placeholder='시작 시간'
+                className='w-124.5 md:w-122'
+              />
               {/* - 구분선 */}
               <div className='text-20-b w-8 text-gray-800'>-</div>
-              {/* 종료 시간 인풋 */}
-              <div className='w-124.5 md:w-122'>
-                <Input
-                  label='' // 모바일에서는 label 숨김
-                  as='select'
-                  options={TIME_OPTIONS_END}
-                  className='w-full'
-                  value={rt.end}
-                  onChange={(e) => handleTimeChange(idx, 'end', e.target.value)}
-                  hideLabelOnMobile
-                />
-              </div>
+              {/* 종료 시간 TimeDropdown 공통 컴포넌트 */}
+              <TimeDropdown
+                value={rt.end}
+                onChange={(val) => handleTimeChange(idx, 'end', val)}
+                options={TIME_OPTIONS_END}
+                placeholder='종료 시간'
+                className='w-124.5 md:w-122'
+              />
               {/* + 또는 - 버튼 */}
               <div className='ml-8 flex items-center'>
                 {idx === 0 ? (
