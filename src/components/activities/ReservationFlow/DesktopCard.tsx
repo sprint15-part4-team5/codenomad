@@ -83,7 +83,7 @@ const DesktopCard = ({
             'text-16-b flex h-50 w-135 flex-col items-center justify-center rounded-[0.875rem]',
             isConfirmEnabled
               ? 'bg-primary-500 hover:bg-primary-600 text-white'
-              : 'cursor-not-allowed bg-gray-300 text-gray-50',
+              : 'bg-gray-300 text-gray-50',
           )}
           disabled={!isConfirmEnabled}
           onClick={handleReservationConfirm}

@@ -50,7 +50,7 @@ const TimeSelectionStep = ({
                 // 마우스가 있는 기기에서만 호버
                 'supports-hover:hover:text-primary-500 supports-hover:hover:border-primary-500 supports-hover:hover:bg-blue-50',
                 scheduleId === time.id
-                  ? 'border-primary-500 text-primary-500 bg-blue-50'
+                  ? 'border-primary-500 text-primary-500 bg-green-50'
                   : 'border-gray-300',
               )}
             >
