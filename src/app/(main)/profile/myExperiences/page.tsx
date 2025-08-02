@@ -143,6 +143,17 @@ export default function MyExperiencesPage() {
           actionButton={addExperienceButton}
         />
       </h1>
+
+      {/* 모바일 전용 등록 버튼 */}
+      <div className='md:hidden'>
+        <Link
+          href='/experiences/add'
+          className='bg-primary-500 mb-15 flex w-full items-center justify-center rounded-lg py-4 text-white'
+        >
+          체험 등록하기
+        </Link>
+      </div>
+
       <section>
         {/* ⏳ 초기 로딩 상태 */}
         {isInitialLoading ? (
