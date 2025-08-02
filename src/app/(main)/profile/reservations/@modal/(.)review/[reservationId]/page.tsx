@@ -19,7 +19,7 @@ export default function Page() {
   }
 
   if (!title || !date || !startTime || !endTime || !headCount) {
-    throw new Error('필수 예약 정보가 누락되었습니다.');
+    return null;
   }
 
   const numericHeadCount = Number(headCount);

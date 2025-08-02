@@ -1,7 +1,8 @@
-import Image from 'next/image';
-import StatusBadge, { StatusType } from './StatusBadge';
+import StatusBadge from './StatusBadge';
 import { useRouter } from 'next/navigation';
 import { formatPrice } from '@/utils/formatPrice';
+import { StatusType } from './reservations.types';
+import SafeImage from '../common/SafeImage';
 
 interface ReservationCardType {
   status: StatusType;
@@ -75,9 +76,6 @@ const ReservationCard = ({
 
               {status === 'pending' && (
                 <div className='flex w-160 gap-8'>
-                  <button className='text-14-m w-full rounded-lg border-1 border-gray-50 bg-white px-10 py-6 text-gray-600'>
-                    예약 변경
-                  </button>
                   <button
                     className='text-14-m w-full rounded-lg bg-gray-50 px-10 py-6 text-gray-600'
                     onClick={openConfirmModal}
@@ -89,8 +87,8 @@ const ReservationCard = ({
             </div>
           </div>
         </div>
-        <div className='shadow-card relative left-40 h-full w-300 overflow-hidden rounded-3xl bg-gray-50 md:left-200 lg:left-350'>
-          <Image src={bannerUrl} fill alt='banner_image' className='object-cover' />
+        <div className='shadow-card relative left-160 h-full w-180 overflow-hidden rounded-3xl bg-gray-50 md:left-320 lg:left-470'>
+          <SafeImage src={bannerUrl} alt='banner_image' className='object-cover' fill />
         </div>
       </div>
       <div className='mt-12 lg:hidden'>
@@ -105,9 +103,6 @@ const ReservationCard = ({
 
         {status === 'pending' && (
           <div className='flex gap-8'>
-            <button className='w-full rounded-lg border-1 border-gray-50 bg-white py-10 text-gray-600'>
-              예약 변경
-            </button>
             <button
               className='w-full rounded-lg bg-gray-50 py-10 text-gray-600'
               onClick={openConfirmModal}

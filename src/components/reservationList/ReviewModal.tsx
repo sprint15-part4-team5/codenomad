@@ -56,8 +56,7 @@ const ReviewModal = ({
     try {
       setIsSubmitting(true);
       await postReview(reservationId, data);
-      router.back();
-      router.refresh();
+      window.location.href = '/profile/reservations';
       document.body.style.overflow = 'auto';
     } catch (error) {
       console.error(error);
@@ -78,7 +77,7 @@ const ReviewModal = ({
       <dialog
         open
         ref={dialogRef}
-        className='inset-0 m-auto flex w-327 flex-col rounded-[30px] px-24 py-20 md:w-385'
+        className='inset-0 m-auto flex w-327 flex-col rounded-[1.875rem] px-24 py-20 md:w-385'
         onClick={(e) => e.stopPropagation()}
       >
         <div className='text-right'>
@@ -127,9 +126,9 @@ const ReviewModal = ({
             className={
               'md:text-16-b bg-primary-500 text-14-b w-full rounded-xl py-12 text-white disabled:bg-gray-300 md:py-17'
             }
-            disabled={rating === 1 && content.length === 0}
+            disabled={isSubmitting || content.length === 0}
           >
-            작성하기
+            {isSubmitting ? '제출 중...' : '작성하기'}
           </button>
         </form>
       </dialog>

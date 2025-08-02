@@ -1,4 +1,4 @@
-export type StatusType = 'pending' | 'confirmed' | 'declined' | 'canceled' | 'completed';
+import { StatusType } from './reservations.types';
 
 interface ReservationStatusType {
   status: StatusType;

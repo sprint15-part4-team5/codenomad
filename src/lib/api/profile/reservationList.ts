@@ -1,4 +1,4 @@
-import { StatusType } from '@/components/reservationList/StatusBadge';
+import { StatusType } from '@/components/reservationList/reservations.types';
 import instance from '@/lib/api/axios';
 import { ReviewType } from '@/lib/schema/reservationsSchema';
 
@@ -6,7 +6,7 @@ export const getReservationList = async (
   cursorId: number | null = null,
   status: StatusType | null = null,
 ) => {
-  const params = new URLSearchParams({ size: '2' });
+  const params = new URLSearchParams({ size: '5' });
   if (cursorId !== null) params.append('cursorId', cursorId.toString());
   if (status !== null) params.append('status', status);
 
