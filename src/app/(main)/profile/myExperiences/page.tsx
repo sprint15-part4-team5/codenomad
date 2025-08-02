@@ -128,7 +128,7 @@ export default function MyExperiencesPage() {
   const addExperienceButton = (
     <Link
       href='/experiences/add'
-      className='bg-primary-500 flex h-48 w-138 items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors'
+      className='bg-primary-500 flex items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors md:h-48 md:w-120 lg:h-48 lg:w-138'
     >
       <span className='flex h-full w-full items-center justify-center'>체험 등록하기</span>
     </Link>
@@ -160,15 +160,6 @@ export default function MyExperiencesPage() {
                   className='mb-6'
                 />
                 <p className='mb-20 text-lg text-gray-500'>아직 등록한 체험이 없어요</p>
-                {/* 📱 모바일에서만 보이는 등록 버튼 */}
-                <Link
-                  href='/experiences/add'
-                  className='bg-primary-500 block flex h-48 w-138 items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors'
-                >
-                  <span className='flex h-full w-full items-center justify-center'>
-                    체험 등록하기
-                  </span>
-                </Link>
               </div>
             ) : null}
 
