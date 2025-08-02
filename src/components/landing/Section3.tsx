@@ -7,7 +7,7 @@ const Section3 = () => {
     'shadow-custom-5 flex w-full max-w-162 md:max-w-296 lg:max-w-375 aspect-square items-center justify-center overflow-hidden rounded-3xl';
   const imageClass = 'w-full h-full object-cover';
   const textClass =
-    'font-hakgyo text-2xl text-primary-400 hidden text-center font-regular md:mt-12 lg:mt-29 md:block';
+    'font-hakgyo text-2xl text-primary-400 hidden text-center font-regular md:mt-12 lg:mt-29 md:block whitespace-nowrap';
 
   return (
     <section className='bg-main relative flex h-530 w-full flex-col items-center justify-center px-17 md:h-1025 md:px-53 lg:h-882 lg:px-183'>
@@ -29,7 +29,7 @@ const Section3 = () => {
           <p className={textClass}>다양한 스트릿 댄스</p>
         </div>
 
-        {/* 바닷가에서 인물 살기 */}
+        {/* 숨겨진 사진 찍기 */}
         <div className={containerClass}>
           <div className={imageWrapperClass}>
             <Image
@@ -43,7 +43,7 @@ const Section3 = () => {
           <p className={textClass}>숨겨진 사진 찍기</p>
         </div>
 
-        {/* 숨겨진 사진 찍기 */}
+        {/* 바닷가에서 인물 살기 */}
         <div className={containerClass}>
           <div className={imageWrapperClass}>
             <Image
