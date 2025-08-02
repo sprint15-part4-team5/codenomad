@@ -21,11 +21,13 @@ export default function ExperienceCard({
   onDelete,
 }: ExperienceCardProps) {
   return (
-    <div className='shadow-custom-5 rounded-20 mx-auto flex h-178 w-327 items-center gap-5 bg-white p-5 md:h-159 md:w-476 lg:h-202 lg:w-640'>
+    <div className='shadow-custom-5 mx-auto flex h-178 w-327 items-center gap-5 rounded-2xl bg-white p-5 md:h-159 md:w-476 lg:h-202 lg:w-640'>
       {/* 내용 */}
       <div className='mt-40 ml-30 flex h-full flex-1 flex-col justify-between'>
         <div>
-          <div className='mb-5 text-xl leading-tight font-bold break-keep'>{title}</div>
+          <div className='mb-5 leading-tight font-bold break-keep sm:text-sm md:text-lg lg:text-xl'>
+            {title}
+          </div>
           <div className='text-14-m mb-5 flex items-center gap-1 text-gray-500'>
             <span className='text-16 text-yellow-400'>★</span>
             <span>{rating}</span>

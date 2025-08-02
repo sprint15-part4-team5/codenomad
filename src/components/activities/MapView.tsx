@@ -34,7 +34,7 @@ const MapView = ({ address, category }: MapViewProps) => {
   }, [address]);
 
   return (
-    <div className='mb-20 h-180 w-auto overflow-hidden rounded-2xl md:h-400'>
+    <div className='mb-20 h-300 w-auto overflow-hidden rounded-2xl md:h-400'>
       <Map
         center={{ lat: place.lat, lng: place.lng }}
         style={{ width: '100%', height: '100%', zIndex: '0' }}

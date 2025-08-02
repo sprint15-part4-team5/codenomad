@@ -113,9 +113,7 @@ const TabletModal = ({
         <button
           className={clsx(
             'text-16-b mt-30 h-50 w-full rounded-[0.875rem] py-15',
-            isConfirmEnabled
-              ? 'bg-primary-500 text-white'
-              : 'cursor-not-allowed bg-gray-300 text-gray-50',
+            isConfirmEnabled ? 'bg-primary-500 text-white' : 'bg-gray-300 text-gray-50',
           )}
           disabled={!isConfirmEnabled}
           onClick={handleReservationConfirm}

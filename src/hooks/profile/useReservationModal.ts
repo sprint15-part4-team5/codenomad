@@ -4,47 +4,12 @@ import {
   getReservations,
   updateReservationStatus,
 } from '@/lib/api/profile/myActivitiesStatus';
-
-// 📋 예약 데이터 타입 (기존과 동일)
-interface ReservationData {
-  id: number;
-  status: 'pending' | 'confirmed' | 'declined';
-  headCount: number;
-  nickname: string;
-  scheduleId: number | string;
-  timeSlot: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
-
-interface ScheduleData {
-  id: number | string;
-  scheduleId?: number | string;
-  timeSlot: string;
-  startTime: string;
-  endTime: string;
-  reservations: ReservationData[];
-  headCount?: number;
-}
-
-// 📊 타입 정의 추가
-interface DashboardData {
-  [date: string]: ScheduleData[];
-}
-
-interface ScheduleFromApi {
-  id: number | string;
-  scheduleId?: number | string;
-  startTime: string;
-  endTime: string;
-  count?: {
-    pending: number;
-    confirmed: number;
-    declined: number;
-    completed?: number;
-  };
-}
+import type {
+  ReservationData,
+  ScheduleData,
+  DashboardData,
+  ScheduleFromApi,
+} from '@/components/profile/types';
 
 // 🎣 예약 모달 관리 커스텀 훅
 // 역할: 모달 상태 + 스케줄/예약 데이터 로드 + 예약 상태 변경
@@ -286,6 +251,7 @@ export const useReservationModal = (
   useEffect(() => {
     const newFiltered = reservationDetails.filter((r) => r.status === tabMap[selectedTab]);
     setFilteredReservations(newFiltered);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservationDetails, selectedTab]);
 
   return {

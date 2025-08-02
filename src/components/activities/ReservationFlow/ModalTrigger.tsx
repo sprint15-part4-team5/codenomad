@@ -71,9 +71,7 @@ const ModalTrigger = ({
         </div>
         <button
           className={`h-50 w-auto rounded-[0.875rem] py-15 text-white transition-colors ${
-            selectedSchedule
-              ? 'bg-primary-500 hover:bg-primary-600'
-              : 'cursor-not-allowed bg-gray-300'
+            selectedSchedule ? 'bg-primary-500 hover:bg-primary-600' : 'bg-gray-300'
           }`}
           onClick={handleTriggerReservation}
           disabled={!selectedSchedule}
