@@ -30,8 +30,9 @@ const KakaoCallbackPage = () => {
         setUser(user);
 
         router.push('/home');
-      } catch (err: any) {
-        if ([403, 404].includes(err?.response?.status)) {
+      } catch (err: unknown) {
+        const error = err as { response?: { status: number } };
+        if (error?.response?.status && [403, 404].includes(error.response.status)) {
           router.replace(`/oauth/kakao/signup?code=${code}`);
         } else {
           alert('카카오 로그인 실패');

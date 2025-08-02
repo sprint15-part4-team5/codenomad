@@ -43,8 +43,9 @@ const KakaoSignupPage = () => {
       setUser(user);
 
       router.push('/home');
-    } catch (error: any) {
-      const serverMessage = error?.response?.data?.message ?? '회원가입에 실패했습니다.';
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      const serverMessage = err?.response?.data?.message ?? '회원가입에 실패했습니다.';
       setErrorMessage(serverMessage);
       setIsModalOpen(true);
     }
@@ -59,7 +60,7 @@ const KakaoSignupPage = () => {
       />
       <form
         onSubmit={handleSubmit}
-        className='rounded-16 w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
+        className='rounded-16 w-full max-w-376 space-y-24 p-24 md:max-w-640 md:p-32'
       >
         <h2 className='text-20-b text-center'>닉네임 입력</h2>
         <Input
