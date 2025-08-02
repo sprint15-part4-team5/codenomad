@@ -1,6 +1,6 @@
-import Banner from '@/components/landing/Banner';
-import MostCommentedActivities from '@/components/landing/MostCommentedActivities';
-import AllActivities from '@/components/landing/AllActivities';
+import Banner from '@/components/home/Banner';
+import MostCommentedActivities from '@/components/home/MostCommentedActivities';
+import AllActivities from '@/components/home/AllActivities';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
