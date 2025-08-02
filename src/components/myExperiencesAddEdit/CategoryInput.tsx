@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import type { CategoryInputProps } from './types';
+import type { CategoryInputProps } from './MyExperiences';
 
 const CategoryInput = ({ value, onChange, options, error }: CategoryInputProps) => {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ const CategoryInput = ({ value, onChange, options, error }: CategoryInputProps) 
       <span className='text-16-b flex pb-10'>카테고리</span>
       <button
         type='button'
-        className='shadow-custom-5 flex h-54 w-327 items-center justify-between rounded-[16px] bg-white px-20 py-16 outline-1 outline-offset-[-1px] outline-gray-100 md:w-684 lg:w-700'
+        className='shadow-custom-5 flex h-54 w-327 items-center justify-between rounded-2xl bg-white px-20 py-16 outline-1 outline-offset-[-1px] outline-gray-100 md:w-684 lg:w-700'
         onClick={() => {
           setOpen((v) => !v);
         }}
@@ -38,12 +38,12 @@ const CategoryInput = ({ value, onChange, options, error }: CategoryInputProps) 
         <Image src='/icons/icon_alt arrow_down.svg' alt='dropdown arrow' width={24} height={24} />
       </button>
       {open && (
-        <div className='absolute top-full left-0 z-10 mt-10 flex w-327 flex-col gap-4 rounded-[16px] bg-white p-12 outline-1 outline-offset-[-1px] outline-gray-100 md:w-684 md:p-12 lg:w-700'>
+        <div className='absolute top-full left-0 z-10 mt-10 flex w-327 flex-col gap-4 rounded-2xl bg-white p-12 outline-1 outline-offset-[-1px] outline-gray-100 md:w-684 md:p-12 lg:w-700'>
           {options.map((opt) => (
             <button
               key={opt.value}
               type='button'
-              className={`flex h-48 w-303 items-center justify-between self-stretch rounded-[12px] px-20 py-16 md:w-660 lg:w-676 ${value === opt.value ? 'bg-sky-100' : ''} hover:bg-gray-50`}
+              className={`flex h-48 w-303 items-center justify-between self-stretch rounded-xl px-20 py-16 md:w-660 lg:w-676 ${value === opt.value ? 'bg-sky-100' : ''} hover:bg-gray-50`}
               onClick={() => handleCategorySelect(opt.value)}
             >
               <span className='justify-center text-base font-medium text-gray-900'>

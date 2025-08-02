@@ -87,7 +87,7 @@ const Input = ({
       )}
 
       <div
-        className={`shadow-custom-5 flex w-full items-center justify-between rounded-[16px] bg-white px-20 py-16 ${baseOutline} ${outlineColor} ${props.onClick ? 'cursor-pointer' : 'cursor-text'}`}
+        className={`shadow-custom-5 flex w-full items-center justify-between rounded-2xl bg-white px-20 py-16 ${baseOutline} ${outlineColor} ${props.onClick ? 'cursor-pointer' : 'cursor-text'}`}
         onClick={handleContainerClick}
       >
         {/* textarea 타입 */}

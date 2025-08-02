@@ -1,4 +1,4 @@
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { FieldValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
 // AddressInput
 export interface AddressInputProps {
@@ -20,6 +20,7 @@ export interface TitleInputProps<T extends FieldValues> {
 // PriceInput
 export interface PriceInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
+  setValue: UseFormSetValue<T>;
   error?: string;
   value: string;
   path: string;
