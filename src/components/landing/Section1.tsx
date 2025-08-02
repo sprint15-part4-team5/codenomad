@@ -11,7 +11,7 @@ const Section1 = () => {
   };
 
   return (
-    <div className='bg-primary-100 p10 flex w-full justify-center p-20 sm:p-50 lg:p-100'>
+    <div className='bg-primary-100 flex w-full justify-center p-20 sm:p-50 lg:p-100'>
       <section className='relative mx-auto h-320 w-full max-w-[1448px] overflow-hidden rounded-3xl sm:h-420 lg:h-520'>
         {/* 배경 이미지 */}
         <Image
