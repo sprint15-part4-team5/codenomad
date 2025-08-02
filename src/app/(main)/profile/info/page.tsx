@@ -18,7 +18,7 @@ const InformationPage = () => {
   // ⏳ 로딩 상태 (로컬)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [error, setError] = useState('');
-
+  const { setUserNickname } = useAuthStore();
   // 🔗 모바일 Context 연결: 부모 레이아웃의 onCancel 함수 가져오기
   // 이 함수를 호출하면 모바일에서 메뉴 화면으로 돌아감
   const mobileContext = useContext(ProfileMobileContext);

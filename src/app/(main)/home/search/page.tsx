@@ -3,11 +3,11 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import instance from '@/lib/api/axios';
-import type { Activity } from '@/components/landing/LandingCard';
-import LandingCard from '@/components/landing/LandingCard';
+import type { Activity } from '@/components/home/LandingCard';
+import LandingCard from '@/components/home/LandingCard';
 import Pagination from '@/components/common/Pagination';
 import NoResult from '@/components/search/NoResult';
-import Banner from '@/components/landing/Banner';
+import Banner from '@/components/home/Banner';
 import LoadingPage from '@/components/common/LoadingPage';
 import showToastError from '@/lib/showToastError';
 
