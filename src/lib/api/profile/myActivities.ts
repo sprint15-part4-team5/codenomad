@@ -1,27 +1,5 @@
 import instance from '../axios';
-
-// 내 체험 목록 응답 타입
-export interface MyActivitiesResponse {
-  cursorId: number;
-  totalCount: number;
-  activities: MyActivity[];
-}
-
-// 내 체험 타입
-export interface MyActivity {
-  id: number;
-  userId: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  address: string;
-  bannerImageUrl: string;
-  rating: number;
-  reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { MyActivitiesResponse } from '@/components/profile/types/activity';
 
 // 내 체험 목록 조회
 // 페이지네이션을 위해 cursorId와 size를 받을 수 있도록 수정
