@@ -15,7 +15,7 @@ const menuItems = [
 ];
 
 interface ProfileMenuProps {
-  onMenuClick?: () => void;
+  onMenuClick?: (path: string) => void;
 }
 
 export default function ProfileMenu({ onMenuClick }: ProfileMenuProps) {
@@ -107,7 +107,7 @@ export default function ProfileMenu({ onMenuClick }: ProfileMenuProps) {
                 <button
                   type='button'
                   onClick={() => {
-                    onMenuClick(); // 🎯 layout.tsx의 setShowContent(true) 실행
+                    onMenuClick(item.href); // 🎯 layout.tsx의 setShowContent(true) 실행
                     router.push(item.href); // 🚀 해당 서브페이지로 라우팅
                   }}
                   className={`flex h-54 w-full cursor-pointer items-center gap-3 rounded-xl px-3 transition-colors md:px-30 ${isActive ? 'bg-primary-100 text-primary-500' : 'text-gray-600'} hover:bg-primary-100 hover:text-primary-500`}
