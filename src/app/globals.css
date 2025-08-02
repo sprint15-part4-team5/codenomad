@@ -6,6 +6,7 @@
 /* Tailwind CSS 설정 */
 @theme {
   --color-white: #ffffff;
+  --color-main: #f4f4e9;
   --color-black: #000000;
   --color-gray-25: #f8f8f8;
   --color-gray-50: #edeef2;
@@ -141,7 +142,7 @@
 
 /* 기본 스타일 설정 */
 :root {
-  --background: #ffffff;
+  --background: #fafafa;
   --foreground: #171717;
 }
 
@@ -158,8 +159,4 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.bg-gradient-main {
-  background: #f4f4e9;
 }
