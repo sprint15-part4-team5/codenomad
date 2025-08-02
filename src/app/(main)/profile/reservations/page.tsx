@@ -2,7 +2,7 @@
 import MobilePageHeader from '@/components/profile/common/MobilePageHeader';
 import Badge from '@/components/reservationList/Badge';
 import ReservationCard from '@/components/reservationList/ReservationCard';
-import { StatusType } from '@/components/reservationList/StatusBadge';
+import { StatusType } from '@/components/reservationList/reservations.types';
 import { getReservationList } from '@/lib/api/profile/reservationList';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,7 +28,6 @@ interface reservationsType {
   updatedAt: string;
   userId: number;
 }
-
 const Page = () => {
   const [filter, setFilter] = useState<StatusType | null>(null);
   const [reservationList, setReservationList] = useState<reservationsType[]>([]);
