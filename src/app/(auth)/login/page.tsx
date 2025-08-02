@@ -39,7 +39,7 @@ const LoginPage = () => {
       setRefreshToken(refreshToken);
       setUser(user);
 
-      router.push('/');
+      router.push('/home');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverMessage = (error.response?.data as { message?: string })?.message;
@@ -66,11 +66,11 @@ const LoginPage = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='rounded-16 flex w-full max-w-376 flex-col space-y-24 bg-white p-24 md:max-w-640 md:p-32'
+        className='rounded-16 flex w-full max-w-376 flex-col space-y-24 p-24 md:max-w-640 md:p-32'
       >
         {/* 로고 */}
         <div>
-          <Link href='/'>
+          <Link href='/home'>
             <Image
               src='/icons/wazylogoHorizon.svg'
               alt='Wazy Logo'
