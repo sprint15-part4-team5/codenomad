@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ExperienceCard from '@/components/profile/ExperienceCard';
-import { getMyActivities, MyActivity, deleteMyActivity } from '@/lib/api/profile/myActivities';
+import { getMyActivities, deleteMyActivity } from '@/lib/api/profile/myActivities';
+import type { MyActivity } from '@/components/profile/types/activity';
 // 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
 import CommonModal from '@/components/common/CancelModal';
@@ -126,7 +128,7 @@ export default function MyExperiencesPage() {
   const addExperienceButton = (
     <Link
       href='/experiences/add'
-      className='flex h-48 w-138 items-center justify-center rounded-lg bg-blue-500 text-center text-base whitespace-nowrap text-white transition-colors hover:bg-blue-600'
+      className='bg-primary-500 flex h-48 w-138 items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors'
     >
       <span className='flex h-full w-full items-center justify-center'>체험 등록하기</span>
     </Link>
@@ -148,9 +150,15 @@ export default function MyExperiencesPage() {
         <>
           {/* 🎯 체험이 없는 경우: 빈 상태 표시 */}
           {activities.length === 0 && !isLoading ? (
-            <div className='shadow-custom-5 mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
-              <img src='/icons/empty.svg' alt='empty' width={120} height={120} className='mb-6' />
-              <p className='mb-4 text-lg text-gray-500'>아직 등록한 체험이 없어요</p>
+            <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
+              <Image
+                src='/icons/no_experience.svg'
+                alt='empty'
+                width={120}
+                height={120}
+                className='mb-6'
+              />
+              <p className='mb-20 text-lg text-gray-500'>아직 등록한 체험이 없어요</p>
               {/* 📱 모바일에서만 보이는 등록 버튼 */}
               <Link
                 href='/experiences/add'
@@ -206,13 +214,7 @@ export default function MyExperiencesPage() {
       {/* 🗑️ 삭제 확인 모달 */}
       <CommonModal
         open={showDeleteModal}
-        icon={
-          <div className='flex h-full w-full items-center justify-center text-red-500'>
-            <svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'>
-              <path d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z' />
-            </svg>
-          </div>
-        }
+        icon={<Image src='/icons/icon_cancel.svg' alt='delete' width={80} height={80} />}
         text='정말 삭제하시겠습니까?<br />삭제된 체험은 복구할 수 없습니다.'
         cancelText='취소'
         confirmText='삭제하기'
