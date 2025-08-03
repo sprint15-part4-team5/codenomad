@@ -75,10 +75,10 @@ const AllActivities = () => {
       </div>
 
       {/* 페이지네이션 */}
-      {totalPages > 1 && (
+      {activities.length > 0 && (
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={totalPages || 1}
           onPageChange={(page) => setCurrentPage(page)}
         />
       )}
