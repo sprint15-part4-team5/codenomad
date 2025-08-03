@@ -35,13 +35,7 @@ const SearchContent = () => {
         setActivities(res.data.activities);
         setTotalCount(res.data.totalCount);
       } catch (err) {
-        showToastError(err, {
-          fallback: '검색 결과를 불러오는 데 실패했어요.',
-          overrides: {
-            403: '접근 권한이 없어요.',
-            404: '검색 결과가 없어요.',
-          },
-        });
+        showToastError(err);
       }
     };
 
@@ -76,11 +70,10 @@ const SearchContent = () => {
                 <LandingCard key={activity.id} activity={activity} />
               ))}
             </section>
-
-            {totalCount > 0 && (
+            {(activities.length > 0 || totalCount > 0) && (
               <Pagination
                 currentPage={page}
-                totalPages={totalPages}
+                totalPages={Math.max(1, totalPages)}
                 onPageChange={handlePageChange}
               />
             )}
