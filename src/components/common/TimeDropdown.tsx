@@ -59,7 +59,7 @@ const TimeDropdown = ({
 
         <Dropdown.Content>
           <div
-            className='absolute top-full left-0 z-10 mt-10 flex max-h-240 w-124.5 flex-col overflow-y-auto rounded-2xl bg-white p-12 shadow-lg md:w-122 !border-none !outline-none'
+            className='absolute top-full left-0 z-10 mt-10 flex max-h-240 w-124.5 flex-col overflow-y-auto rounded-2xl bg-white p-12 outline-1 outline-offset-[-1px] outline-gray-100 md:w-122'
             role='listbox'
             aria-label='시간 옵션 목록'
           >
