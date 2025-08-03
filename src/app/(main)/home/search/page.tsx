@@ -70,11 +70,10 @@ const SearchContent = () => {
                 <LandingCard key={activity.id} activity={activity} />
               ))}
             </section>
-
-            {totalCount > 0 && (
+            {(activities.length > 0 || totalCount > 0) && (
               <Pagination
                 currentPage={page}
-                totalPages={totalPages}
+                totalPages={Math.max(1, totalPages)}
                 onPageChange={handlePageChange}
               />
             )}
