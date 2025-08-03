@@ -35,13 +35,7 @@ const SearchContent = () => {
         setActivities(res.data.activities);
         setTotalCount(res.data.totalCount);
       } catch (err) {
-        showToastError(err, {
-          fallback: '검색 결과를 불러오는 데 실패했어요.',
-          overrides: {
-            403: '접근 권한이 없어요.',
-            404: '검색 결과가 없어요.',
-          },
-        });
+        showToastError(err);
       }
     };
 
