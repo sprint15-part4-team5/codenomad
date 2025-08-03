@@ -69,11 +69,11 @@ const SignupPage = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='rounded-16 w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
+        className='rounded-16 w-full max-w-376 space-y-24 p-24 md:max-w-640 md:p-32'
       >
         {/* 로고 */}
         <div>
-          <Link href='/'>
+          <Link href='/home'>
             <Image
               src='/icons/wazylogoHorizon.svg'
               alt='Wazy Logo'

@@ -5,6 +5,7 @@ import instance from '@/lib/api/axios';
 import type { Activity } from './LandingCard';
 import LandingCard from './LandingCard';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
+import LandingCardSkeleton from './LandingCardSkeleton';
 
 const SCROLL_DELAY_MS = 2000;
 const SCROLL_GAP_PX = 16;
@@ -50,11 +51,20 @@ const MostCommentedActivities = () => {
     <section className='mt-80 mb-60'>
       <h2 className='text-20-b md:text-24-b mb-30'>인기 체험</h2>
       <div ref={scrollRef} className='no-scrollbar flex gap-16 overflow-x-auto sm:gap-24'>
-        {activities.map((item) => (
-          <div key={item.id} className='min-w-[9.5rem] sm:min-w-[20.75rem] lg:min-w-[16.375rem]'>
-            <LandingCard activity={item} />
-          </div>
-        ))}
+        {activities.length === 0
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className='min-w-[9.5rem] sm:min-w-[20.75rem] lg:min-w-[16.375rem]'>
+                <LandingCardSkeleton />
+              </div>
+            ))
+          : activities.map((item) => (
+              <div
+                key={item.id}
+                className='min-w-[9.5rem] sm:min-w-[20.75rem] lg:min-w-[16.375rem]'
+              >
+                <LandingCard activity={item} />
+              </div>
+            ))}
       </div>
     </section>
   );

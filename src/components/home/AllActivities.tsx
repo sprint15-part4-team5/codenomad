@@ -8,6 +8,7 @@ import CategoryFilter from './CategoryFilter';
 import PriceSortDropdown from './PriceSortDropdown';
 import LandingCard from './LandingCard';
 import Pagination from '../common/Pagination';
+import LandingCardSkeleton from './LandingCardSkeleton';
 
 const AllActivities = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -68,16 +69,16 @@ const AllActivities = () => {
 
       {/* 카드 목록 */}
       <div className='grid grid-cols-2 gap-x-10 gap-y-20 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4'>
-        {activities.map((item) => (
-          <LandingCard key={item.id} activity={item} />
-        ))}
+        {activities.length === 0
+          ? Array.from({ length: 8 }).map((_, i) => <LandingCardSkeleton key={i} />)
+          : activities.map((item) => <LandingCard key={item.id} activity={item} />)}
       </div>
 
       {/* 페이지네이션 */}
-      {totalPages > 1 && (
+      {activities.length > 0 && (
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={totalPages || 1}
           onPageChange={(page) => setCurrentPage(page)}
         />
       )}
