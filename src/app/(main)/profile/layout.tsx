@@ -68,9 +68,9 @@ export default function MyLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <RouteGuard>
-      <div className='mx-auto flex min-h-screen max-w-375 flex-col items-center gap-8 bg-white px-4 py-10 md:max-w-744 md:flex-row md:items-start md:justify-center md:gap-12 md:px-8 lg:max-w-7xl lg:px-16'>
+      <div className='mx-auto flex min-h-screen max-w-375 flex-col items-center gap-8 px-4 py-10 md:max-w-744 md:flex-row md:items-start md:justify-center md:gap-12 md:px-8 lg:max-w-7xl lg:px-16'>
         {/* 사이드바 영역: 프로필 메뉴 */}
-        <aside className='sticky top-10 flex w-full max-w-xs justify-center md:block md:w-1/3 md:max-w-sm lg:w-1/4'>
+        <aside className='sticky top-[6.25rem] flex w-full max-w-xs justify-center md:block md:w-1/3 md:max-w-sm md:self-start lg:w-1/4'>
           {/* 모바일 화면 (md 미만) */}
           <div className='block md:hidden'>
             {!showContent ? <ProfileMenu onMenuClick={handleMenuClick} /> : null}
@@ -88,7 +88,7 @@ export default function MyLayout({ children }: { children: React.ReactNode }) {
         {/* 메인 콘텐츠 영역 */}
         <main className='w-full md:flex-1'>
           {/* 모바일: showContent true일 때만 렌더링, Context 통해 onCancel 함수 전달 */}
-          <div className='block flex min-h-[60vh] items-center justify-center md:hidden'>
+          <div className='flex min-h-[60vh] items-center justify-center md:hidden'>
             {showContent && (
               <ProfileMobileContext.Provider value={{ onCancel: handleCancel }}>
                 {children}

@@ -515,7 +515,7 @@ export default function ReservationStatusPage() {
           <p className='mb-20 text-lg text-gray-500'>아직 등록한 체험이 없어요</p>
           <Link
             href='/experiences/add'
-            className='bg-primary-500 block flex h-48 w-138 items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors'
+            className='bg-primary-500 flex h-48 w-138 items-center justify-center rounded-lg text-center text-base whitespace-nowrap text-white transition-colors'
           >
             <span className='flex h-full w-full items-center justify-center'>체험 등록하기</span>
           </Link>
@@ -529,7 +529,7 @@ export default function ReservationStatusPage() {
   }
 
   return (
-    <div className='mx-auto flex w-full flex-col justify-center p-24 lg:px-126'>
+    <div className='mx-auto flex w-full flex-col justify-center lg:px-126'>
       <h1 className='text-18-b text-gray-950'>
         <MobilePageHeader
           title='예약 현황'
