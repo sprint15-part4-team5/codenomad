@@ -1,7 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
+import LoadingPage from '../common/LoadingPage';
 
 interface RouteGuardProps {
   children: React.ReactNode;
@@ -10,11 +11,16 @@ interface RouteGuardProps {
 export default function RouteGuard({ children }: RouteGuardProps) {
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isLoggedIn) router.replace('/login');
+    if (isLoggedIn === false) {
+      router.replace('/login');
+    } else {
+      setIsLoading(false);
+    }
   }, [isLoggedIn, router]);
 
-  if (!isLoggedIn) return null; // 로그인 상태 확인 전까지는 렌더링 안 함
+  if (isLoading) return <LoadingPage />;
   return <>{children}</>;
 }
