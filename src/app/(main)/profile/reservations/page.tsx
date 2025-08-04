@@ -143,7 +143,12 @@ const Page = () => {
           filter === null ? (
             <div className='mt-40 flex flex-col items-center justify-center'>
               <div className='flex justify-center'>
-                <Image src={'/imgs/earth.svg'} width={122} height={122} alt='우는 지구 이미지' />
+                <Image
+                  src={'/icons/no_experience.svg'}
+                  width={122}
+                  height={122}
+                  alt='우는 마스코트'
+                />
               </div>
               <p className='text-18-m my-30 text-center text-gray-600'>아직 예약한 체험이 없어요</p>
               <Link
