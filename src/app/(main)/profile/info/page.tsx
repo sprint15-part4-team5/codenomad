@@ -10,6 +10,7 @@ import { getUserProfile, updateUserProfile } from '@/lib/api/profile';
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
 import { useAuthStore } from '@/store/useAuthStore';
 import { userInfoSchema, type UserInfoFormValues } from '@/lib/schema/authSchema';
+import { toast } from 'sonner';
 
 const InformationPage = () => {
   // 🎯 zustand에서 사용자 정보 및 업데이트 함수 가져오기
@@ -117,7 +118,7 @@ const InformationPage = () => {
         nickname: updateData.nickname,
       });
 
-      alert('회원정보가 성공적으로 수정되었습니다.');
+      toast.success('회원정보가 성공적으로 수정되었습니다.');
 
       // 비밀번호 필드 초기화
       setValue('password', '');

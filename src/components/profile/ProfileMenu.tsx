@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useRef, ChangeEvent } from 'react';
 import { uploadProfileImage, updateUserProfile } from '@/lib/api/profile';
 import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'sonner';
 
 const menuItems = [
   { icon: '/icons/icon_user.svg', label: '내 정보', href: '/profile/info' },
@@ -37,9 +38,9 @@ export default function ProfileMenu({ onMenuClick }: ProfileMenuProps) {
         : '/imgs/profile_default.png';
       setUserProfileImage(updatedUrl);
       updateUserProfile({ profileImageUrl: updatedUrl });
-      alert('프로필 이미지가 변경되었습니다!');
+      toast.success('프로필 이미지가 변경되었습니다!');
     } catch {
-      alert('이미지 업로드에 실패했습니다.');
+      toast.error('이미지 업로드에 실패했습니다.');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
