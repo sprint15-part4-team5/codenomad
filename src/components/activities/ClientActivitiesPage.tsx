@@ -14,6 +14,7 @@ import ActivityMapSection from '@/components/activities/sections/ActivityMapSect
 import ActivityReviewSection from '@/components/activities/sections/ActivityReviewSection';
 import ReservationContent from '@/components/activities/ReservationFlow/ReservationContent';
 import ErrorFallback from '@/components/activities/ErrorFallback';
+import ResponsiveActivityPageSkeleton from '@/components/activities/ResponsiveActivityPageSkeleton';
 
 import type { ActivityDetail } from '@/components/activities/Activities.types';
 
@@ -47,7 +48,7 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
     loadActivity();
   }, [id]);
 
-  if (loading) return <p>로딩 중...</p>;
+  if (!loading) return <ResponsiveActivityPageSkeleton />;
   if (!activity) return <ErrorFallback />;
 
   const isOwner = user?.id === activity.userId;
