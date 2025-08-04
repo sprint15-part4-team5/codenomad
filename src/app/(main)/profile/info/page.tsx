@@ -163,14 +163,6 @@ const InformationPage = () => {
         {error && <div className='rounded-lg bg-red-50 p-3 text-sm text-red-500'>{error}</div>}
 
         <Input
-          label='닉네임'
-          {...register('nickname')}
-          placeholder='닉네임을 입력해 주세요'
-          error={errors.nickname?.message}
-          autoComplete='username'
-        />
-
-        <Input
           label='이메일'
           {...register('email')}
           placeholder='이메일을 입력해 주세요'
@@ -178,6 +170,14 @@ const InformationPage = () => {
           type='email'
           autoComplete='email'
           readOnly
+        />
+
+        <Input
+          label='닉네임'
+          {...register('nickname')}
+          placeholder='닉네임을 입력해 주세요'
+          error={errors.nickname?.message}
+          autoComplete='username'
         />
 
         <Input
