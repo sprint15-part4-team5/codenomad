@@ -28,6 +28,7 @@ const PriceInput = <T extends FieldValues>({
         label='가격'
         labelClassName='text-16-b'
         placeholder='체험 금액을 입력해 주세요'
+        id='price-input'
         error={error}
         value={value}
         inputMode='numeric'

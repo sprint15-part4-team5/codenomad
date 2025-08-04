@@ -10,6 +10,7 @@ const TitleInput = <T extends FieldValues = FieldValues>({
 }: TitleInputProps<T>) => (
   <div className='mb-24'>
     <Input
+      id='title-input'
       label='제목'
       labelClassName='text-16-b'
       placeholder='제목을 입력해 주세요'

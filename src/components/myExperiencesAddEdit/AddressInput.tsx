@@ -38,9 +38,9 @@ const AddressInput = ({
   error,
   value,
   onChange,
-  detailAddress = '',
-  onDetailAddressChange,
-  detailError,
+  // detailAddress = '',
+  // onDetailAddressChange,
+  // detailError,
 }: AddressInputProps) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,9 +121,13 @@ const AddressInput = ({
 
   return (
     <div className='mb-30'>
+      <div className='text-16-b flex pb-10'>
+        <label htmlFor='address-input' className='cursor-pointer'>
+          주소
+        </label>
+      </div>
       <Input
-        label='주소'
-        labelClassName='text-16-b pointer-events-none select-none'
+        id='address-input'
         placeholder={isScriptLoaded ? '주소를 입력해 주세요' : '주소 검색 서비스 로딩 중...'}
         value={value}
         readOnly
@@ -151,7 +155,7 @@ const AddressInput = ({
         </div>
       )}
 
-      {/* 상세주소 입력 - 선택사항 */}
+      {/* 상세주소 입력 - 선택사항 
       {value && (
         <div className='mt-8'>
           <label className='text-16-b block pb-10'>상세주소</label>
@@ -165,6 +169,7 @@ const AddressInput = ({
           {detailError && <div className='text-12-m mt-2 text-red-500'>{detailError}</div>}
         </div>
       )}
+      */}
     </div>
   );
 };

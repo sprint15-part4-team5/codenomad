@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import Image from 'next/image';
 import type { CategoryInputProps } from './MyExperiences';
 
 const CategoryInput = ({ value, onChange, options, error }: CategoryInputProps) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const categoryId = useId(); // 고유 ID 생성
 
   // 바깥 클릭 시 닫기
   useEffect(() => {
@@ -24,8 +25,13 @@ const CategoryInput = ({ value, onChange, options, error }: CategoryInputProps) 
 
   return (
     <div className='relative mb-24' ref={ref}>
-      <span className='text-16-b flex pb-10'>카테고리</span>
+      <div className='text-16-b flex pb-10'>
+        <span className='cursor-pointer' onClick={() => setOpen((v) => !v)}>
+          카테고리
+        </span>
+      </div>
       <button
+        id={categoryId}
         type='button'
         className='shadow-custom-5 flex h-54 w-327 items-center justify-between rounded-2xl bg-white px-20 py-16 outline-1 outline-offset-[-1px] outline-gray-100 md:w-684 lg:w-700'
         onClick={() => {
