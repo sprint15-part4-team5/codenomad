@@ -9,6 +9,7 @@ import type { MyActivity } from '@/components/profile/types/activity';
 // 🆕 공통 컴포넌트 import (파일명 변경: index.ts → components.ts)
 import { MobilePageHeader, LoadingSpinner } from '@/components/profile/common/components';
 import CommonModal from '@/components/common/CancelModal';
+import { toast } from 'sonner';
 
 // 🔢 무한 스크롤 설정: 한 번에 몇 개씩 로드할지 결정
 const PAGE_SIZE = 5;
@@ -119,8 +120,9 @@ export default function MyExperiencesPage() {
       await deleteMyActivity(deleteTargetId);
       setActivities((prev) => prev.filter((a) => a.id !== deleteTargetId));
       closeDeleteModal();
+      toast.success('체험이 성공적으로 삭제되었습니다.');
     } catch {
-      alert('삭제에 실패했습니다.');
+      toast.error('삭제에 실패했습니다.');
     }
   };
 
@@ -162,7 +164,7 @@ export default function MyExperiencesPage() {
           <>
             {/* 🎯 체험이 없는 경우: 빈 상태 표시 */}
             {activities.length === 0 && !isLoading ? (
-              <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
+              <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl p-4 md:p-8'>
                 <Image
                   src='/icons/no_experience.svg'
                   alt='empty'

@@ -3,6 +3,7 @@
 import {
   useState,
   useRef,
+  useId,
   InputHTMLAttributes,
   TextareaHTMLAttributes,
   SelectHTMLAttributes,
@@ -26,6 +27,7 @@ interface InputProps extends InputTypes {
   options?: { value: string; label: ReactNode }[];
   dateIcon?: boolean;
   onDateIconClick?: () => void; // 추가
+  id?: string; // id prop 추가
 }
 
 const Input = ({
@@ -40,12 +42,17 @@ const Input = ({
   options = [],
   dateIcon = false,
   onDateIconClick,
+  id,
   ...props
 }: InputProps) => {
   const [show, setShow] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
+
+  // useId hook을 사용해서 안정적인 ID 생성
+  const autoId = useId();
+  const inputId = id || autoId;
 
   const isPassword = type === 'password';
   const inputType = isPassword ? (show ? 'text' : 'password') : type;
@@ -80,7 +87,8 @@ const Input = ({
       {/* 라벨 */}
       {label && (
         <label
-          className={`pb-10 ${labelClassName} ${hideLabelOnMobile ? 'hidden md:block' : ''} ${hideLabelOnDesktop ? 'block md:hidden' : ''} `}
+          htmlFor={inputId}
+          className={`pb-10 ${labelClassName} ${hideLabelOnMobile ? 'hidden md:block' : ''} ${hideLabelOnDesktop ? 'block md:hidden' : ''} cursor-pointer`}
         >
           {label}
         </label>
@@ -93,6 +101,7 @@ const Input = ({
         {/* textarea 타입 */}
         {as === 'textarea' ? (
           <textarea
+            id={inputId}
             ref={textareaRef}
             className={`text-16-m flex-1 resize-none border-none bg-transparent text-gray-950 outline-none placeholder:text-gray-400 ${className}`}
             {...(props as TextareaHTMLAttributes<HTMLTextAreaElement>)}
@@ -101,6 +110,7 @@ const Input = ({
           // select 타입
           <div className='relative w-full'>
             <select
+              id={inputId}
               ref={selectRef}
               className={`text-16-m w-full flex-1 appearance-none border-none bg-transparent outline-none ${props.value === '' ? 'text-gray-400' : 'text-gray-950'}`}
               {...(props as SelectHTMLAttributes<HTMLSelectElement>)}
@@ -126,6 +136,7 @@ const Input = ({
           // 기본 input 타입
           <div className='relative flex w-full items-center'>
             <input
+              id={inputId}
               ref={inputRef}
               type={inputType}
               className='text-16-m flex-1 border-none bg-transparent text-gray-950 outline-none placeholder:text-gray-400'

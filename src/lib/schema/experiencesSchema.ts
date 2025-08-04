@@ -5,7 +5,6 @@ export const experiencesSchema = z.object({
   category: z.string().min(1, '카테고리를 선택해 주세요.'),
   price: z.string().min(1, '가격을 입력해 주세요.').regex(/^\d+$/, '숫자만 입력해 주세요.'),
   address: z.string().min(1, '주소를 입력해 주세요.'),
-  detailAddress: z.string().optional(),
   description: z.string().min(1, '설명을 입력해 주세요.').max(1000, '1000자 이내로 입력해 주세요.'),
   // reserveTimes, banner, introImages 등은 필요에 따라 추가
 });

@@ -61,9 +61,8 @@ export const useReservationDashboard = () => {
         Object.keys(dashboardData),
         dashboardData,
       );
-    } catch (err) {
+    } catch {
       setError('예약 현황을 불러오는데 실패했습니다.');
-      console.error('Failed to load reservation dashboard:', err);
     } finally {
       setLoading(false);
     }
@@ -74,43 +73,20 @@ export const useReservationDashboard = () => {
   // 추가 기능: 시간 경과에 따른 승인→완료 상태 자동 변환
   const loadStatusBadgesWithReservedSchedule = async (
     activityId: number,
-    dates: string[], // 처리할 날짜 목록 (예: ["2024-01-15", "2024-01-16"])
-    dashboardData: DashboardData, // fallback용 대시보드 데이터
+    dates: string[],
+    dashboardData: DashboardData,
   ) => {
     try {
-      console.log('🚀 loadStatusBadgesWithReservedSchedule 시작');
-      console.log('📋 받은 dates 매개변수:', dates);
-      console.log('🗂️ 전달받은 dashboardData:', JSON.stringify(dashboardData, null, 2));
-      console.log('📊 dashboardData 키들:', Object.keys(dashboardData));
-
-      // 📊 날짜별 상태 집계를 저장할 객체
       const statusBadgeData: { [date: string]: ReservationCountData } = {};
 
-      // 🔄 각 날짜별로 상태 정보 처리
       for (const date of dates) {
         try {
-          console.log(`🔄 ${date} 상태 정보 조회 중...`);
-
-          // 🎯 주 API 호출: 해당 날짜의 상세 스케줄 정보 가져오기
           const schedules = await getReservedSchedule(activityId, date);
-
-          console.log(`📊 ${date} API 응답:`, JSON.stringify(schedules, null, 2));
-
-          // 📈 날짜별 상태 카운트 초기화
           const dateCounts = { pending: 0, confirmed: 0, declined: 0, completed: 0 };
 
-          // 🔄 FALLBACK 로직 1: getReservedSchedule이 빈 배열이면 dashboardData 사용
           if (schedules.length === 0) {
-            console.log(
-              `🔄 ${date} getReservedSchedule 빈 응답 → apiReservationData fallback 사용`,
-            );
-
-            // 📋 fallback 데이터에서 해당 날짜 정보 추출
             const fallbackData = dashboardData[date];
             if (fallbackData && fallbackData.length > 0) {
-              console.log(`📋 ${date} fallback 데이터:`, JSON.stringify(fallbackData, null, 2));
-
-              // 🔍 fallback 데이터에서 상태 정보 추출 (중첩된 구조 처리)
               fallbackData.forEach((schedule) => {
                 if (schedule.reservations && Array.isArray(schedule.reservations)) {
                   schedule.reservations.forEach((reservationGroup) => {
@@ -122,95 +98,63 @@ export const useReservationDashboard = () => {
                       dateCounts.pending += counts.pending || 0;
                       dateCounts.confirmed += counts.confirmed || 0;
                       dateCounts.declined += counts.declined || 0;
-                      dateCounts.completed += counts.completed || 0; // fallback에서 completed 필드도 처리
+                      dateCounts.completed += counts.completed || 0;
                     }
                   });
                 }
               });
-            } else {
-              console.log(`⚠️ ${date} fallback 데이터도 없음`);
             }
           } else {
-            // ✅ 정상 응답인 경우: API 응답에서 상태 집계
             (schedules as ScheduleFromApi[]).forEach((schedule: ScheduleFromApi) => {
               if (schedule.count) {
                 dateCounts.pending += schedule.count.pending || 0;
                 dateCounts.confirmed += schedule.count.confirmed || 0;
                 dateCounts.declined += schedule.count.declined || 0;
-                // completed는 API에 없을 수 있으므로 기본값 0
               }
             });
           }
 
-          console.log(`🔢 ${date} API 집계 후:`, JSON.stringify(dateCounts, null, 2));
-
-          // 🕐 시간 기반 상태 변환 로직: 승인된 예약이 시간 지났으면 완료로 변환
           const now = new Date();
-
-          // 🔄 시간 체크를 위한 데이터 소스 선택 (API 응답 우선, 없으면 fallback)
           const schedulesToCheck: (ScheduleFromApi | ScheduleData)[] =
             schedules.length > 0 ? (schedules as ScheduleFromApi[]) : dashboardData[date] || [];
 
           schedulesToCheck.forEach((schedule: ScheduleFromApi | ScheduleData) => {
-            // 타입 가드: API 응답인지 fallback 데이터인지 확인
             const isApiSchedule = 'count' in schedule;
-
-            // 📊 confirmed 예약이 있는지 확인 (API 응답과 fallback 구조가 다를 수 있음)
             const hasConfirmed = isApiSchedule
               ? (schedule as ScheduleFromApi).count &&
-                (schedule as ScheduleFromApi).count!.confirmed > 0 // API 응답 구조
-              : dateCounts.confirmed > 0; // fallback 구조
+                (schedule as ScheduleFromApi).count!.confirmed > 0
+              : dateCounts.confirmed > 0;
 
             if (hasConfirmed) {
-              // ⏰ 예약 종료 시간 계산
-              const endTime = schedule.endTime || '23:59'; // fallback의 경우 endTime이 없을 수 있음
+              const endTime = schedule.endTime || '23:59';
               const scheduleEndDateTime = new Date(`${date} ${endTime}`);
 
-              console.log(
-                `⏰ ${date} 시간 체크: 현재=${now.toLocaleString()}, 종료=${scheduleEndDateTime.toLocaleString()}`,
-              );
-
-              // 🔄 현재 시간이 예약 종료 시간을 지났으면 완료 처리
               if (now > scheduleEndDateTime) {
                 const confirmedCount = isApiSchedule
                   ? (schedule as ScheduleFromApi).count?.confirmed || 0
                   : dateCounts.confirmed;
 
-                console.log(
-                  `⏰ ${date} ${schedule.startTime || '시간미정'}-${endTime}: 시간 경과로 승인 ${confirmedCount}개 → 완료로 변환`,
-                );
-
-                // 📈 confirmed에서 completed로 상태 이동
                 dateCounts.confirmed -= confirmedCount;
                 dateCounts.completed += confirmedCount;
-              } else {
-                console.log(
-                  `🕐 ${date} ${schedule.startTime || '시간미정'}-${endTime}: 아직 진행 중`,
-                );
               }
             }
           });
 
           statusBadgeData[date] = dateCounts;
-          console.log(`✅ ${date} 최종 상태:`, JSON.stringify(dateCounts, null, 2));
-        } catch (err) {
-          console.warn(`Failed to load status for ${date}:`, err);
+        } catch {
+          // 개별 날짜 처리 실패는 조용히 처리
         }
       }
 
-      // 🌐 전역 변수에 저장 (기존 방식과 호환성 유지)
-      // 캘린더 컴포넌트에서 이 데이터를 참조하여 뱃지 표시
-      // 🔒 SSR 안전성: window 객체 존재 여부 확인
       if (typeof window !== 'undefined') {
         window.statusBadgeData = statusBadgeData;
       }
 
-      // 🔄 캘린더 리렌더링 트리거
       if (Object.keys(statusBadgeData).length > 0) {
         setApiReservationData((prev) => ({ ...prev }));
       }
-    } catch (err) {
-      console.error('Failed to load status badges:', err);
+    } catch {
+      // 전체 처리 실패는 조용히 처리
     }
   };
 

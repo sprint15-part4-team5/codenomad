@@ -34,14 +34,7 @@ declare global {
   }
 }
 
-const AddressInput = ({
-  error,
-  value,
-  onChange,
-  detailAddress = '',
-  onDetailAddressChange,
-  detailError,
-}: AddressInputProps) => {
+const AddressInput = ({ error, value, onChange }: AddressInputProps) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const scriptRef = useRef<HTMLScriptElement | null>(null);
@@ -121,9 +114,13 @@ const AddressInput = ({
 
   return (
     <div className='mb-30'>
+      <div className='text-16-b flex pb-10'>
+        <label htmlFor='address-input' className='cursor-pointer'>
+          주소
+        </label>
+      </div>
       <Input
-        label='주소'
-        labelClassName='text-16-b pointer-events-none select-none'
+        id='address-input'
         placeholder={isScriptLoaded ? '주소를 입력해 주세요' : '주소 검색 서비스 로딩 중...'}
         value={value}
         readOnly
@@ -148,21 +145,6 @@ const AddressInput = ({
             </div>
             <div id='postcode-container' className='h-[calc(100%-60px)] w-full overflow-auto' />
           </div>
-        </div>
-      )}
-
-      {/* 상세주소 입력 - 선택사항 */}
-      {value && (
-        <div className='mt-8'>
-          <label className='text-16-b block pb-10'>상세주소</label>
-          <input
-            type='text'
-            placeholder='상세주소를 입력해 주세요 (선택사항)'
-            value={detailAddress}
-            onChange={(e) => onDetailAddressChange?.(e.target.value)}
-            className='shadow-custom-5 text-16-m focus:outline-primary-500 w-full rounded-2xl border-none bg-white px-20 py-16 text-gray-950 outline-1 outline-offset-[-1px] outline-gray-200 transition-all duration-150 placeholder:text-gray-400 focus:outline-[1.5px]'
-          />
-          {detailError && <div className='text-12-m mt-2 text-red-500'>{detailError}</div>}
         </div>
       )}
     </div>

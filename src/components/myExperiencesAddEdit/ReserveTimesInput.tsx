@@ -9,13 +9,13 @@ const TIME_OPTIONS = Array.from({ length: 25 }, (_, i) => {
   const hour = i.toString().padStart(2, '0');
   return { value: `${hour}:00`, label: `${hour}:00` };
 });
-// 종료시간 셀렉트: 00:00~23:00 + 24:00
+// 종료시간 셀렉트: 00:00~23:59
 const TIME_OPTIONS_END = [
   ...Array.from({ length: 24 }, (_, i) => {
     const hour = i.toString().padStart(2, '0');
     return { value: `${hour}:00`, label: `${hour}:00` };
   }),
-  { value: '23:59', label: '다음날 00:00' },
+  { value: '23:59', label: '23:59' },
 ];
 
 // 시간 문자열을 분(minute) 단위로 변환
@@ -159,7 +159,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
               )}
             </div>
             {/* 시작시간,종료시간 인풋 */}
-            <div className='flex items-center  gap-14 md:gap-10'>
+            <div className='flex items-center gap-14 md:gap-10'>
               {/* 시작 시간 TimeDropdown 공통 컴포넌트 */}
               <TimeDropdown
                 value={rt.start}
@@ -188,7 +188,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                       onClick={handleAdd}
                     >
                       <Image
-                        src='/icons/icon_blue_plus.svg'
+                        src='/icons/icon_green_plus.svg'
                         alt='추가'
                         width={28}
                         height={28}
@@ -201,7 +201,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                       onClick={handleAdd}
                     >
                       <Image
-                        src='/icons/icon_blue_plus.svg'
+                        src='/icons/icon_green_plus.svg'
                         alt='추가'
                         width={42}
                         height={42}

@@ -27,6 +27,7 @@ import type {
 } from '@/components/profile/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function ReservationStatusPage() {
   // 날짜 관련 상태
@@ -100,9 +101,8 @@ export default function ReservationStatusPage() {
         Object.keys(dashboardData),
         dashboardData,
       );
-    } catch (err) {
-      setError('예약 현황을 불러오는데 실패했습니다.');
-      console.error('Failed to load reservation dashboard:', err);
+    } catch {
+      toast.error('예약 현황을 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -277,9 +277,8 @@ export default function ReservationStatusPage() {
       } else {
         setScheduleDetails(transformedSchedules);
       }
-    } catch (err) {
-      setError('예약 스케줄을 불러오는데 실패했습니다.');
-      console.error('Failed to load reserved schedule:', err);
+    } catch {
+      toast.error('예약 스케줄을 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -316,9 +315,8 @@ export default function ReservationStatusPage() {
         }
       }
       setReservationDetails(allReservations);
-    } catch (err) {
-      setError('예약 내역을 불러오는데 실패했습니다.');
-      console.error('Failed to load reservations:', err);
+    } catch {
+      toast.error('예약 내역을 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -334,6 +332,12 @@ export default function ReservationStatusPage() {
       setLoading(true);
       setError(null);
       await updateReservationStatus(activityId, reservationId, status);
+
+      // 성공 메시지 표시
+      toast.success(
+        status === 'confirmed' ? '예약이 성공적으로 승인되었습니다.' : '예약이 거절되었습니다.',
+      );
+
       if (selectedDate && selectedActivity) {
         const schedule = scheduleDetails.find((s) => s.timeSlot === selectedTime);
         if (schedule && (schedule.scheduleId !== undefined || schedule.id !== undefined)) {
@@ -341,9 +345,11 @@ export default function ReservationStatusPage() {
           await loadReservations(selectedActivity.id, scheduleIdToUse);
         }
       }
-    } catch (err) {
-      setError('예약 상태 변경에 실패했습니다.');
-      console.error('Failed to update reservation status:', err);
+    } catch {
+      // 실패 메시지 표시
+      toast.error(
+        status === 'confirmed' ? '예약 승인에 실패했습니다.' : '예약 거절에 실패했습니다.',
+      );
     } finally {
       setLoading(false);
     }
@@ -361,9 +367,8 @@ export default function ReservationStatusPage() {
           setMyActivities([]); // 빈값 명시적
           // setError('등록된 체험이 없습니다.'); => 오류로 분기시키지 말고 빈 상태로 처리!
         }
-      } catch (err) {
-        setError('체험 목록을 불러오는데 실패했습니다.');
-        console.error('Failed to load my activities:', err);
+      } catch {
+        toast.error('체험 목록을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -499,7 +504,7 @@ export default function ReservationStatusPage() {
           title='예약 현황'
           description='내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.'
         />
-        <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
+        <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl p-4 md:p-8'>
           <Image
             src='/icons/no_experience.svg'
             alt='empty'
