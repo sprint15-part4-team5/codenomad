@@ -2,12 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import cn from '@/utils/cn';
 import Image from 'next/image';
-
-// 클래스 병합 유틸리티
-const cn = (...inputs: (string | undefined)[]) => twMerge(clsx(inputs));
 
 // 예약 상태 뱃지 컴포넌트
 const StatusBadge = ({ status, count }: { status: string; count: number }) => {
@@ -153,7 +149,7 @@ const ReservationCalendar = ({
   };
 
   return (
-    <div className='shadow-custom-5 border-primary-400 mx-0 flex w-375 flex-col gap-30 rounded-2xl border-2 md:w-full'>
+    <div className='shadow-custom-5 mx-0 flex w-375 flex-col gap-30 rounded-2xl md:w-full'>
       {/* 체험 선택 드롭다운 */}
       <div className='relative px-24 md:px-0'>
         <select
@@ -186,18 +182,18 @@ const ReservationCalendar = ({
           }
           calendarType='gregory'
           className={cn(
-            // 이 부분이 캘린더 전체 컨테이너를 제어
+            // 캘린더 전체 컨테이너
             '!w-full !max-w-full !border-none !bg-transparent',
 
             // 캘린더 그리드 레이아웃 (날짜 셀들의 배치)
             '[&_.react-calendar__month-view__days]:!grid [&_.react-calendar__month-view__days]:!grid-cols-7',
             '[&_.react-calendar__month-view__days]:!w-full [&_.react-calendar__month-view__days]:!gap-0',
 
-            // 날짜 타일 강제 크기 설정 - 컨테이너 크기에 맞춰 계산
-            '[&_.react-calendar__tile]:!w-[calc((375px-60px)/7)] sm:[&_.react-calendar__tile]:!w-[calc((640px-60px)/7)]',
-            '[&_.react-calendar__tile]:!h-[104px] sm:[&_.react-calendar__tile]:!h-[124px]',
-            '[&_.react-calendar__tile]:!min-w-[calc((375px-60px)/7)] sm:[&_.react-calendar__tile]:!min-w-[calc((640px-60px)/7)]',
-            '[&_.react-calendar__tile]:!max-w-[calc((375px-60px)/7)] sm:[&_.react-calendar__tile]:!max-w-[calc((640px-60px)/7)]',
+            // 날짜 타일 강제 크기 설정 - px → rem 변환만!
+            '[&_.react-calendar__tile]:!w-[calc((23.4375rem-3.75rem)/7)] sm:[&_.react-calendar__tile]:!w-[calc((40rem-3.75rem)/7)]',
+            '[&_.react-calendar__tile]:!h-104 sm:[&_.react-calendar__tile]:!h-124',
+            '[&_.react-calendar__tile]:!min-w-[calc((23.4375rem-3.75rem)/7)] sm:[&_.react-calendar__tile]:!min-w-[calc((40rem-3.75rem)/7)]',
+            '[&_.react-calendar__tile]:!max-w-[calc((23.4375rem-3.75rem)/7)] sm:[&_.react-calendar__tile]:!max-w-[calc((40rem-3.75rem)/7)]',
 
             // 네비게이션 스타일
             '[&_.react-calendar__navigation]:!flex',
@@ -205,7 +201,7 @@ const ReservationCalendar = ({
             '[&_.react-calendar__navigation]:!items-center',
             '[&_.react-calendar__navigation]:!mx-auto',
             '[&_.react-calendar__navigation]:!mb-4 [&_.react-calendar__navigation]:!h-12',
-            '[&_.react-calendar__navigation]:!px-10 sm:[&_.react-calendar__navigation]:!px-30',
+            '[&_.react-calendar__navigation]:!px-[0.625rem] sm:[&_.react-calendar__navigation]:!px-[1.875rem]',
 
             // 네비게이션 라벨 (년월) 스타일
             '[&_.react-calendar__navigation__label]:!text-center',
@@ -235,17 +231,17 @@ const ReservationCalendar = ({
 
             // 개별 요일
             '[&_.react-calendar__month-view__weekdays__weekday]:!min-w-12 [&_.react-calendar__month-view__weekdays__weekday]:!flex-1',
-            '[&_.react-calendar__month-view__weekdays__weekday]:!w-[calc((375px-60px)/7)] sm:[&_.react-calendar__month-view__weekdays__weekday]:!w-[calc((640px-60px)/7)]',
-            '[&_.react-calendar__month-view__weekdays__weekday]:!h-[40px] sm:[&_.react-calendar__month-view__weekdays__weekday]:!h-[43px] lg:[&_.react-calendar__month-view__weekdays__weekday]:!h-[43px]',
+            '[&_.react-calendar__month-view__weekdays__weekday]:!w-[calc((23.4375rem-3.75rem)/7)] sm:[&_.react-calendar__month-view__weekdays__weekday]:!w-[calc((40rem-3.75rem)/7)]',
+            '[&_.react-calendar__month-view__weekdays__weekday]:!h-40 sm:[&_.react-calendar__month-view__weekdays__weekday]:!h-43 lg:[&_.react-calendar__month-view__weekdays__weekday]:!h-43',
             '[&_.react-calendar__month-view__weekdays__weekday]:!flex [&_.react-calendar__month-view__weekdays__weekday]:!items-center [&_.react-calendar__month-view__weekdays__weekday]:!justify-center',
-            '[&_.react-calendar__month-view__weekdays__weekday]:!text-[13px] sm:[&_.react-calendar__month-view__weekdays__weekday]:!text-[16px]',
+            '[&_.react-calendar__month-view__weekdays__weekday]:!text-[0.8125rem] sm:[&_.react-calendar__month-view__weekdays__weekday]:!text-[1rem]',
             '[&_.react-calendar__month-view__weekdays__weekday]:!font-bold',
             '[&_.react-calendar__month-view__weekdays__weekday]:!text-gray-700',
             "[&_.react-calendar__month-view__weekdays__weekday]:!font-['Pretendard',sans-serif]",
 
             // 일요일, 토요일 색상
-            '[&_.react-calendar__month-view__weekdays__weekday:first-child_abbr]:!text-red-500',
-            '[&_.react-calendar__month-view__weekdays__weekday:last-child_abbr]:!text-blue-500',
+            '[&_.react-calendar__month-view__weekdays__weekday:first-child abbr]:!text-red-500',
+            '[&_.react-calendar__month-view__weekdays__weekday:last-child abbr]:!text-blue-500',
 
             // abbr 태그 점선 밑줄 제거
             '[&_abbr]:!no-underline',
@@ -268,9 +264,9 @@ const ReservationCalendar = ({
             }
             classes.push('hover:!bg-primary-400 transition-colors duration-150'); // hover도 !로 우선순위 높임
             return cn(
-              '!w-[calc((375px-60px)/7)] sm:!w-[calc((640px-60px)/7)] !h-[104px] sm:!h-[124px] !min-w-[calc((375px-60px)/7)] !p-0',
+              '!w-[calc((23.4375rem-3.75rem)/7)] sm:!w-[calc((40rem-3.75rem)/7)] !h-104 sm:!h-124 !min-w-[calc((23.4375rem-3.75rem)/7)] !p-0',
               '!flex !flex-col !items-center !justify-start',
-              '!border !border-gray-200 !rounded-lg',
+              '!border !border-none !rounded-lg',
               ...classes,
             );
           }}
