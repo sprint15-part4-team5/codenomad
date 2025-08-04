@@ -7,6 +7,8 @@ import { postReview } from '@/lib/api/profile/reservationList';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { reviewRequestSchema, ReviewType } from '@/lib/schema/reservationsSchema';
+import showToastError from '@/lib/showToastError';
+import { toast } from 'sonner';
 
 interface ReviewModalType {
   title: string;
@@ -56,13 +58,11 @@ const ReviewModal = ({
     try {
       setIsSubmitting(true);
       await postReview(reservationId, data);
+      toast.success('리뷰 작성에 성공했습니다!');
       window.location.href = '/profile/reservations';
       document.body.style.overflow = 'auto';
     } catch (error) {
-      console.error(error);
-      alert('리뷰 제출 실패');
-    } finally {
-      setIsSubmitting(false);
+      showToastError(error);
     }
   };
   return (

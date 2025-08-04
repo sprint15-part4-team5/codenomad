@@ -45,11 +45,9 @@ export const useReservationModal = (
     try {
       setLoading(true);
       setError(null);
-      console.log('loadReservedSchedule called with:', { activityId, date });
 
       // 🎯 주 API 호출: 특정 날짜의 스케줄 목록 가져오기
       const schedulesFromApi = await getReservedSchedule(activityId, date);
-      console.log('getReservedSchedule raw response:', schedulesFromApi);
 
       // 🔄 API 응답을 UI에서 사용할 형태로 변환 (timeSlot 필드 생성)
       const transformedSchedules: ScheduleData[] = (schedulesFromApi as ScheduleFromApi[]).map(
@@ -64,15 +62,11 @@ export const useReservationModal = (
         }),
       );
 
-      console.log('Transformed schedules:', transformedSchedules);
-
       // 🔄 FALLBACK 로직 2: API 응답이 비어있거나 timeSlot이 제대로 생성되지 않은 경우
       if (
         transformedSchedules.length === 0 ||
         transformedSchedules[0].timeSlot.includes('undefined') // startTime 또는 endTime이 undefined인 경우
       ) {
-        console.log('API response is empty or invalid, using calendar data as fallback');
-
         // 📋 캘린더 데이터에서 해당 날짜의 스케줄 정보 생성
         const calendarData = apiReservationData[date];
         if (calendarData && calendarData.length > 0) {
@@ -113,22 +107,15 @@ export const useReservationModal = (
         scheduleId === '시간' ||
         String(scheduleId).includes('undefined')
       ) {
-        console.log('🚫 임시 스케줄 ID로 예약 내역 조회 불가:', scheduleId);
-        console.log(
-          '💡 getReservedSchedule이 빈 응답을 주는 날짜의 모달에서는 예약 내역을 표시할 수 없습니다.',
-        );
         setReservationDetails([]);
         return;
       }
 
       const numericScheduleId = parseInt(String(scheduleId), 10);
       if (isNaN(numericScheduleId)) {
-        console.error('Invalid scheduleId:', scheduleId);
         setError('잘못된 스케줄 ID입니다.');
         return;
       }
-
-      console.log('loadReservations called with:', { activityId, scheduleId, numericScheduleId });
 
       setLoading(true);
       setError(null);
@@ -141,17 +128,14 @@ export const useReservationModal = (
       for (const status of statuses) {
         try {
           const data = await getReservations(activityId, numericScheduleId, status);
-          console.log(`API response for ${status}:`, data);
           if (data.reservations && data.reservations.length > 0) {
             allReservations.push(...data.reservations);
           }
-        } catch (err) {
-          console.warn(`Failed to load reservations for status ${status}:`, err);
+        } catch {
+          // 조용히 실패 처리
         }
       }
 
-      console.log('All reservations loaded:', allReservations);
-      console.log('Setting reservationDetails to:', allReservations);
       setReservationDetails(allReservations);
     } catch (err) {
       setError('예약 내역을 불러오는데 실패했습니다.');
@@ -197,12 +181,9 @@ export const useReservationModal = (
 
   // 🔄 Effect: 날짜별 스케줄이 로드되면 첫 번째 시간을 기본 선택값으로 설정
   useEffect(() => {
-    console.log('scheduleDetails updated:', scheduleDetails);
     if (scheduleDetails.length > 0 && scheduleDetails[0].timeSlot) {
-      console.log('Setting selectedTime to first schedule timeSlot:', scheduleDetails[0].timeSlot);
       setSelectedTime(scheduleDetails[0].timeSlot);
     } else {
-      console.log('No schedules available, keeping default selectedTime');
       setReservationDetails([]); // 스케줄이 없으면 예약 내역도 비움
     }
   }, [scheduleDetails]);
@@ -210,39 +191,16 @@ export const useReservationModal = (
   // 🔄 Effect: 선택된 시간이 바뀌면 해당 예약 목록 로드
   useEffect(() => {
     if (selectedDate && selectedTime && activityId) {
-      console.log('selectedTime:', selectedTime);
-      console.log('scheduleDetails:', scheduleDetails);
-
-      // selectedTime과 일치하는 스케줄 찾기
       const schedule = scheduleDetails.find((s) => s.timeSlot === selectedTime);
-
-      console.log('Found schedule:', schedule);
-      console.log('Schedule ID:', schedule?.scheduleId || schedule?.id);
 
       if (schedule && (schedule.scheduleId !== undefined || schedule.id !== undefined)) {
         const scheduleId = schedule.scheduleId || schedule.id;
-        console.log(
-          'Calling loadReservations with activityId:',
-          activityId,
-          'scheduleId:',
-          scheduleId,
-        );
         loadReservations(activityId, scheduleId);
       } else {
-        console.warn('No matching schedule found for selectedTime:', selectedTime);
-        console.warn(
-          'Available schedules:',
-          scheduleDetails.map((s) => ({
-            id: s.id,
-            scheduleId: s.scheduleId,
-            timeSlot: s.timeSlot,
-          })),
-        );
         // 유효한 스케줄이 없으면 예약 목록을 비움
         setReservationDetails([]);
       }
     } else if (!activityId) {
-      console.warn('activityId가 없어서 예약 목록을 로드할 수 없습니다.');
       setReservationDetails([]);
     }
   }, [selectedDate, selectedTime, scheduleDetails, activityId]);

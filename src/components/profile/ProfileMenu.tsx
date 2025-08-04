@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useRef, ChangeEvent } from 'react';
 import { uploadProfileImage, updateUserProfile } from '@/lib/api/profile';
 import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'sonner';
 
 const menuItems = [
   { icon: '/icons/icon_user.svg', label: '내 정보', href: '/profile/info' },
@@ -37,9 +38,9 @@ export default function ProfileMenu({ onMenuClick }: ProfileMenuProps) {
         : '/imgs/profile_default.png';
       setUserProfileImage(updatedUrl);
       updateUserProfile({ profileImageUrl: updatedUrl });
-      alert('프로필 이미지가 변경되었습니다!');
+      toast.success('프로필 이미지가 변경되었습니다!');
     } catch {
-      alert('이미지 업로드에 실패했습니다.');
+      toast.error('이미지 업로드에 실패했습니다.');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -47,7 +48,7 @@ export default function ProfileMenu({ onMenuClick }: ProfileMenuProps) {
   };
 
   return (
-    <div className='shadow-custom-5 mx-auto mt-20 flex h-453 w-327 flex-col items-center rounded-2xl bg-white px-6 py-8 md:w-178 md:px-4 md:py-6 lg:w-290 lg:px-8 lg:py-10'>
+    <div className='shadow-custom-5 border-primary-400 mx-auto mt-20 flex h-453 w-327 flex-col items-center rounded-2xl border-2 bg-white px-6 py-8 md:w-178 md:px-4 md:py-6 lg:w-290 lg:px-8 lg:py-10'>
       {/* 프로필 이미지 */}
       <div className='relative mb-8'>
         <div className='mt-40 mb-40 flex h-120 w-120 items-center justify-center overflow-hidden rounded-full bg-blue-100'>

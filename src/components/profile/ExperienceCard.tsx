@@ -25,7 +25,7 @@ export default function ExperienceCard({
       {/* 내용 */}
       <div className='mt-40 ml-30 flex h-full flex-1 flex-col justify-between'>
         <div>
-          <div className='mb-5 leading-tight font-bold break-keep sm:text-sm md:text-lg lg:text-xl'>
+          <div className='mb-5 line-clamp-1 leading-tight font-bold break-keep sm:text-sm md:text-lg lg:text-xl'>
             {title}
           </div>
           <div className='text-14-m mb-5 flex items-center gap-1 text-gray-500'>
@@ -53,14 +53,8 @@ export default function ExperienceCard({
         </div>
       </div>
       {/* 썸네일 */}
-      <div className='mr-30 h-80 w-80 flex-shrink-0 overflow-hidden rounded-xl md:h-100 md:w-100 lg:h-120 lg:w-120'>
-        <Image
-          src={image}
-          alt='썸네일'
-          width={120}
-          height={120}
-          className='h-full w-full object-cover'
-        />
+      <div className='relative mr-30 h-80 w-80 flex-shrink-0 overflow-hidden rounded-xl md:h-100 md:w-100 lg:h-120 lg:w-120'>
+        <Image src={image} alt='썸네일' fill className='h-full w-full object-cover' />
       </div>
     </div>
   );
