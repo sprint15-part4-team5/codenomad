@@ -188,7 +188,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                       onClick={handleAdd}
                     >
                       <Image
-                        src='/icons/icon_blue_plus.svg'
+                        src='/icons/icon_green_plus.svg'
                         alt='추가'
                         width={28}
                         height={28}
@@ -201,7 +201,7 @@ const ReserveTimesInput = ({ value, onChange, isEdit = false }: ReserveTimesInpu
                       onClick={handleAdd}
                     >
                       <Image
-                        src='/icons/icon_blue_plus.svg'
+                        src='/icons/icon_green_plus.svg'
                         alt='추가'
                         width={42}
                         height={42}
