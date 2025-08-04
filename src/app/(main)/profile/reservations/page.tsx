@@ -8,6 +8,7 @@ import { getReservationList } from '@/lib/api/profile/reservationList';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { toast } from 'sonner';
 
 interface reservationsType {
   activity: {
@@ -59,7 +60,7 @@ const Page = () => {
         setCursorId(res.cursorId);
       }
     } catch (error) {
-      console.error('Error fetching more data:', error);
+      toast.error(`데이터를 더 불러오는데 실패했습니다: ${error}`);
       setHasMore(false);
     } finally {
       setIsLoading(false);
