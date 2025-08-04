@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ConfirmModalProps {
   message: string;
@@ -9,33 +10,33 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal = ({ message, isOpen, onClose }: ConfirmModalProps) => {
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
 
-  return (
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  if (!isOpen || typeof window === 'undefined') return null;
+
+  return createPortal(
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40'>
-      <div className='bg-white rounded-[20px] shadow-custom-5 text-center px-24 py-24 w-320  sm:w-400 flex flex-col items-center '>
-        <p
-          className='mb-20 text-black break-keep'
-          style={{
-            fontSize: 'var(--text-16-b)',
-            fontWeight: 'var(--text-16-b--font-weight)',
-          }}
-        >
-          {message}
-        </p>
+      <div className='shadow-custom-5 flex w-320 flex-col items-center rounded-[1.25rem] bg-white px-24 py-24 text-center sm:w-400'>
+        <p className='text-16-b mb-20 break-keep text-black'>{message}</p>
         <button
           onClick={onClose}
-          className='w-200 h-44 rounded-xl text-white cursor-pointer'
-          style={{
-            backgroundColor: 'var(--color-primary-500)',
-            fontSize: 'var(--text-16-m)',
-            fontWeight: 'var(--text-16-m--font-weight)',
-          }}
+          className='bg-primary-500 text-16-m h-44 w-200 rounded-[1.25rem] text-white'
         >
           확인
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

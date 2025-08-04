@@ -33,6 +33,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               ref={ref}
               type={inputType}
               className='text-16-m flex-1 border-none bg-transparent text-gray-950 outline-none placeholder:text-gray-400'
+              onKeyDown={(e) => {
+                if ((type === 'password' || type === 'email') && e.key === ' ') {
+                  e.preventDefault();
+                }
+              }}
               {...rest}
             />
 
