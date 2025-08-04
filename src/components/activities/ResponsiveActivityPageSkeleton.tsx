@@ -27,7 +27,7 @@ const ResponsiveActivityPageSkeleton = () => {
           {/* Activity Map Section Skeleton */}
           <div className='space-y-4'>
             <div className='h-18 w-1/6 animate-pulse rounded bg-gray-200' />
-            <div className='h-[300px] w-full animate-pulse rounded-lg bg-gray-200' />
+            <div className='h-300 w-full animate-pulse rounded-lg bg-gray-200' />
           </div>
 
           {/* Activity Review Section Skeleton */}
