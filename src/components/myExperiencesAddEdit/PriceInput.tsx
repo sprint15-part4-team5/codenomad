@@ -15,7 +15,12 @@ const PriceInput = <T extends FieldValues>({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-    setValue(path as Path<T>, onlyNums as T[Path<T>], { shouldValidate: true });
+    const numValue = Number(onlyNums);
+
+    // 천만원(10,000,000) 이하만 허용
+    if (numValue <= 10000000) {
+      setValue(path as Path<T>, onlyNums as T[Path<T>], { shouldValidate: true });
+    }
   };
 
   // register에서 onChange를 제외하고 다른 속성들만 사용
@@ -27,7 +32,7 @@ const PriceInput = <T extends FieldValues>({
       <Input
         label='가격'
         labelClassName='text-16-b'
-        placeholder='체험 금액을 입력해 주세요'
+        placeholder='체험 금액을 입력해 주세요 (최대 1,000만원)'
         id='price-input'
         error={error}
         value={value}
