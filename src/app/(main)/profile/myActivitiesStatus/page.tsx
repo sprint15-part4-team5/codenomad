@@ -499,7 +499,7 @@ export default function ReservationStatusPage() {
           title='예약 현황'
           description='내 체험에 예약된 내역들을 한 눈에 확인할 수 있습니다.'
         />
-        <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
+        <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl p-4 md:p-8'>
           <Image
             src='/icons/no_experience.svg'
             alt='empty'

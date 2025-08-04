@@ -162,7 +162,7 @@ export default function MyExperiencesPage() {
           <>
             {/* 🎯 체험이 없는 경우: 빈 상태 표시 */}
             {activities.length === 0 && !isLoading ? (
-              <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl bg-white p-4 md:p-8'>
+              <div className='mx-auto flex min-h-[40vh] w-full max-w-2xl flex-col items-center justify-center rounded-2xl p-4 md:p-8'>
                 <Image
                   src='/icons/no_experience.svg'
                   alt='empty'

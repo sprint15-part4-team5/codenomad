@@ -153,13 +153,13 @@ const ReservationCalendar = ({
   };
 
   return (
-    <div className='shadow-custom-5 mx-0 flex w-375 flex-col gap-30 rounded-2xl bg-white md:w-full'>
+    <div className='shadow-custom-5 border-primary-400 mx-0 flex w-375 flex-col gap-30 rounded-2xl border-2 md:w-full'>
       {/* 체험 선택 드롭다운 */}
       <div className='relative px-24 md:px-0'>
         <select
           className={cn(
-            'text-16-m h-54 w-327 rounded-[16px] border border-gray-100 px-20 text-gray-950 md:w-full',
-            'bg-white focus:border-blue-500 focus:outline-none',
+            'text-16-m border-primary-400 h-54 w-327 rounded-[16px] border-b-2 px-20 text-gray-950 md:w-full',
+            'focus:border-primary-400 bg-white focus:outline-none',
             'appearance-none',
           )}
           value={selectedExperienceId}

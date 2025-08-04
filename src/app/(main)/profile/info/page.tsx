@@ -18,7 +18,6 @@ const InformationPage = () => {
   // ⏳ 로딩 상태 (로컬)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [error, setError] = useState('');
-  const { setUserNickname } = useAuthStore();
   // 🔗 모바일 Context 연결: 부모 레이아웃의 onCancel 함수 가져오기
   // 이 함수를 호출하면 모바일에서 메뉴 화면으로 돌아감
   const mobileContext = useContext(ProfileMobileContext);
@@ -158,7 +157,7 @@ const InformationPage = () => {
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='rounded-16 mx-auto w-full max-w-376 space-y-24 bg-white p-24 md:max-w-640 md:p-32'
+        className='rounded-16 mx-auto w-full max-w-376 space-y-24 p-24 md:max-w-640 md:p-32'
       >
         {/* 에러 메시지 */}
         {error && <div className='rounded-lg bg-red-50 p-3 text-sm text-red-500'>{error}</div>}
