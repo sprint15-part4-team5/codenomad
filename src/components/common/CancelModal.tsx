@@ -39,10 +39,10 @@ const CommonModal = ({
           </div>
         )}
         {/* 텍스트: <br />로 줄바꿈 */}
-        <div className='text-18-body-b md:text-20-body-b mb-20 text-center md:mb-24'>
+        <div className='text-18-body-b md:text-20-body-b mb-20 text-center whitespace-nowrap md:mb-24'>
           {text.split('<br />').map((line, index) => (
             <React.Fragment key={index}>
-              {line}
+              <span className='whitespace-nowrap'>{line}</span>
               {index < text.split('<br />').length - 1 && <br />}
             </React.Fragment>
           ))}
