@@ -89,6 +89,7 @@ export interface ModalTriggerProps extends ReservationControlProps {
   activityData: ReservationActivityData;
   onReservationReset?: () => void;
   onReservationSubmit: (data: ConfirmedReservation) => void;
+  isOwner?: boolean;
 }
 
 // 모달 공통 Props

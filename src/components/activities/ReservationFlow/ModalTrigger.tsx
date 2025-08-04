@@ -15,6 +15,7 @@ const ModalTrigger = ({
   onChangeHeadCount,
   onReservationSubmit,
   onReservationReset,
+  isOwner = false,
 }: ModalTriggerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const breakpoint = useResponsive();
@@ -58,52 +59,64 @@ const ModalTrigger = ({
   return createPortal(
     <>
       <div className='sticky right-0 bottom-0 left-0 z-49 flex h-124 w-auto flex-col justify-center gap-12 border-t-1 border-[#e6e6e6] bg-white px-20 py-24'>
-        <div className='flex justify-between'>
-          <p className='text-18-b text-gray-950'>
-            {price} <span className='text-16-b text-[#79747e]'>/ 명</span>
-          </p>
-          <button
-            className='text-primary-500 text-16-b decoration-primary-500 underline decoration-2'
-            onClick={handleOpenModal}
-          >
-            {selectedSchedule ? formatScheduleText(selectedSchedule) : '날짜 선택하기'}
-          </button>
-        </div>
-        <button
-          className={`h-50 w-auto rounded-[0.875rem] py-15 text-white transition-colors ${
-            selectedSchedule ? 'bg-primary-500 hover:bg-primary-600' : 'bg-gray-300'
-          }`}
-          onClick={handleTriggerReservation}
-          disabled={!selectedSchedule}
-        >
-          예약하기
-        </button>
+        {isOwner ? (
+          <div className='flex h-full items-center justify-center'>
+            <p className='text-16-body-m text-gray-600'>내가 작성한 체험입니다</p>
+          </div>
+        ) : (
+          <>
+            <div className='flex justify-between'>
+              <p className='text-18-b text-gray-950'>
+                {price} <span className='text-16-b text-[#79747e]'>/ 명</span>
+              </p>
+              <button
+                className='text-primary-500 text-16-b decoration-primary-500 underline decoration-2'
+                onClick={handleOpenModal}
+              >
+                {selectedSchedule ? formatScheduleText(selectedSchedule) : '날짜 선택하기'}
+              </button>
+            </div>
+            <button
+              className={`h-50 w-auto rounded-[0.875rem] py-15 text-white transition-colors ${
+                selectedSchedule ? 'bg-primary-500 hover:bg-primary-600' : 'bg-gray-300'
+              }`}
+              onClick={handleTriggerReservation}
+              disabled={!selectedSchedule}
+            >
+              예약하기
+            </button>
+          </>
+        )}
       </div>
 
-      {isTablet ? (
-        <TabletModal
-          isOpen={isOpen}
-          onClose={handleCloseModal}
-          onConfirm={handleModalConfirm}
-          schedules={activityData.schedules}
-          scheduleId={scheduleId}
-          onChangeSchedule={onChangeSchedule}
-          headCount={headCount}
-          onChangeHeadCount={onChangeHeadCount}
-          price={activityData.price}
-        />
-      ) : (
-        <MobileModal
-          isOpen={isOpen}
-          onClose={handleCloseModal}
-          onConfirm={handleModalConfirm}
-          schedules={activityData.schedules}
-          scheduleId={scheduleId}
-          onChangeSchedule={onChangeSchedule}
-          headCount={headCount}
-          onChangeHeadCount={onChangeHeadCount}
-          price={activityData.price}
-        />
+      {!isOwner && (
+        <>
+          {isTablet ? (
+            <TabletModal
+              isOpen={isOpen}
+              onClose={handleCloseModal}
+              onConfirm={handleModalConfirm}
+              schedules={activityData.schedules}
+              scheduleId={scheduleId}
+              onChangeSchedule={onChangeSchedule}
+              headCount={headCount}
+              onChangeHeadCount={onChangeHeadCount}
+              price={activityData.price}
+            />
+          ) : (
+            <MobileModal
+              isOpen={isOpen}
+              onClose={handleCloseModal}
+              onConfirm={handleModalConfirm}
+              schedules={activityData.schedules}
+              scheduleId={scheduleId}
+              onChangeSchedule={onChangeSchedule}
+              headCount={headCount}
+              onChangeHeadCount={onChangeHeadCount}
+              price={activityData.price}
+            />
+          )}
+        </>
       )}
     </>,
     document.body,

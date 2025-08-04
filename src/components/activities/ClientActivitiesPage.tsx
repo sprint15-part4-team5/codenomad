@@ -70,7 +70,7 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
             isDesktop ? 'sticky top-[6.25rem] w-[25.625rem] self-start' : 'mt-20',
           )}
         >
-          <ReservationContent activity={activity} />
+          <ReservationContent activity={activity} isOwner={isOwner} />
         </section>
       </div>
     </>
