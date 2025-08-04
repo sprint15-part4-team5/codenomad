@@ -25,8 +25,6 @@ export const useReservationDashboard = () => {
       const paddedMonth = month.toString().padStart(2, '0');
       const responseData = await getReservationDashboard(activityId, String(year), paddedMonth);
 
-      console.log('🎯 getReservationDashboard 원본 응답:', JSON.stringify(responseData, null, 2));
-
       // 🔄 API 응답을 캘린더가 이해할 수 있는 형태로 변환
       const dashboardData: DashboardData = {};
 
@@ -44,13 +42,9 @@ export const useReservationDashboard = () => {
                 headCount: 0,
               },
             ];
-            console.log(`📊 ${item.date} 처리 완료:`, item.reservations);
           }
         });
       }
-
-      console.log('✅ 최종 apiReservationData:', JSON.stringify(dashboardData, null, 2));
-      console.log('📅 포함된 날짜들:', Object.keys(dashboardData));
 
       setApiReservationData(dashboardData);
 

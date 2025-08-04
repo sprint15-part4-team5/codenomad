@@ -80,7 +80,6 @@ export const useReservationModal = (
             reservations: schedule.reservations || [], // 🔗 기존 예약 정보 유지
             headCount: schedule.headCount || 0,
           }));
-          console.log('Using fallback schedules from calendar data:', fallbackSchedules);
           setScheduleDetails(fallbackSchedules);
         } else {
           // 📭 fallback 데이터도 없는 경우: 빈 배열로 설정
