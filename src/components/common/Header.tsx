@@ -14,7 +14,7 @@ const Header = () => {
   const handleLogout = () => {
     clearAuthStore();
     useAuthStore.persist.clearStorage();
-    router.push('/');
+    router.push('/home');
   };
 
   return (
