@@ -152,7 +152,7 @@ const Page = () => {
               </div>
               <p className='text-18-m my-30 text-center text-gray-600'>아직 예약한 체험이 없어요</p>
               <Link
-                href={'/'}
+                href={'/home'}
                 className='bg-primary-500 text-16-b h-54 w-182 grow-0 rounded-2xl px-63 py-17 text-white'
               >
                 둘러보기
