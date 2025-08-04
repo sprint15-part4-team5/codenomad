@@ -33,12 +33,12 @@ const LANDING_REVIEWS = [
 
 const Section4 = () => {
   return (
-    <section className='bg-primary-400 flex h-full w-full flex-col items-center justify-start gap-32 px-48 py-20 md:gap-32 md:px-75 lg:h-814 lg:px-189 lg:py-94'>
+    <section className='bg-primary-400 flex h-full w-full flex-col items-center justify-around gap-32 px-48 py-20 md:gap-32 md:px-75 lg:h-814 lg:px-100 lg:py-90'>
       <h2 className='font-hakgyo text-primary-100 text-center text-2xl font-semibold tracking-[-0.1rem] whitespace-nowrap md:text-5xl lg:text-[4rem]'>
         생생한 후기를 보고 <br />
         나만의 순간을 만들어보세요
       </h2>
-      <div className='flex w-full flex-col gap-16 md:grid md:grid-cols-2 md:grid-rows-2 md:gap-16 lg:flex lg:flex-row lg:justify-center lg:gap-16'>
+      <div className='flex w-full flex-col gap-16 md:grid md:grid-cols-2 md:grid-rows-2 md:gap-16 lg:flex lg:flex-row lg:justify-around lg:gap-8'>
         {LANDING_REVIEWS.map((review, index) => (
           <ReviewCard
             key={index}
