@@ -9,6 +9,13 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       user: null,
       isLoggedIn: false,
+      _hasHydrated: false, // ✅ hydration 상태 추가
+      setHasHydrated: (state: boolean) => set({ _hasHydrated: state }), // ✅ hydration 상태 업데이트
+      onRehydrateStorage: (state: AuthState | undefined) => {
+        return () => {
+          state?.setHasHydrated(true);
+        };
+      },
       setAccessToken: (token) => set({ accessToken: token, isLoggedIn: !!token }),
       setRefreshToken: (token: string) => set({ refreshToken: token }),
       clearAuthStore: () =>
@@ -27,6 +34,13 @@ export const useAuthStore = create<AuthState>()(
           user: state.user ? { ...state.user, ...updates } : null,
         })),
     }),
-    { name: 'auth-storage' },
+    {
+      name: 'auth-storage',
+      onRehydrateStorage: (state) => {
+        return () => {
+          state?.setHasHydrated(true); // ✅ hydration 완료 시점에 실행
+        };
+      },
+    },
   ),
 );
