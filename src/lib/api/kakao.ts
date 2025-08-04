@@ -1,26 +1,4 @@
-import axios from 'axios';
-
-// 카카오 지오코딩 전용 axios 인스턴스
-const kakaoAxios = axios.create({
-  baseURL: 'https://dapi.kakao.com/v2/local',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// 요청 인터셉터에서 카카오 API 키 추가
-kakaoAxios.interceptors.request.use(
-  (config) => {
-    const REST_API_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY;
-    if (REST_API_KEY) {
-      config.headers.Authorization = `KakaoAK ${REST_API_KEY}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+import kakaoMapsClient from './kakaoMapsClient';
 
 interface KakaoGeocoderResult {
   address_name: string;
@@ -52,9 +30,11 @@ interface KakaoGeocoderResponse {
 }
 
 // 주소를 좌표로 변환하는 API 호출
-export const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number } | null> => {
+export const geocodeAddress = async (
+  address: string,
+): Promise<{ lat: number; lng: number } | null> => {
   try {
-    const response = await kakaoAxios.get<KakaoGeocoderResponse>('/search/address.json', {
+    const response = await kakaoMapsClient.get<KakaoGeocoderResponse>('/search/address.json', {
       params: {
         query: address,
       },
@@ -80,7 +60,7 @@ export const geocodeAddress = async (address: string): Promise<{ lat: number; ln
 // 좌표를 주소로 변환하는 API 호출
 export const reverseGeocode = async (lat: number, lng: number): Promise<string | null> => {
   try {
-    const response = await kakaoAxios.get<KakaoGeocoderResponse>('/geo/coord2address.json', {
+    const response = await kakaoMapsClient.get<KakaoGeocoderResponse>('/geo/coord2address.json', {
       params: {
         x: lng,
         y: lat,
