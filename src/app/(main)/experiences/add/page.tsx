@@ -97,7 +97,6 @@ const ExperienceAddPage = () => {
     desc: '',
     price: '',
     address: '',
-    detailAddress: '',
     bannerPreview: null,
     introPreviews: [],
     reserveTimes: JSON.stringify([{ date: '', start: '', end: '' }]),
@@ -109,7 +108,6 @@ const ExperienceAddPage = () => {
   const desc = watch('description') || '';
   const price = watch('price') || '';
   const address = watch('address') || '';
-  const detailAddress = watch('detailAddress') || '';
 
   // 변경사항 비교
   const hasChanged = useCallback(() => {
@@ -120,7 +118,6 @@ const ExperienceAddPage = () => {
       desc !== initialValues.current.desc ||
       price !== initialValues.current.price ||
       address !== initialValues.current.address ||
-      detailAddress !== initialValues.current.detailAddress ||
       bannerPreview !== initialValues.current.bannerPreview ||
       JSON.stringify(introPreviews) !== JSON.stringify(initialValues.current.introPreviews) ||
       JSON.stringify(reserveTimes) !== initialValues.current.reserveTimes
@@ -132,7 +129,6 @@ const ExperienceAddPage = () => {
     desc,
     price,
     address,
-    detailAddress,
     bannerPreview,
     introPreviews,
     reserveTimes,
@@ -295,9 +291,6 @@ const ExperienceAddPage = () => {
           error={errors.address?.message}
           value={watch('address') || ''}
           onChange={(v) => setValue('address', v, { shouldValidate: true })}
-          // detailAddress={watch('detailAddress') || ''}
-          // onDetailAddressChange={(v) => setValue('detailAddress', v, { shouldValidate: true })}
-          // detailError={errors.detailAddress?.message}
         />
         <ReserveTimesInput value={reserveTimes} onChange={setReserveTimes} />
         <BannerImageInput

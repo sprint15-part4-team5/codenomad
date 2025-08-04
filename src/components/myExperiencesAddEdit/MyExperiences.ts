@@ -5,9 +5,6 @@ export interface AddressInputProps {
   error?: string;
   value: string;
   onChange: (value: string) => void;
-  // detailAddress?: string;
-  // onDetailAddressChange?: (value: string) => void;
-  // detailError?: string;
 }
 
 // TitleInput

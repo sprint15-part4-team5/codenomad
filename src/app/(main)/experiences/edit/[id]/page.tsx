@@ -138,7 +138,6 @@ const ExperienceEditPage = () => {
       price: '',
       address: '',
       description: '',
-      detailAddress: '', // 필요시
     },
   });
 
@@ -562,10 +561,7 @@ const ExperienceEditPage = () => {
         <AddressInput
           error={errors.address?.message}
           value={watchedAddress || ''}
-          onChange={(v) => setValue('address', v)}
-          // detailAddress={watch('detailAddress') || ''}
-          // onDetailAddressChange={(v) => setValue('detailAddress', v)}
-          // detailError={errors.detailAddress?.message}
+          onChange={(v) => setValue('address', v, { shouldValidate: true })}
         />
         <ReserveTimesInput value={reserveTimes} onChange={setReserveTimes} isEdit={true} />
         <BannerImageInput
