@@ -75,9 +75,9 @@ const ReservationCard = ({
               )}
 
               {status === 'pending' && (
-                <div className='flex w-160 gap-8'>
+                <div className='flex w-160 justify-end'>
                   <button
-                    className='text-14-m w-full rounded-lg bg-gray-50 px-10 py-6 text-gray-600'
+                    className='text-14-m w-1/2 rounded-lg bg-[#FCECEA] px-10 py-6 text-gray-600'
                     onClick={openConfirmModal}
                   >
                     예약 취소
@@ -87,7 +87,7 @@ const ReservationCard = ({
             </div>
           </div>
         </div>
-        <div className='shadow-card relative left-160 h-full w-180 overflow-hidden rounded-3xl bg-gray-50 md:left-320 lg:left-470'>
+        <div className='shadow-card relative left-160 h-full w-180 overflow-hidden rounded-tr-3xl rounded-br-3xl bg-gray-50 md:left-320 lg:left-470'>
           <SafeImage src={bannerUrl} alt='banner_image' className='object-cover' fill />
         </div>
       </div>
@@ -104,7 +104,7 @@ const ReservationCard = ({
         {status === 'pending' && (
           <div className='flex gap-8'>
             <button
-              className='w-full rounded-lg bg-gray-50 py-10 text-gray-600'
+              className='w-full rounded-lg bg-[#fde1dd] py-10 text-gray-600'
               onClick={openConfirmModal}
             >
               예약 취소
