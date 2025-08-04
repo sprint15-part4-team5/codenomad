@@ -9,7 +9,7 @@ interface SafeImageProps extends Omit<ImageProps, 'src'> {
   onClickImage?: (info: { src: string; alt: string }) => void;
 }
 
-const FALLBACK_IMAGE = '/icons/empty.svg';
+const FALLBACK_IMAGE = '/icons/404_kkot.svg';
 
 const SafeImage = ({
   src,

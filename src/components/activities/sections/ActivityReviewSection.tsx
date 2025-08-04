@@ -111,7 +111,7 @@ const ActivityReviewSection = ({ activityId }: ActivityReviewSectionProps) => {
       </div>
 
       {/* 페이지네이션 */}
-      {totalPages > 1 && (
+      {totalPages >= 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

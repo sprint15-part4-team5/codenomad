@@ -47,7 +47,7 @@ const ActivityDescription = ({ text }: ActivityDescriptionProps) => {
       >
         <p className='text-16-body-m whitespace-pre-line text-gray-950'>{text}</p>
         {isOverflowing && !isExpanded && (
-          <div className='absolute right-0 bottom-0 left-0 h-120 w-full bg-gradient-to-t from-white to-transparent' />
+          <div className='absolute right-0 bottom-0 left-0 h-120 w-full bg-gradient-to-t from-[#fafaf8] to-transparent' />
         )}
       </div>
       {isOverflowing && (

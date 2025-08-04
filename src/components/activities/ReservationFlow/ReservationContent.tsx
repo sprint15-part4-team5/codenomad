@@ -10,13 +10,15 @@ import { postReservation } from '@/lib/api/activities/index';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 import showToastError from '@/lib/showToastError';
+import Image from 'next/image';
 
 interface ReservationContentProps {
   activity: ActivityDetail;
+  isOwner: boolean;
 }
 const FALLBACK_MESSAGE = '예약 처리 중 문제가 발생했습니다.';
 
-const ReservationContent = ({ activity }: ReservationContentProps) => {
+const ReservationContent = ({ activity, isOwner }: ReservationContentProps) => {
   const breakpoint = useResponsive();
   const user = useAuthStore((state) => state.user);
   const router = useRouter();
@@ -101,17 +103,32 @@ const ReservationContent = ({ activity }: ReservationContentProps) => {
   return (
     <>
       {breakpoint === 'lg' ? (
-        <DesktopCard
-          {...reservationControlProps}
-          activityData={activityData}
-          onReservationSubmit={handleReservationConfirm}
-        />
+        // 데스크톱
+        !isOwner ? (
+          <DesktopCard
+            {...reservationControlProps}
+            activityData={activityData}
+            onReservationSubmit={handleReservationConfirm}
+          />
+        ) : (
+          <div className='flex h-400 w-full flex-col items-center justify-center gap-8 rounded-lg bg-white p-6 shadow-custom-5'>
+            <Image
+              src='/icons/default_profilewazy.svg'
+              alt='내가 등록한 체험입니다'
+              width={100}
+              height={100}
+            />
+            <p className='text-16-body-m text-gray-600'>내가 작성한 체험입니다</p>
+          </div>
+        )
       ) : (
+        // 모바일/태블릿
         <ModalTrigger
           {...reservationControlProps}
           activityData={activityData}
           onReservationSubmit={handleReservationConfirm}
-          onReservationReset={resetReservation} // 모달을 작성하다가 닫았을 때 필요
+          onReservationReset={resetReservation}
+          isOwner={isOwner}
         />
       )}
 
