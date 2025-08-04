@@ -6,7 +6,7 @@
  * - cancelText, confirmText: 버튼 텍스트
  * - onCancel, onConfirm: 버튼 클릭 핸들러
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface CommonModalProps {
   open: boolean;
@@ -27,6 +27,20 @@ const CommonModal = ({
   onCancel,
   onConfirm,
 }: CommonModalProps) => {
+  // 모달이 열릴 때 body 스크롤 막기
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // 컴포넌트 언마운트 시 스크롤 복원
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return (
