@@ -583,9 +583,9 @@ const ExperienceEditPage = () => {
           error={errors.address?.message}
           value={watchedAddress || ''}
           onChange={(v) => setValue('address', v)}
-          detailAddress={watch('detailAddress') || ''}
-          onDetailAddressChange={(v) => setValue('detailAddress', v)}
-          detailError={errors.detailAddress?.message}
+          // detailAddress={watch('detailAddress') || ''}
+          // onDetailAddressChange={(v) => setValue('detailAddress', v)}
+          // detailError={errors.detailAddress?.message}
         />
         <ReserveTimesInput value={reserveTimes} onChange={setReserveTimes} isEdit={true} />
         <BannerImageInput
