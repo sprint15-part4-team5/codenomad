@@ -48,7 +48,7 @@ const ClientActivitiesPage = ({ id }: ClientActivitiesPageProps) => {
     loadActivity();
   }, [id]);
 
-  if (!loading) return <ResponsiveActivityPageSkeleton />;
+  if (loading) return <ResponsiveActivityPageSkeleton />;
   if (!activity) return <ErrorFallback />;
 
   const isOwner = user?.id === activity.userId;
