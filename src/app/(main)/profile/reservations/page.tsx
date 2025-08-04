@@ -1,4 +1,5 @@
 'use client';
+import LoadingSpinner from '@/components/profile/common/LoadingSpinner';
 import MobilePageHeader from '@/components/profile/common/MobilePageHeader';
 import Badge from '@/components/reservationList/Badge';
 import ReservationCard from '@/components/reservationList/ReservationCard';
@@ -28,14 +29,16 @@ interface reservationsType {
   updatedAt: string;
   userId: number;
 }
+
 const Page = () => {
   const [filter, setFilter] = useState<StatusType | null>(null);
   const [reservationList, setReservationList] = useState<reservationsType[]>([]);
-
   const [cursorId, setCursorId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // 추가 데이터 로딩
+  const [isInitialLoading, setIsInitialLoading] = useState(true); // 초기 로딩
   const [hasMore, setHasMore] = useState(true);
   const observerEl = useRef<HTMLDivElement>(null);
+
   const statusList: { text: string; value: StatusType }[] = [
     { text: '예약 신청', value: 'pending' },
     { text: '예약 취소', value: 'canceled' },
@@ -49,9 +52,6 @@ const Page = () => {
     setIsLoading(true);
     try {
       const res = await getReservationList(cursorId, filter ?? undefined);
-      if (res.cursorId === cursorId) {
-        console.warn('Same cursorId returned, potential API issue');
-      }
       if (res.reservations.length === 0 || res.cursorId === null) {
         setHasMore(false);
       } else {
@@ -73,45 +73,47 @@ const Page = () => {
         fetchMoreData();
       }
     },
-    [hasMore, isLoading, fetchMoreData],
+    [hasMore, fetchMoreData],
   );
 
   useEffect(() => {
     const getData = async () => {
-      const res = await getReservationList();
-      setReservationList(res.reservations);
-      setCursorId(res.cursorId);
+      setIsInitialLoading(true);
+      try {
+        const res = await getReservationList();
+        setReservationList(res.reservations);
+        setCursorId(res.cursorId);
+      } finally {
+        setIsInitialLoading(false);
+      }
     };
     getData();
   }, []);
 
   useEffect(() => {
     if (!filter) return;
-
     const getFilteredData = async (status: StatusType) => {
-      setIsLoading(true);
+      setIsInitialLoading(true);
       setCursorId(null);
       setHasMore(true);
-      const data = await getReservationList(null, status);
-      setReservationList(data.reservations);
-      setCursorId(data.cursorId);
-      setIsLoading(false);
+      try {
+        const data = await getReservationList(null, status);
+        setReservationList(data.reservations);
+        setCursorId(data.cursorId);
+      } finally {
+        setIsInitialLoading(false);
+      }
     };
-
     getFilteredData(filter);
   }, [filter]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, { threshold: 0 });
     const currentEl = observerEl.current;
-    if (currentEl) {
-      observer.observe(currentEl);
-    }
+    if (currentEl) observer.observe(currentEl);
 
     return () => {
-      if (currentEl) {
-        observer.unobserve(currentEl);
-      }
+      if (currentEl) observer.unobserve(currentEl);
     };
   }, [handleObserver]);
 
@@ -123,23 +125,25 @@ const Page = () => {
           description='예약 내역을 변경 및 취소 할 수 있습니다.'
         />
       </h1>
+
       <div className='scrollbar-hide overflow-x-scroll'>
         <div className='my-14 flex w-max grow-0 gap-8'>
-          {statusList.map((item) => {
-            return (
-              <Badge
-                key={item.value}
-                setFilter={() => setFilter(item.value)}
-                selected={filter === item.value}
-              >
-                {item.text}
-              </Badge>
-            );
-          })}
+          {statusList.map((item) => (
+            <Badge
+              key={item.value}
+              setFilter={() => setFilter(item.value)}
+              selected={filter === item.value}
+            >
+              {item.text}
+            </Badge>
+          ))}
         </div>
       </div>
+
       <div>
-        {reservationList.length === 0 ? (
+        {isInitialLoading ? (
+          <LoadingSpinner message='내 체험을 불러오는 중...' useLogo={true} />
+        ) : reservationList.length === 0 ? (
           filter === null ? (
             <div className='mt-40 flex flex-col items-center justify-center'>
               <div className='flex justify-center'>
@@ -157,26 +161,28 @@ const Page = () => {
             <p className='mt-40 text-center text-gray-500'>해당 상태의 예약이 없습니다.</p>
           )
         ) : (
-          reservationList.map((item: reservationsType) => (
-            <ReservationCard
-              key={item.id}
-              status={item.status}
-              title={item?.activity?.title}
-              startTime={item.startTime}
-              date={item.date}
-              endTime={item.endTime}
-              price={item.totalPrice}
-              headCount={item.headCount}
-              bannerUrl={item.activity.bannerImageUrl}
-              reservationId={item.id}
-              reviewSubmitted={item.reviewSubmitted}
-            />
-          ))
-        )}
-        {reservationList.length > 0 && hasMore && (
-          <div ref={observerEl} className='h-10'>
-            {isLoading && <span className='text-gray-500'>로딩중...</span>}
-          </div>
+          <>
+            {reservationList.map((item: reservationsType) => (
+              <ReservationCard
+                key={item.id}
+                status={item.status}
+                title={item?.activity?.title}
+                startTime={item.startTime}
+                date={item.date}
+                endTime={item.endTime}
+                price={item.totalPrice}
+                headCount={item.headCount}
+                bannerUrl={item.activity.bannerImageUrl}
+                reservationId={item.id}
+                reviewSubmitted={item.reviewSubmitted}
+              />
+            ))}
+            {hasMore && (
+              <div ref={observerEl} className='flex h-10 items-center justify-center'>
+                {isLoading && <span className='text-gray-500'>추가 로딩중...</span>}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
