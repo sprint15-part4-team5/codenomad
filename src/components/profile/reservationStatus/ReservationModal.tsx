@@ -85,7 +85,7 @@ const ReservationModal = ({
 
   // 태블릿 전용 바텀시트 레이아웃 (년월일 상단 → 탭 → 좌우 분할)
   const TabletModalContent = (
-    <div className='relative mx-auto flex w-full max-w-[700px] flex-col rounded-2xl bg-white px-3 pt-10 pb-8 md:px-12'>
+    <div className='relative mx-auto flex max-w-700 flex-col rounded-2xl px-3 pt-10 pb-8 md:px-12'>
       {/* 닫기 버튼은 모바일/태블릿에서 없앴음 */}
 
       {/* 1. 년월일 */}
@@ -333,6 +333,7 @@ const ReservationModal = ({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          className='flex flex-col rounded-t-2xl px-3 pt-10 pb-8 shadow-lg md:px-12'
         >
           <div className='relative mx-auto max-h-[92vh] w-full max-w-3xl overflow-y-auto px-2 pt-6 pb-10 md:px-4'>
             {TabletModalContent}
@@ -354,6 +355,7 @@ const ReservationModal = ({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          className='mx-auto flex w-full flex-col rounded-t-2xl px-3 pt-10 pb-8 shadow-lg md:px-12'
         >
           <div className='relative mx-auto max-h-[88vh] w-full max-w-md overflow-y-auto px-4 pt-2 pb-8'>
             {ModalContent}

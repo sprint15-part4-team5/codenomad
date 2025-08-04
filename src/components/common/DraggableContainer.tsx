@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode, RefObject } from 'react';
-import clsx from 'clsx';
+import cn from '@/utils/cn';
 
 interface DraggableContainerProps {
   containerRef: RefObject<HTMLDivElement | null>;
@@ -23,7 +23,7 @@ const DraggableContainer = ({
   return (
     <div
       ref={containerRef}
-      className={clsx(
+      className={cn(
         'fixed bottom-0 left-0 z-50 w-full overscroll-none bg-white transition-transform duration-300',
         className,
       )}
