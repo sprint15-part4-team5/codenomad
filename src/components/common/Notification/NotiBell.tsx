@@ -16,7 +16,7 @@ const NotiBell = () => {
   useEffect(() => {
     const checkNotifications = async () => {
       try {
-        const res = await instance.get('/my-notifications');
+        const res = await instance.get('/my-notifications', { params: { size: 1 } });
         if (res.data.totalCount > 0) {
           setHasNewNotification(true);
         }
