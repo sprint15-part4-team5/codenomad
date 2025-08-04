@@ -262,11 +262,11 @@ const ReservationCalendar = ({
               date.getMonth() === today.getMonth() &&
               date.getDate() === today.getDate()
             ) {
-              classes.push('!bg-yellow-100'); // 오늘 날짜 노란색 (우선순위 높임)
+              classes.push('!bg-primary-100'); // 오늘 날짜 노란색 (우선순위 높임)
             } else {
               classes.push('bg-white'); // 기본 배경
             }
-            classes.push('hover:!bg-sky-100 transition-colors duration-150'); // hover도 !로 우선순위 높임
+            classes.push('hover:!bg-primary-400 transition-colors duration-150'); // hover도 !로 우선순위 높임
             return cn(
               '!w-[calc((375px-60px)/7)] sm:!w-[calc((640px-60px)/7)] !h-[104px] sm:!h-[124px] !min-w-[calc((375px-60px)/7)] !p-0',
               '!flex !flex-col !items-center !justify-start',
