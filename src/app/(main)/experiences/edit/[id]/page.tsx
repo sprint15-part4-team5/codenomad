@@ -16,11 +16,11 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import CommonModal from '@/components/common/CancelModal';
 import LoadingPage from '@/components/common/LoadingPage';
 import { uploadImage, updateExperience, getExperienceDetail } from '@/lib/api/experiences';
-import { notFound } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { experiencesSchema, FormValues } from '@/lib/schema/experiencesSchema';
 import type { SubmitHandler } from 'react-hook-form';
+import showToastError from '@/lib/showToastError';
 
 const categoryOptions = [
   { value: '문화 · 예술', label: '문화 · 예술' },
@@ -211,18 +211,7 @@ const ExperienceEditPage = () => {
           reserveTimes: reserveTimesWithEmptyFirst,
         });
       } catch (error: unknown) {
-        console.error('체험 데이터 불러오기 실패:', error);
-        // 타입가드로 error가 AxiosError 타입인지 확인
-        if (
-          typeof error === 'object' &&
-          error !== null &&
-          'response' in error &&
-          typeof (error as { response?: { status?: number } }).response?.status === 'number'
-        ) {
-          if ((error as { response: { status: number } }).response.status === 404) {
-            notFound();
-          }
-        }
+        showToastError(error, { fallback: '데이터를 불러오는데 실패했습니다.' });
         setError('데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
@@ -289,7 +278,7 @@ const ExperienceEditPage = () => {
       validReserveTimes.length === 0 ||
       isDuplicateTime()
     ) {
-      alert(
+      showToastError(
         '필수 항목을 모두 입력해 주세요.\n최소 하나의 예약 시간이 필요하며, 중복된 시간대는 불가능합니다.',
       );
       return;
@@ -303,7 +292,9 @@ const ExperienceEditPage = () => {
           const bannerUpload = await uploadImage(banner);
           finalBannerUrl = bannerUpload.activityImageUrl;
         } catch (uploadError) {
-          console.error('배너 이미지 업로드 실패:', uploadError);
+          showToastError(uploadError, {
+            fallback: '배너 이미지 업로드에 실패했습니다. 다시 시도해 주세요.',
+          });
           throw new Error('배너 이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
         }
       }
@@ -317,7 +308,9 @@ const ExperienceEditPage = () => {
               const upload = await uploadImage(file);
               subImageUrlsToAdd.push(upload.activityImageUrl);
             } catch (uploadError) {
-              console.error('소개 이미지 업로드 실패:', uploadError);
+              showToastError(uploadError, {
+                fallback: '이미지 업로드에 실패했습니다. 다시 시도해 주세요.',
+              });
               throw new Error('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
             }
           }
@@ -368,23 +361,10 @@ const ExperienceEditPage = () => {
         schedulesToAdd,
       };
       await updateExperience(experienceId, updateData);
+
       setModalOpen(true);
     } catch (error: unknown) {
-      console.error('체험 수정 실패:', error);
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        'response' in error &&
-        typeof (error as { response?: { data?: { message?: string } } }).response?.data?.message ===
-          'string'
-      ) {
-        alert(
-          (error as { response: { data: { message: string } } }).response.data.message ||
-            '수정에 실패했습니다. 다시 시도해 주세요.',
-        );
-      } else {
-        alert('수정에 실패했습니다. 다시 시도해 주세요.');
-      }
+      showToastError(error, { fallback: '수정에 실패했습니다. 다시 시도해 주세요.' });
       setIsSubmitting(false);
     }
   };
@@ -441,7 +421,7 @@ const ExperienceEditPage = () => {
       'image/svg+xml',
     ];
     if (!validTypes.includes(file.type)) {
-      alert('이미지 파일(jpg, png, gif, webp, bmp, svg)만 업로드할 수 있습니다.');
+      showToastError('이미지 파일(jpg, png, gif, webp, bmp, svg)만 업로드할 수 있습니다.');
       e.target.value = '';
       return;
     }
@@ -464,7 +444,7 @@ const ExperienceEditPage = () => {
     ];
     for (const file of files) {
       if (!validTypes.includes(file.type)) {
-        alert('이미지 파일(jpg, png, gif, webp, bmp, svg)만 업로드할 수 있습니다.');
+        showToastError('이미지 파일(jpg, png, gif, webp, bmp, svg)만 업로드할 수 있습니다.');
         e.target.value = '';
         return;
       }

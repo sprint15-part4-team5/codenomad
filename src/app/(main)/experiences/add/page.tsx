@@ -17,6 +17,8 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import CommonModal from '@/components/common/CancelModal';
 import { createExperience, uploadImage } from '@/lib/api/experiences';
 import { experiencesSchema, FormValues } from '@/lib/schema/experiencesSchema';
+import showToastError from '@/lib/showToastError';
+import { toast } from 'sonner';
 
 const categoryOptions = [
   { value: '문화 · 예술', label: '문화 · 예술' },
@@ -153,7 +155,7 @@ const ExperienceAddPage = () => {
       setLastSubmitTime(currentTime);
       const validReserveTimes = reserveTimes.filter((rt) => rt.date && rt.start && rt.end);
       if (!banner || validReserveTimes.length === 0 || isDuplicateTime()) {
-        alert('필수 항목을 모두 입력해 주세요.\n또는 예약 시간이 중복되었습니다.');
+        showToastError('필수 항목을 모두 입력해 주세요.\n또는 예약 시간이 중복되었습니다.');
         return;
       }
       setIsSubmitting(true);
@@ -177,10 +179,12 @@ const ExperienceAddPage = () => {
         };
         await createExperience(experienceData);
         setIsSubmitted(true);
+
         setModalOpen(true);
       } catch (error) {
-        console.error('체험 등록 실패:', error);
-        alert('체험 등록에 실패했습니다. 다시 시도해주세요.');
+        showToastError(error, {
+          fallback: '체험 등록에 실패했습니다. 다시 시도해주세요.',
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -241,6 +245,7 @@ const ExperienceAddPage = () => {
   const handleConfirm = useCallback(() => {
     setModalOpen(false);
     window.removeEventListener('beforeunload', handleBeforeUnload);
+    toast.success('내 체험 등록 페이지로 이동합니다.');
     router.push('/profile/myExperiences');
   }, [handleBeforeUnload, router]);
 
@@ -270,7 +275,7 @@ const ExperienceAddPage = () => {
         />
         <CategoryInput
           value={watch('category') || ''}
-          onChange={(v) => setValue('category', v)}
+          onChange={(v) => setValue('category', v, { shouldValidate: true })}
           options={categoryOptions}
           error={errors.category?.message}
         />
@@ -289,9 +294,9 @@ const ExperienceAddPage = () => {
         <AddressInput
           error={errors.address?.message}
           value={watch('address') || ''}
-          onChange={(v) => setValue('address', v)}
+          onChange={(v) => setValue('address', v, { shouldValidate: true })}
           // detailAddress={watch('detailAddress') || ''}
-          // onDetailAddressChange={(v) => setValue('detailAddress', v)}
+          // onDetailAddressChange={(v) => setValue('detailAddress', v, { shouldValidate: true })}
           // detailError={errors.detailAddress?.message}
         />
         <ReserveTimesInput value={reserveTimes} onChange={setReserveTimes} />
