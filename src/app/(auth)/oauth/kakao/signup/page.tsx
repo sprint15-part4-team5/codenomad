@@ -1,12 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import instance from '@/lib/api/axios';
 import Input from '@/components/common/Input';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useAuthStore } from '@/store/useAuthStore';
 
-const KakaoSignupPage = () => {
+const KakaoSignupForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
@@ -80,6 +80,16 @@ const KakaoSignupPage = () => {
         </button>
       </form>
     </main>
+  );
+};
+
+const KakaoSignupPage = () => {
+  return (
+    <Suspense
+      fallback={<div className='flex min-h-screen items-center justify-center'>로딩 중...</div>}
+    >
+      <KakaoSignupForm />
+    </Suspense>
   );
 };
 
