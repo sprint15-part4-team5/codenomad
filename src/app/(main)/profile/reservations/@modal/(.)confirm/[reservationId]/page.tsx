@@ -1,6 +1,7 @@
 'use client';
 import CommonModal from '@/components/common/CancelModal';
 import { cancelReservation } from '@/lib/api/profile/reservationList';
+import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
 
 const ConfirmModalPage = () => {
@@ -23,6 +24,15 @@ const ConfirmModalPage = () => {
   return (
     <CommonModal
       open={true}
+      icon={
+        <Image
+          src='/icons/icon_alert_cancel.svg'
+          alt='경고'
+          width={24}
+          height={24}
+          className='h-full w-full'
+        />
+      }
       text='예약을 취소하시겠습니까?'
       onConfirm={onDismiss}
       onCancel={onCancel}
