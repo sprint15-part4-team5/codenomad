@@ -14,7 +14,7 @@ const Header = () => {
   const handleLogout = () => {
     clearAuthStore();
     useAuthStore.persist.clearStorage();
-    router.push('/');
+    router.push('/home');
   };
 
   return (
@@ -61,13 +61,13 @@ const Header = () => {
                 <Dropdown.Item>
                   <Link
                     href='/profile'
-                    className='block w-full px-4 py-2 text-center text-sm text-gray-800'
+                    className='block w-full px-8 py-10 text-center text-sm text-gray-800'
                   >
                     마이페이지
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={handleLogout}>
-                  <span className='block w-full px-4 py-2 text-center text-sm text-gray-800'>
+                  <span className='block w-full px-8 py-10 text-center text-sm text-gray-800'>
                     로그아웃
                   </span>
                 </Dropdown.Item>
