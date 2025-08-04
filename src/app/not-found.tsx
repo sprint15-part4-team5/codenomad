@@ -17,7 +17,7 @@ const Page = () => {
         </h1>
         <button
           className='bg-primary-500 text-14-m h-50 w-250 self-center rounded-2xl text-white md:w-300'
-          onClick={() => router.push('/')} // 추후 체험 목록 페이지에 맞춰 변경 예정
+          onClick={() => router.push('/home')}
         >
           홈으로 돌아가기
         </button>

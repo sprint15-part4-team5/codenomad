@@ -13,7 +13,7 @@ const ErrorFallback = () => {
 
     if (newCount >= 3) {
       showToastError('서버와의 연결이 불안정 합니다 잠시후 다시 시도해주세요');
-      router.push('/');
+      router.push('/home');
       return;
     }
 
