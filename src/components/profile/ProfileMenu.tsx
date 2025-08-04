@@ -47,7 +47,7 @@ export default function ProfileMenu({ onMenuClick }: ProfileMenuProps) {
   };
 
   return (
-    <div className='shadow-custom-5 mx-auto mt-20 flex h-453 w-327 flex-col items-center rounded-2xl bg-white px-6 py-8 md:w-178 md:px-4 md:py-6 lg:w-290 lg:px-8 lg:py-10'>
+    <div className='shadow-custom-5 border-primary-400 mx-auto mt-20 flex h-453 w-327 flex-col items-center rounded-2xl border-2 bg-white px-6 py-8 md:w-178 md:px-4 md:py-6 lg:w-290 lg:px-8 lg:py-10'>
       {/* 프로필 이미지 */}
       <div className='relative mb-8'>
         <div className='mt-40 mb-40 flex h-120 w-120 items-center justify-center overflow-hidden rounded-full bg-blue-100'>
