@@ -12,6 +12,7 @@ const DescriptionInput = <T extends FieldValues = FieldValues>({
     <Input
       label='설명'
       labelClassName='text-16-b'
+      id='description-input'
       as='textarea'
       placeholder='체험에 대한 설명을 입력해 주세요'
       maxLength={1000}
