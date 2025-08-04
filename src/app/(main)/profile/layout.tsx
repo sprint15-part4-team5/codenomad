@@ -88,7 +88,7 @@ export default function MyLayout({ children }: { children: React.ReactNode }) {
         {/* 메인 콘텐츠 영역 */}
         <main className='w-full md:flex-1'>
           {/* 모바일: showContent true일 때만 렌더링, Context 통해 onCancel 함수 전달 */}
-          <div className='block flex items-center justify-center md:hidden md:min-h-[60vh]'>
+          <div className='block flex min-h-[60vh] items-center justify-center md:hidden'>
             {showContent && (
               <ProfileMobileContext.Provider value={{ onCancel: handleCancel }}>
                 {children}
