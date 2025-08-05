@@ -16,12 +16,16 @@
   </div> 
 </div>
 
+# Wazy : Way to Easy 🌸
+
+> 쉽게 즐기는 체험 예약 플랫폼
+
+### 📅 프로젝트 기간 : 2025. 07.07 ~ 2025. 08. 05
 
 <div style="text-align: left;">
   <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🛠️ Tech Stacks </h2> <br> 
   <div style="text-align: left;">
     <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=Next.js&logoColor=white">
-    <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=Node.js&logoColor=white">
     <img src="https://img.shields.io/badge/Vercel-000000?style=flat&logo=Vercel&logoColor=white">
     <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=TailwindCSS&logoColor=white">
     <img src="https://img.shields.io/badge/Eslint-4B32C3?style=flat&logo=Eslint&logoColor=white"><br/>
@@ -39,14 +43,15 @@
 <div style="text-align: left;">
   <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;">📂 Naming Convention</h2>
 
-  <ul>
-    <li><strong>폴더명:</strong> camelCase → <code>auth</code>, <code>userInfo</code></li>
-    <li><strong>컴포넌트:</strong> PascalCase → <code>ExperienceCard.tsx</code></li>
-    <li><strong>이미지/아이콘:</strong> kebab-case → <code>logo-icon.png</code></li>
-    <li><strong>함수/변수:</strong> camelCase → <code>handleLogin</code>, <code>userEmail</code></li>
-    <li><strong>환경변수:</strong> UPPER_SNAKE_CASE → <code>NEXT_PUBLIC_API_URL</code></li>
-    <li><strong>Tailwind 클래스명:</strong> 그대로 사용 → <code>flex</code>, <code>items-center</code></li>
-  </ul>
+| 대상                | 네이밍 규칙                | 예시                                   |
+| ------------------- | -------------------------- | -------------------------------------- |
+| 폴더명              | 카멜케이스 (camelCase)     | auth, boardManagement                  |
+| 컴포넌트            | 파스칼 케이스 (PascalCase) | SignInForm.tsx, BoardCard.tsx          |
+| 이미지/아이콘파일명 | 케밥케이스 (kebab-case)    | logo-icon.png, user-avatar-default.png |
+| 함수명/변수명       | 카멜케이스 (camelCase)     | fetchUserData, isAuthenticated         |
+| 환경변수            | 대문자+스네이크케이스      | NEXT_PUBLIC_API_URL                    |
+| 클래스명            | Tailwind 기본              | flex, items-center, bg-blue-500        |
+
 </div>
 
 <div style="text-align: left;">
@@ -67,7 +72,7 @@ main
   <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;">🧠 기술 선택 이유</h2>
 
   <ul>
-    <li><strong>Next.js(App Router)</strong> - SSR/CSR/ISR 지원, 폴더 기반 라우팅이 직관적</li>
+    <li><strong>Next.js(App Router)</strong> - CSR/ISR 지원, 폴더 기반 라우팅이 직관적</li>
     <li><strong>Tailwind CSS</strong> - 빠른 스타일링, 클래스 네이밍 고민 감소</li>
     <li><strong>TypeScript</strong> - 타입 안정성 확보 및 협업 효율 증가</li>
     <li><strong>Zustand</strong> - 설정이 간단하고 가벼운 상태 관리</li>
@@ -82,25 +87,10 @@ main
   <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;">👥 R&R (Roles & Responsibilities)</h2>
 
   <ul>
-    <li><strong>손수진 (팀장)</strong> – 예약 내역, 리뷰 작성, Notion 관리, GitHub 관리, 스타벅스 기부(조진우에게)</li>
+    <li><strong>손수진 (팀장)</strong> – 예약 내역, 리뷰 작성, Notion 관리, GitHub 관리, 랜딩페이지 디자인, Zustand 전역 상태 관리</li>
     <li><strong>양지선</strong> – 로그인, 회원가입, 메인화면, 알림, 헤더, 푸터, 초기 세팅</li>
-    <li><strong>조인성</strong> – 체험 상세 페이지, 주스탠드 구조 정리</li>
-    <li><strong>조진우</strong> – 내 정보, 예약 현황, 체험 관리, 발표</li>
-    <li><strong>유원규</strong> – 내 체험 등록, 수정, 소감 발표</li>
-    <li><strong>미정</strong> – 발표용 PPT 및 대본 제작</li>
+    <li><strong>조인성</strong> – 체험 상세 페이지, 404 페이지, 공통 바텀시트, 공통 드롭다운, 공통 에러 토스트, 배포</li>
+    <li><strong>조진우</strong> – 내 정보, 예약 현황, 체험 관리, 발표, 대본 작성</li>
+    <li><strong>유원규</strong> – 내 체험 등록, 수정,공통 인풋 컴포넌트,취소하기 모달, 리드미 초안 작성, 소감 발표</li>
   </ul>
 </div>
-
-<div style="text-align: left;">
-  <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🧑‍💻 Contact me </h2> <br> 
-  <a href="https://www.notion.so/5-2295db629f87803e9eaaf23794653923">
-    <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=Notion&logoColor=white">
-  </a>
-</div>
-
-<div style="text-align: left;"> 
-  <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🏅 Stats </h2> 
-  <img src="https://github-readme-stats.vercel.app/api?username=CODENOMAD&bg_color=60,ffffff,e1f5fe&title_color=000000&text_color=000000" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=CODENOMAD&layout=compact&bg_color=60,ffffff,e1f5fe&title_color=000000&text_color=000000" />
-</div>
-
