@@ -37,6 +37,9 @@
     <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white">
     <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo=Figma&logoColor=white">
     <img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat&logo=Javascript&logoColor=white">
+    <img src="https://img.shields.io/badge/React-Hook-Form?style=flat&logo=ReactHookForm&logoColor=white&color=%23EC5990">
+    <img src="https://img.shields.io/badge/axios-5A29E4?style=flat&logo=axios&logoColor=white">
+    <img src="https://img.shields.io/badge/Zod-3E67B1%3Fstyle%3Dflat%26logo%3DZod%26logoColor=white?style=flat&color=%233E67B1">
   </div>
 </div>
 
